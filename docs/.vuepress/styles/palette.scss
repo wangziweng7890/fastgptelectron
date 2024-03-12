@@ -1,0 +1,82 @@
+// 重写主题变量
+:root {
+  --font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    blinkmacsystemfont,
+    "Segoe UI",
+    roboto,
+    "Helvetica Neue",
+    arial,
+    "Noto Sans",
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
+  --content-width: 940px;
+}
+
+table {
+  margin: 0;
+}
+
+.theme-default-content > div {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    overflow-wrap: break-word;
+  }
+
+  h1:focus-visible,
+  h2:focus-visible,
+  h3:focus-visible,
+  h4:focus-visible,
+  h5:focus-visible,
+  h6:focus-visible {
+    outline: none;
+  }
+
+  h1:hover .header-anchor,
+  h2:hover .header-anchor,
+  h3:hover .header-anchor,
+  h4:hover .header-anchor,
+  h5:hover .header-anchor,
+  h6:hover .header-anchor {
+    opacity: 1;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  h2 {
+    font-size: 1.65rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--c-border);
+    transition: border-color var(--t-color);
+  }
+
+  h3 {
+    font-size: 1.35rem;
+  }
+
+  h4 {
+    font-size: 1.15rem;
+  }
+
+  h5 {
+    font-size: 1.05rem;
+  }
+
+  h6 {
+    font-size: 1rem;
+  }
+}

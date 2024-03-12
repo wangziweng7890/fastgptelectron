@@ -1,0 +1,179 @@
+{
+  "name": "document-system",
+  "version": "0.1.5",
+  "private": true,
+  "packageManager": "pnpm@7.4.0",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "electron:build:test": "vite build --mode test && electron-builder",
+    "preinstall": "npx only-allow pnpm",
+    "build:only": "node ./run.js build",
+    "publish:test": "node ./run.js publish",
+    "build:publish": "node ./run.js",
+    "build:test": "vite build --mode test",
+    "build:prod": "vite build --mode prod && rm -rf main/assets/*.map",
+    "dev": "vite",
+    "serve": "vite",
+    "lint": "eslint .",
+    "typecheck": "vue-tsc --noEmit --project tsconfig.json",
+    "preview": "vite preview",
+    "stylelint": "stylelint \"src/**/*.{css,scss,vue}\" --fix",
+    "eslint": "eslint . --fix",
+    "pre-check": "tsc -p tsconfig.json --noEmit && npx lint-staged",
+    "test": "vitest",
+    "prepare": "husky install",
+    "docs:dev": "vuepress dev docs --open",
+    "docs:create": "vdocs gen:docs",
+    "iconfont": "node ./plugin/iconfont-download.mjs",
+    "svg": "node ./plugin/iconfont-to-svg.mjs"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "@galaxy-fe/galaxy-ui": "^1.0.63",
+    "@galaxy/swrv": "^0.0.13",
+    "@sentry/tracing": "^7.54.0",
+    "@sentry/vue": "^7.54.0",
+    "@vueuse/core": "^10.5.0",
+    "@vueuse/integrations": "^10.5.0",
+    "axios": "^0.27.2",
+    "crypto-js": "4",
+    "dayjs": "^1.11.7",
+    "element-plus": "^2.3.4",
+    "lodash-es": "^4.17.21",
+    "nprogress": "^0.2.0",
+    "pinia": "^2.0.14",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "qs": "^6.11.1",
+    "rc-util": "^5.22.5",
+    "vue": "^3.4.5",
+    "vue-router": "^4.0.16"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.25.2",
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
+    "@galaxy-fe/vite-plugin-auto-optimize": "^1.1.0",
+    "@galaxy-fe/vite-plugin-element-message-style-resolver": "^1.1.0",
+    "@galaxy-fe/vite-plugin-unocss-iconfont": "^1.2.1",
+    "@iconify-json/carbon": "^1.1.6",
+    "@sentry/vite-plugin": "^2.2.1",
+    "@types/node": "^18.0.0",
+    "@types/qs": "^6.9.7",
+    "@types/sortablejs": "^1.15.1",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "@unocss/reset": "^0.42.0",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "@vitejs/plugin-vue-jsx": "^1.3.10",
+    "@vue/test-utils": "^2.0.1",
+    "@vuepress/client": "2.0.0-beta.61",
+    "autoprefixer": "^10.4.14",
+    "compressing": "^1.9.0",
+    "electron": "^29.1.1",
+    "electron-builder": "^24.13.3",
+    "electron-devtools-installer": "^3.2.0",
+    "es-module-lexer": "^1.3.0",
+    "eslint": "^8.18.0",
+    "husky": ">=7",
+    "jsdom": "^20.0.0",
+    "less": "^4.1.3",
+    "lint-staged": ">=10",
+    "magic-string": "^0.30.1",
+    "path-browserify": "^1.0.1",
+    "pnpm": "^7.4.0",
+    "postcss": "^8.4.14",
+    "postcss-html": "^1.5.0",
+    "postcss-scss": "^4.0.4",
+    "postcss-selector-namespace": "^3.0.1",
+    "rimraf": "^5.0.5",
+    "sass": "^1.53.0",
+    "stylelint": "^14.9.1",
+    "stylelint-config-recommended-scss": "^6.0.0",
+    "stylelint-config-recommended-vue": "^1.4.0",
+    "stylelint-config-standard": "^26.0.0",
+    "stylelint-scss": "^4.3.0",
+    "terser": "^5.21.0",
+    "typescript": "^4.7.4",
+    "unocss": "^0.42.0",
+    "unplugin-auto-import": "^0.15.3",
+    "unplugin-element-plus": "0.4.1",
+    "unplugin-icons": "^0.16.1",
+    "unplugin-vue-components": "^0.24.1",
+    "vite": "^4.3.5",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-electron": "^0.28.2",
+    "vite-plugin-electron-renderer": "^0.14.5",
+    "vite-plugin-html": "^3.2.0",
+    "vite-plugin-mock": "^3.0.0",
+    "vite-plugin-optimize-persist": "^0.1.2",
+    "vite-plugin-package-config": "^0.1.1",
+    "vite-plugin-pages": "^0.25.0",
+    "vite-plugin-vue-layouts": "^0.6.0",
+    "vite-plugin-vue-setup-extend": "^0.4.0",
+    "vite-plugin-vue2": "^2.0.3",
+    "vite-svg-loader": "^4.0.0",
+    "vitest": "^0.16.0",
+    "vue-tsc": "^1.8.27",
+    "vuepress": "2.0.0-beta.61",
+    "vuepress2-plugin-demo-block-edit": "2.0.0-beta.70"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,vue}": [
+      "eslint . --fix --quiet"
+    ],
+    "src/**/*.{css,vue,scss}": [
+      "stylelint --fix"
+    ]
+  },
+  "browserslist": [
+    "last 5 version",
+    "> 1%",
+    "IE >= 11"
+  ],
+  "build": {
+    "appId": "com.electron.desktop",
+    "productName": "银河助手",
+    "asar": true,
+    "copyright": "Copyright © 2024 银河集团",
+    "directories": {
+      "output": "release/${version}"
+    },
+    "files": [
+      "./dist",
+      "./package.json",
+      "./dist-electron"
+    ],
+    "mac": {
+      "artifactName": "${productName}_${version}.${ext}",
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}_${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://127.0.0.1:8080"
+      }
+    ],
+    "releaseInfo": {
+      "releaseNotes": "版本更新的具体内容"
+    }
+  }
+}

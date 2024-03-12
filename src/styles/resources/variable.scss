@@ -1,0 +1,40 @@
+$prefix: "hk";
+
+// scss variable 根据　theme/default.json从 camelCase 映射为 --@{prefix}-came-case
+$hk-primary-color: var(--#{$prefix}-primary-color);
+$hk-font-size: var(--#{$prefix}-font-size);
+$hk-bg-color: var(--#{$prefix}-bg-color);
+$hk-spacing-unit: 4px;
+$hk-info-bar-width: 253px;
+
+// 主色/品牌色
+$hk-main-color: #1453ff;
+$hk-compel-color1: #5f31f5;
+$hk-compel-color2: #8b14ff;
+$hk-compel-color3: #2414ff;
+$hk-compel-color4: #1453ff;
+$hk-compel-color5: #2181ff;
+$hk-compel-color6: #59b2ed;
+$hk-compel-color7: #17c9ff;
+$hk-compel-color8: #6decf5;
+$hk-compel-color9: #84e3ca;
+$hk-compel-color10: #f7f8fc;
+$hk-compel-color11: #f2f4f7;
+$hk-compel-color12: #f3f6fe;
+$hk-compel-color13: rgba(20 83 255 / 5%);
+
+$hk-main-text-color: #141222;
+
+$hk-base-space: 16px;
+$hk-base-space1: 20px;
+$hk-base-space2: 12px;
+
+$hk-border-color-gray: rgba(130 131 149 / 15%);
+
+:root {
+  --el-text-color-regular: $hk-main-text-color;
+}
+
+.el-tag {
+  --el-color-info: $hk-main-text-color;
+}

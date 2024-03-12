@@ -1,0 +1,55 @@
+{
+    "data": [
+        {
+          "id": "2",
+          "name": "销售转化看板",
+          "path": "",
+          "level": 0,
+          "meta": {
+            "title": "",
+            "icon": ""
+          },
+          "children": [],
+          "pid": 0,
+          "sort": 0,
+          "isShow": 0,
+          "isGroupMenu": 0,
+          "showParent": 0,
+          "idd": 0
+        },
+        {
+          "id": "1",
+          "name": "产品运营看板",
+          "path": "",
+          "level": 0,
+          "meta": {
+            "title": "",
+            "icon": ""
+          },
+          "children": [],
+          "pid": 0,
+          "sort": 0,
+          "isShow": 0,
+          "isGroupMenu": 0,
+          "showParent": 0,
+          "idd": 0
+        },
+        {
+          "id": "3",
+          "name": "服务交付看板",
+          "path": "",
+          "level": 0,
+          "meta": {
+            "title": "",
+            "icon": ""
+          },
+          "children": [],
+          "pid": 0,
+          "sort": 0,
+          "isShow": 0,
+          "isGroupMenu": 0,
+          "showParent": 0,
+          "idd": 0
+        }
+    ]
+}

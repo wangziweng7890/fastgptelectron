@@ -1,0 +1,308 @@
+@use "./layout.scss" as *;
+@use "./element-plus.scss" as *;
+
+.el-overlay {
+  .drawer-content {
+    .el-drawer__body {
+      padding: 0;
+    }
+  }
+
+  .drawer-main-content {
+    .el-drawer__body {
+      @extend %flex-column;
+    }
+  }
+
+  .tag-dialog {
+    border-radius: 8px;
+
+    .el-dialog__header {
+      padding: 0;
+      margin: 0;
+    }
+
+    .el-dialog__body {
+      padding: 0;
+
+      .el-radio__input.is-checked + .el-radio__label,
+      .el-checkbox__input.is-checked + .el-checkbox__label {
+        color: $hk-main-text-color;
+      }
+    }
+
+    .el-checkbox__input.is-checked .el-checkbox__inner,
+    .el-radio__input.is-checked .el-radio__inner {
+      background-color: $hk-main-color;
+      border-color: $hk-main-color;
+    }
+
+    .el-dialog__footer {
+      padding: 0;
+    }
+  }
+}
+
+.el-loading-mask {
+  .el-loading-spinner .path {
+    stroke: $hk-main-color;
+  }
+}
+
+.pagination-content {
+  .el-pager li {
+    padding: 0;
+    margin: 0 24px;
+    min-width: 0;
+    font-size: 14px;
+    color: $hk-main-text-color;
+
+    &:hover,
+    &.is-active {
+      color: $hk-main-color;
+    }
+  }
+
+  .el-pagination .btn-prev .el-icon,
+  .el-pagination .btn-next .el-icon {
+    font-size: 16px;
+  }
+
+  .el-pagination__sizes {
+    .el-select {
+      .el-input {
+        width: 94px;
+        font-size: 14px;
+
+        .el-input__wrapper {
+          padding: 0 13px 0 8px;
+        }
+      }
+    }
+  }
+
+  .btn-prev,
+  .btn-next {
+    &:hover {
+      color: $hk-main-color;
+    }
+
+    .el-icon {
+      font-size: 16px !important;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  .el-loading-spinner {
+    --el-loading-spinner-size: 30px;
+  }
+}
+
+.main-padding {
+  padding: 16px 20px;
+}
+
+.el-tabs__item.is-top {
+  padding: 0 16px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #908f96;
+
+  &.is-active {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--el-color-primary);
+  }
+}
+
+.el-tabs--top .el-tabs__item.is-top:nth-child(2) {
+  padding-left: 0;
+}
+
+// 输入框，textarea框显示文字要加粗
+.el-textarea .el-textarea__inner,
+.el-input .el-input__inner {
+  color: $hk-main-text-color;
+}
+
+// 将tabs 的横线改细一点(由2px 变为 1px)
+.el-tabs .el-tabs__header .el-tabs__nav-wrap::after {
+  height: 1px;
+}
+
+// 鼠标经过追加文字颜色
+.hoverText {
+  &:hover {
+    color: $hk-main-color !important;
+  }
+}
+
+// 表格文本主题色+hover小手
+.mainTextPointer {
+  color: $hk-main-color !important;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.header-popover.el-popover.el-popper {
+  width: auto !important;
+  max-width: 400px;
+  padding: 0;
+
+  .popover-main {
+    padding: 16px 16px 24px;
+  }
+
+  .popover-tips {
+    padding: 10px;
+  }
+
+  .el-table-filter__bottom {
+    text-align: right;
+    border-top: 1px solid #ebeef5;
+    padding: 12px 16px;
+  }
+}
+
+.operation-pointer {
+  cursor: pointer;
+}
+
+// 定制滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #0003;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+// chatbot 内的样式
+.cel-popover {
+  .cel-table {
+    th.cel-table__cell {
+      background-color: $hk-compel-color11 !important;
+    }
+
+    th.cel-table__cell.is-leaf {
+      border: 1px solid transparent;
+    }
+
+    .cel-table__row {
+
+      .cel-table__cell,
+      .cel-table__cell.is-leaf {
+        border: 1px solid transparent;
+      }
+    }
+
+    .cel-table__header-wrapper {
+      border-radius: 4px;
+    }
+
+    .cel-table__inner-wrapper::before {
+      background-color: rgb(0 0 0 / 0%);
+    }
+
+    thead {
+      tr {
+        height: 40px;
+        border-radius: 4px;
+
+        th {
+          background-color: black;
+
+          .cell {
+            word-break: keep-all;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 20px;
+            color: #6d6c77;
+          }
+        }
+      }
+    }
+  }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  box-shadow: 0 0 0 1000px #f7fafc inset;
+  -webkit-text-fill-color: black;
+}
+
+.normal-font-words {
+  font-weight: normal !important;
+}
+
+// 次级页面底部区域
+.secondary-page-footer-area {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 56px;
+  width: 100%;
+  background: #fff;
+  padding-right: 20px;
+  border-left: 1px solid #f2f6fa;
+}
+
+// 自定义message-box弹窗样式
+.galaxy-message-box.cel-message-box {
+  border-radius: 8px;
+  font-size: 16px;
+  padding: 0;
+
+  .cel-message-box__header {
+    position: static;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 18px;
+    color: #000;
+    font-weight: 500;
+    padding: 20px;
+    border-bottom: 1px solid rgb(130 131 149 / 15%);
+
+    .cel-message-box__headerbtn {
+      position: static;
+    }
+  }
+
+  .cel-message-box__content {
+    padding: 20px;
+    font-size: 16px;
+    color: #141222;
+  }
+
+  .cel-message-box__btns {
+    padding: 10px 20px 20px;
+  }
+}
+
+.el-form--inline .el-input {
+  width: 100%;
+}
+
+.el-radio__input.is-disabled.is-checked .el-radio__inner {
+  background-color: #a1baff !important;
+  border-color: #a1baff !important;
+
+  &::after {
+    background-color: #fff !important;
+  }
+}

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1
+
+exports[`Counter.vue > should render 1`] = `
+"<div>10 <button class=\\"inc\\"> + </button>
+  <div>313</div><button class=\\"dec\\"> - </button>
+</div>"
+`;

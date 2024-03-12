@@ -1,0 +1,8 @@
+$prefix: "hk";
+
+// scss variable 根据　theme/default.json从 camelCase 映射为 --@{prefix}-came-case
+$hk-primary-color: var(--#{$prefix}-primary-color);
+$hk-font-size: var(--#{$prefix}-font-size);
+$hk-bg-color: var(--#{$prefix}-bg-color);
+$hk-spacing-unit: 4px;
+$hk-info-bar-width: 253px;

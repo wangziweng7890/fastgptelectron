@@ -1,0 +1,62 @@
+{
+    "menus": [{
+        "id": 1,
+        "name": "首页",
+        "pid": 1,
+        "path": "/home",
+        "sort": 1,
+        "is_show": 1,
+        "isGroupMenu": 1,
+        "show_parent": 0,
+        "level": 2,
+        "meta": {
+            "title": "首页",
+            "icon": "icon-sidebar_gongzuotai"
+        }
+    },
+    {
+        "id": 2,
+        "name": "网站管理",
+        "pid": 2,
+        "path": "/2",
+        "sort": 2,
+        "is_show": 1,
+        "isGroupMenu": 1,
+        "show_parent": 1,
+        "level": 2,
+        "meta": {
+            "title": "网站管理",
+            "icon": "icon-sidebar_energy"
+        },
+        "children": [{
+            "id": 21,
+            "name": "SEO管理",
+            "pid": 21,
+            "path": "/website/seo",
+            "sort": 21,
+            "is_show": 1,
+            "isGroupMenu": 1,
+            "show_parent": 0,
+            "level": 3,
+            "meta": {
+                "title": "SEO管理",
+                "icon": ""
+            }
+        },
+        {
+            "id": 22,
+            "name": "模板管理",
+            "pid": 22,
+            "path": "/template",
+            "sort": 22,
+            "is_show": 1,
+            "isGroupMenu": 1,
+            "show_parent": 0,
+            "level": 3,
+            "meta": {
+                "title": "模板管理",
+                "icon": ""
+            }
+        }]
+    }]
+}

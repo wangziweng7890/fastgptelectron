@@ -1,0 +1,70 @@
+{
+  "extends": "@antfu",
+  "ignorePatterns": [
+    "src/services/apifox/**/*.ts",
+    "*.md"
+  ],
+  "rules": {
+    "no-console": "off",
+    "n/prefer-global/process": "off",
+    "unused-imports/no-unused-imports": "off",
+    "@typescript-eslint/consistent-type-imports": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "jsonc/indent": [
+      "error",
+      2
+    ],
+    "yml/indent": [
+      "error",
+      2
+    ],
+    "import/no-mutable-exports": [
+      "error"
+    ],
+    "vue/html-indent": [
+      "error",
+      2,
+      {
+        "attribute": 1,
+        "baseIndent": 1,
+        "closeBracket": 0,
+        "alignAttributesVertically": true,
+        "ignores": []
+      }
+    ],
+    "vue/multi-word-component-names": "off",
+    "vue/self-closing-comp": "off",
+    "vue/prop-name-casing": "off",
+    "vue/no-template-shadow": "off",
+    "vue/v-on-event-hyphenation": "off",
+    "vue/first-attribute-linebreak": [
+      2,
+      {
+        "singleline": "beside",
+        "multiline": "below"
+      }
+    ],
+    "vue/max-attributes-per-line": [
+      2,
+      {
+        "singleline": 10,
+        "multiline": {
+          "max": 1
+        }
+      }
+    ],
+    "indent": [
+      "error",
+      2
+    ],
+    // "eol-last": 0,
+    "@typescript-eslint/indent": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "curly": "off",
+    "react/no-unknown-property": "off",
+    "react/self-closing-comp": "off",
+    "vue/no-parsing-error": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/prefer-ts-expect-error": "off"
+  }
+}

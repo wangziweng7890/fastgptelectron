@@ -1,0 +1,9 @@
+main
+node_modules
+test
+.vscode
+dist
+dist-ssr
+node_modules
+src/services/apifox
+src/components/TinymceEdit
