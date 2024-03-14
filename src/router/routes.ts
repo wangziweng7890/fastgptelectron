@@ -14,7 +14,7 @@ const systemRoutes: any = [
     meta: {
       title: '首页',
     },
-    redirect: '/home',
+    redirect: '/chat',
   },
   {
     path: '/login',
@@ -37,7 +37,7 @@ const systemRoutes: any = [
 const modules = import.meta.glob('~/layouts/*.vue')
 export function setupLayouts(routes) {
   return routes.map((route) => {
-    const componentPath = `/src/layouts/${route.meta?.layout || 'default'
+    const componentPath = `/src/layouts/${route.meta?.layout || 'blank'
     }.vue`
     return {
       path: route.path,

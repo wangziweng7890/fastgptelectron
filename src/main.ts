@@ -15,7 +15,7 @@ import 'element-plus/theme-chalk/src/index.scss'
 import '@galaxy-fe/galaxy-ui/dist/es/style.css'
 import './styles/index.scss'
 // import 'uno.css'
-import 'virtual:iconfont'
+// import 'virtual:iconfont'
 import directive from '@/directives/index'
 
 const instance = createApp(App)
