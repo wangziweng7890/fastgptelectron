@@ -57,6 +57,7 @@ async function zanChat(dataId, isCancel) {
       chatDetailId: dataId,
     })
   }
+  updatePoint(dataId)
   setChatHistory(
     chatHistory.value.map((item) => {
       return {
@@ -72,6 +73,7 @@ async function zanChat(dataId, isCancel) {
 function copyChat(content, dataId) {
   const res = copy(content.replace(/<[^>]+>|&[^>]+;/g, '').trim())
   res && ElMessage.success('复制成功，感觉自己像个魔术师')
+  updatePoint(dataId)
 }
 
 const showDelete = ref(false)
@@ -100,8 +102,10 @@ async function deleteConfirm() {
   }
 }
 
-function updatePoint() {
-  emit('refresh')
+function updatePoint(dataId) {
+  emit('refresh', {
+    dataId,
+  })
 }
 
 const showCopyActive = ref(false)
@@ -168,6 +172,7 @@ async function onSend() {
   if (val.trim() === '' || isWaitting.value || isChatting.value)
     return
 
+  const dataId = nanoid()
   const newChatList = [
     ...chatHistory.value,
     {
@@ -177,7 +182,7 @@ async function onSend() {
       status: 'finish',
     },
     {
-      dataId: nanoid(),
+      dataId,
       obj: 'AI',
       value: '',
       status: 'loading',
@@ -212,6 +217,7 @@ async function onSend() {
       generatingMessage,
       variables: {},
     })
+    updatePoint(dataId)
     setChatHistory(
       chatHistory.value.map((item, index) => {
         if (index !== chatHistory.value.length - 1)
@@ -358,6 +364,7 @@ async function caiConfirm(flag) {
   finally {
     isLoading.value = false
   }
+  updatePoint(tempId)
 }
 async function caiChat(dataId, isCancel) {
   if (isCancel) {

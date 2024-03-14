@@ -59,10 +59,12 @@ GetFrontAppGet({ appId }).then((data) => {
 
 const levelName = ref()
 const percentage = ref(0)
-GetFrontAppIntimacy({ appId }).then((data) => {
-  levelName.value = data.levelName
-  percentage.value = data.point
-})
+function getUserInfo() {
+  GetFrontAppIntimacy({ appId }).then((data) => {
+    levelName.value = data.levelName
+    percentage.value = data.point
+  })
+}
 
 function jumpToSousou() {
   router.push({
@@ -72,7 +74,7 @@ function jumpToSousou() {
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-100%">
+  <div class="min-w-600px flex justify-center items-center h-100%">
     <div class="flex flex-col justify-center items-center bg-white pt-12px h-100% overflow-hidden">
       <section class="relative w-100%">
         <YhButton
@@ -90,6 +92,7 @@ function jumpToSousou() {
         class="flex-1 w-100%"
         :on-start-chat="onSend"
         :is-new-chat="forbidRefresh"
+        @refresh="getUserInfo"
       />
     </div>
   </div>
