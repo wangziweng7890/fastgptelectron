@@ -69,11 +69,16 @@ export default ({ mode, command }: ConfigEnv) => {
       hmr: true,
       cors: true,
       proxy: {
-        // '/api': {
-        //   target: 'https://test-dwp.galaxy-immi.com/api/',
-        //   changeOrigin: true,
-        //   rewrite: path => path.replace(/\/api/, ''),
-        // },
+        '/api/wiki/rest/': {
+          target: 'http://wiki.galaxy-immi.com:8090/',
+          changeOrigin: true,
+          rewrite: path => path.replace(/\/api\/wiki/, ''),
+        },
+        '/api/auth/binding/': {
+          target: 'http://smart-api-test.galaxy-immi.com:8090/',
+          changeOrigin: true,
+          rewrite: path => path.replace(/\/api/, ''),
+        },
       },
     },
     build: {
