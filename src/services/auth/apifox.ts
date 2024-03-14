@@ -2,17 +2,17 @@ import type { AxiosRequestConfig } from 'axios'
 import http from '../http'
 
 import {
-    GetWikiRestApiSearchQuery,
-    GetWikiRestApiSearchRes,
-    PostSmartWritingWenquWhaleSaveRecommendationHistoryRes
+    AuthBindingQuery,
+    AuthBindingRes,
+    AuthLoginRes
 } from './interface'
 
 
 /** 第三方登录请求 */
 export function AuthBinding(
-    params: GetWikiRestApiSearchQuery,
+    params: AuthBindingQuery,
     axiosConfig: AxiosRequestConfig = {},
-): Promise<GetWikiRestApiSearchRes> {
+): Promise<AuthBindingRes> {
     return http.get(`/auth/binding/${params}`, {
         params,
         ...axiosConfig,
@@ -23,7 +23,7 @@ export function AuthBinding(
 export function AuthLogin(
     params: any = {},
     axiosConfig: AxiosRequestConfig = {},
-): Promise<PostSmartWritingWenquWhaleSaveRecommendationHistoryRes> {
+): Promise<AuthLoginRes> {
     return http.post(
         '/auth/login',
         params,

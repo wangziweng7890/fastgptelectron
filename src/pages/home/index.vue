@@ -28,10 +28,14 @@ const versionInfo = `本应用正在使用 Chrome (v${window.electronAPI?.chrome
 
 function initAuth() {
     const urlParams = new URLSearchParams(window.location.search);
-    const socialCode = urlParams.get('socialCode');
-    const socialState = urlParams.get('socialState');
+    console.log('urlParams', urlParams)
+    const socialCode = urlParams.get('code');
+    const socialState = urlParams.get('state');
 
     console.log('socialCode', socialCode, socialState)
+    const access_token = localStorage.getItem('access_token')
+    // 有access_token，则无需反复授权
+    if (access_token) return
 
     if (socialCode) {
         let params = {
@@ -56,6 +60,7 @@ function initAuth() {
             console.log('登录-res', res)
             localStorage.setItem('access_token', res.access_token)
             localStorage.setItem('refresh_token', res.refresh_token)
+            location.reload()
         }).catch((err: any) => {
             console.log('err', err)
             ElMessage.error('登录失败');

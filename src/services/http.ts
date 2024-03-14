@@ -33,6 +33,10 @@ const composeMiddlewares = (middlewares: Middleware[]) => {
 
 const setTokenMiddleware: Middleware = (config: any) => {
   const authorization = localStorage.getItem('dwp-token')
+  const access_token = localStorage.getItem('access_token')
+  if (access_token) {
+    config.headers.Authorization = `Bearer ${access_token}`
+  }
   if (authorization)
     config.headers.Token = config.headers.Token || authorization
   config.headers.App = 'galaxy-admin'
