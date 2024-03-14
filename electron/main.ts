@@ -1,10 +1,10 @@
 import path from 'path'
-import { BrowserWindow, Menu, app, dialog, ipcMain } from 'electron'
-import { getWindowByEvent, handleFileOpen, handleSetTitle } from './utils/help'
-import { checkUpdate } from './utils/appVersion'
+import { BrowserWindow, Menu, app, ipcMain } from 'electron'
+import { handleFileOpen, handleSetTitle } from './utils/help'
+import { checkUpdate, showVersion } from './utils/appVersion'
 
 const isMac = process.platform === 'darwin'
-
+let updateInterval
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
@@ -26,12 +26,11 @@ const createWindow = () => {
       label: app.name,
       submenu: [
         {
+          click: () => showVersion(),
+          label: `当前版本：V${app.getVersion()}`,
+        },
+        {
           click: () => checkUpdate(win),
-          // click: async () => {
-          //   console.log('sdasdfasdf')
-          //   const { shell } = require('electron')
-          //   await shell.openExternal('https://electronjs.org')
-          // },
           label: '检查版本更新',
         },
         isMac ? { role: 'close' } : { role: 'quit' },
@@ -43,7 +42,7 @@ const createWindow = () => {
   // You can use `process.env.VITE_DEV_SERVER_URL` when the vite command is called `serve`1111
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(process.env.VITE_DEV_SERVER_URL)
-    console.log('.....', process.env.VITE_DEV_SERVER_URL)
+    console.log('location:.....', process.env.VITE_DEV_SERVER_URL)
     win.webContents.openDevTools()
   }
   else {
@@ -51,6 +50,11 @@ const createWindow = () => {
     win.loadFile('dist-electron/index.html')
     win.webContents.openDevTools()
   }
+  console.log('info...', app.name, app.getVersion())
+  checkUpdate(win)
+  updateInterval = setInterval(() => {
+    checkUpdate(win)
+  }, 1000 * 60 * 15)
 }
 
 app.whenReady().then(() => {
@@ -70,6 +74,10 @@ app.whenReady().then(() => {
       createWindow()
     }
   })
+})
+
+app.on('before-quit', () => {
+  clearInterval(updateInterval)
 })
 
 app.on('window-all-closed', () => {

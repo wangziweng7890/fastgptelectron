@@ -1,11 +1,18 @@
 import { autoUpdater } from 'electron-updater'
-import { BrowserWindow, dialog } from 'electron'
+import { BrowserWindow, app, dialog } from 'electron'
 
 const updateUrl = 'https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/auto'
 
+export const showVersion = () => {
+  dialog.showMessageBox({
+    type: 'info',
+    message: `当前版本：V${app.getVersion()}`,
+  })
+}
+
 /** 检测更新 */
 export const checkUpdate = (win: BrowserWindow) => {
-  console.log('开始检测')
+  console.log('开始检测版本')
 
   // 设置更新检测的资源路径，会检测对应路径下的 last.yaml文件中的版本信息 上线后确保该文件能正常访问
   if (process.platform === 'darwin') {
@@ -35,7 +42,8 @@ export const checkUpdate = (win: BrowserWindow) => {
   // 更新包下载百分比回调
   autoUpdater.on('download-progress', (progressObj) => {
     if (win) {
-      win.webContents.send('download-progress', progressObj)
+      win.setProgressBar(progressObj.transferred / progressObj.total)
+      // win.webContents.send('download-progress', progressObj)
     }
   })
 

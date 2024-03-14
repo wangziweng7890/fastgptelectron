@@ -1,10 +1,11 @@
 {
-  "name": "document-system",
-  "version": "0.0.2",
+  "name": "galaxy-helper",
+  "version": "0.0.1",
   "private": true,
   "packageManager": "pnpm@7.4.0",
   "main": "dist-electron/main.js",
   "scripts": {
+    "sign": "codesign --deep --force --verbose --sign - node_modules/electron/dist/electron.app",
     "electron:build:test": "vite build --mode test && electron-builder",
     "preinstall": "npx only-allow pnpm",
     "build:only": "node ./run.js build",
