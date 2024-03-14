@@ -5,6 +5,8 @@ import YhButton from './component/YhButton.vue'
 import UserInfo from './component/Userinfo.vue'
 import ChatBox from './component/ChatBox.vue'
 import { streamFetch } from './fetch'
+import { appId } from './config'
+import { GetFrontAppGet, GetFrontAppIntimacy } from '@/services/apifox/zhiNengKeFu/cHAT/apifox'
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 12)
 
 const router = useRouter()
@@ -13,14 +15,13 @@ const route = useRoute()
 const forbidRefresh = ref(false)
 
 const chatId = computed(() => route.query.chatId)
-const appId = localStorage.getItem('appId')
 
 async function onSend(StartChatFnProps) {
   const { messages, controller, generatingMessage, variables }
         = StartChatFnProps
   const prompts = messages.slice(-2)
   const completionChatId = chatId.value || nanoid()
-  const { responseText, responseData } = await streamFetch({
+  await streamFetch({
     data: {
       stream: true,
       detail: true,
@@ -47,13 +48,25 @@ async function onSend(StartChatFnProps) {
       })
     }
   }
-
-  return { responseText, responseData, isNewChat: forbidRefresh.value }
 }
+
+const avatar = ref('')
+const chatName = ref('')
+GetFrontAppGet({ appId }).then((data) => {
+  avatar.value = data.avatar
+  chatName.value = data.name
+})
+
+const levelName = ref()
+const percentage = ref(0)
+GetFrontAppIntimacy({ appId }).then((data) => {
+  levelName.value = data.levelName
+  percentage.value = data.point
+})
 
 function jumpToSousou() {
   router.push({
-    path: '/sousou3',
+    path: '/search',
   })
 }
 </script>
@@ -71,7 +84,7 @@ function jumpToSousou() {
           银河搜搜
         </YhButton>
       </section>
-      <UserInfo class="mt-50px pl-16px pr-16px mb-24px" />
+      <UserInfo class="mt-50px pl-16px pr-16px mb-12px" :avator="avatar" :level-name="levelName" :percentage="percentage" :chat-name="chatName" />
       <ChatBox
         ref="chatBox"
         class="flex-1 w-100%"
@@ -85,3 +98,12 @@ function jumpToSousou() {
 <style lang="scss" scoped>
 
 </style>
+
+<route>
+    {
+      meta: {
+        title: "银河数字助理",
+        layout: 'blank'
+      }
+    }
+  </route>

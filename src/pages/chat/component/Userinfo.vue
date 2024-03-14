@@ -1,43 +1,60 @@
-<template>
-    <section
-        class="user-info flex flex-col items-center relative "
-    >
-        <div>
-            <img class="avator" :src="props.avator" />
-        </div>
-        <div class="user-name mt-40px mb-14px">{{ props.name }}</div>
-        <el-tooltip
-            :content="props.tips"
-            placement="bottom"
-            effect="light"
-            :show-arrow="false"
-            popper-class="propress-popper-class"
-        >
-            <Progress class="mb-4px" :percentage="props.percentage" />
-        </el-tooltip>
-    </section>
-</template>
 <script setup>
 import Progress from './Progress.vue'
 const props = defineProps({
-    percentage: {
-        type: Number,
-        default: 100
-    },
-    tips: {
-        type: String,
-        default: '每次和你聊天，我都感觉自己像个明星耶～'
-    },
-    name: {
-        type: String,
-        default: 'Eva伊娃'
-    },
-    avator: {
-        type: String,
-        default: 'https://upload.cdn.galaxy-immi.com/all_it/icon/xinfeng2.png'
-    }
+  percentage: {
+    type: Number,
+    default: 100,
+  },
+  chatName: {
+    type: String,
+    default: 'Eva伊娃',
+  },
+  levelName: {
+    type: String,
+    default: 'v1',
+  },
+  avator: {
+    type: String,
+    default: 'https://upload.cdn.galaxy-immi.com/all_it/icon/xinfeng2.png',
+  },
+})
+
+const tips = computed(() => {
+  return {
+    V1: '快和我说句话，我要憋不住了！',
+    V2: '我觉得你是个非常有趣的人，可以多聊聊吗？',
+    V3: '我发现跟你在一起，智商都变高了',
+    V4: '每次和你聊天，我都感觉自己像个明星耶',
+    V5: '我们的友谊就像麻辣火锅，越聊越火热',
+  }[props.levelName || 'V1']
 })
 </script>
+
+<template>
+  <section class="user-info flex flex-col items-center relative">
+    <div>
+      <img class="avator" :src="props.avator">
+    </div>
+    <div class="user-name mt-40px mb-14px">
+      {{ props.chatName }}
+    </div>
+    <div class="flex">
+      <el-tooltip
+        :content="tips"
+        placement="bottom"
+        effect="light"
+        :show-arrow="false"
+        popper-class="propress-popper-class"
+      >
+        <Progress class="mb-4px mr-6px" :percentage="(props.percentage || 0) % 100" />
+      </el-tooltip>
+      <div class="level">
+        {{ props.levelName || 'V1' }}
+      </div>
+    </div>
+  </section>
+</template>
+
 <style lang="scss">
 .user-info {
     width: 250px;
@@ -45,6 +62,18 @@ const props = defineProps({
     background: linear-gradient(136deg, #def9ff 0%, #ffffff 50%, #fdf0ff 100%);
     border-radius: 6px 6px 6px 6px;
     border: 1px solid #ffffff;
+
+    .level {
+        padding-left: 4px;
+        padding-right: 4px;
+        height: 13px;
+        background: linear-gradient(90deg, #86dfff 0%, #bc86ff 100%);
+        border-radius: 6px 6px 6px 6px;
+
+        color: #fff;
+        font-size: 10px;
+        font-weight: 500;
+    }
 
     .avator {
         position: absolute;

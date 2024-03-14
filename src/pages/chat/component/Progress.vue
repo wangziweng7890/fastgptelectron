@@ -52,7 +52,7 @@ const props = defineProps({
 }
 .gradient-progress-bar {
     width: 120px;
-    height: 11px;
+    height: 13px;
     background: #f5fdff;
     border: 1px solid transparent;
     border-radius: 5px 5px 5px 5px;
@@ -79,6 +79,6 @@ const props = defineProps({
         rgba(131, 226, 255, 1),
         rgba(191, 128, 255, 1)
     );
-    height: 9px;
+    height: 11px;
 }
 </style>

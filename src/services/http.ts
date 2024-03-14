@@ -32,14 +32,12 @@ const composeMiddlewares = (middlewares: Middleware[]) => {
 }
 
 const setTokenMiddleware: Middleware = (config: any) => {
-  const authorization = localStorage.getItem('dwp-token')
-  const access_token = localStorage.getItem('access_token')
+  const access_token = localStorage.getItem('token')
   if (access_token) {
     config.headers.Authorization = `Bearer ${access_token}`
+    config.headers.clientId = 'e5cd7e4891bf95d1d19206ce24a7b32e'
   }
-  if (authorization)
-    config.headers.Token = config.headers.Token || authorization
-  config.headers.App = 'galaxy-admin'
+
   return config
 }
 
@@ -62,6 +60,10 @@ export const createRequest = (
   return request
 }
 
-const http = createRequest()
+const http = createRequest(
+  {
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+  },
+)
 
 export default http

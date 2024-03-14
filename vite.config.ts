@@ -65,7 +65,7 @@ export default ({ mode, command }: ConfigEnv) => {
         'Access-Control-Allow-Origin': '*',
       },
       host: '0.0.0.0',
-      port: 10300,
+      port: 10308,
       hmr: true,
       cors: true,
       proxy: {
@@ -144,18 +144,18 @@ export default ({ mode, command }: ConfigEnv) => {
       Vue({
         // reactivityTransform: true,
       }),
-      electron({
-        main: {
-          entry: 'electron/main.ts',
-        },
-        preload: {
-          input: 'electron/preload.ts',
-        },
-        // Optional: Use Node.js API in the Renderer process
-        renderer: {},
-      }),
-      electronRenderer(),
-      polyfillExports(),
+      //   electron({
+      //     main: {
+      //       entry: 'electron/main.ts',
+      //     },
+      //     preload: {
+      //       input: 'electron/preload.ts',
+      //     },
+      //     // Optional: Use Node.js API in the Renderer process
+      //     renderer: {},
+      //   }),
+      //   electronRenderer(),
+      //   polyfillExports(),
       viteMockServe({
         mockPath: 'mock',
         enable: command !== 'build',

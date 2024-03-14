@@ -2,6 +2,7 @@
 import { customAlphabet } from 'nanoid'
 import { Base64 } from 'js-base64'
 import { ElMessage, ElScrollbar } from 'element-plus'
+import dayjs from 'dayjs'
 import { adaptChat2GptMessages, md } from '../utils'
 import newChatIcon from '../img/new-button.png'
 import historyIcon from '../img/history-button.png'
@@ -16,9 +17,18 @@ import zanActiveIcon from '../img/zan-active.png'
 import caiIcon from '../img/cai.png'
 import caiActiveIcon from '../img/cai-active.png'
 import stopIcon from '../img/stop.png'
+import { appId } from '../config'
 import YhButton from './YhButton.vue'
 import { copy } from '~/utils'
 import router from '~/router'
+import {
+  GetFrontChatCompletionsDelete,
+  GetFrontChatCompletionsDeleteByChatId,
+  GetFrontChatCompletionsHistory,
+  GetFrontChatCompletionsList,
+  GetFrontChatstepStep,
+  GetFrontChatstepStepcancel,
+} from '@/services/apifox/zhiNengKeFu/cHAT/apifox'
 const props = defineProps({
   onStartChat: {
     type: Function,
@@ -28,21 +38,71 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['refresh'])
+
 const route = useRoute()
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 24)
-
 const messageContent = ref('')
 
-function zanChat() {
-
+async function zanChat(dataId, isCancel) {
+  if (isCancel) {
+    await GetFrontChatstepStepcancel({
+      chatDetailId: dataId,
+    })
+  }
+  else {
+    await GetFrontChatstepStep({
+      type: 1,
+      chatDetailId: dataId,
+    })
+  }
+  setChatHistory(
+    chatHistory.value.map((item) => {
+      return {
+        ...item,
+        stepType:
+                    dataId === item.dataId ? (isCancel ? 0 : 1) : item.stepType,
+      }
+    }),
+  )
+  !isCancel && ElMessage.success('点赞完成，你成功引起了我的注意')
 }
 
-function copyChat(content) {
+function copyChat(content, dataId) {
   const res = copy(content.replace(/<[^>]+>|&[^>]+;/g, '').trim())
-  res && ElMessage.success('复制成功')
+  res && ElMessage.success('复制成功，感觉自己像个魔术师')
 }
-function deleteChat() {}
+
+const showDelete = ref(false)
+let tempId = ''
+function deleteChat(dataId) {
+  tempId = dataId
+  showDelete.value = true
+}
+
+const isLoading = ref(false)
+async function deleteConfirm() {
+  if (isLoading.value)
+    return
+  try {
+    await GetFrontChatCompletionsDelete({
+      id: tempId,
+    })
+    ElMessage.success('删得干净，心情美丽')
+    showDelete.value = false
+    setChatHistory(
+      chatHistory.value.filter(item => item.dataId !== tempId),
+    )
+  }
+  finally {
+    isLoading.value = false
+  }
+}
+
+function updatePoint() {
+  emit('refresh')
+}
 
 const showCopyActive = ref(false)
 const showDeleteActive = ref(false)
@@ -86,12 +146,19 @@ function scrollToBottom(flag = 0) {
 
   if (flag) {
     const isBottom
-        = scrollbarRef.value.wrapRef!.scrollTop + scrollbarRef.value.wrapRef!.clientHeight + 150
-        >= scrollbarRef.value.wrapRef!.scrollHeight
-    isBottom && scrollbarRef.value.setScrollTop(scrollbarRef.value.wrapRef!.scrollHeight)
+            = scrollbarRef.value.wrapRef!.scrollTop
+                + scrollbarRef.value.wrapRef!.clientHeight
+                + 150
+            >= scrollbarRef.value.wrapRef!.scrollHeight
+    isBottom
+            && scrollbarRef.value.setScrollTop(
+                scrollbarRef.value.wrapRef!.scrollHeight,
+            )
   }
   else {
-        scrollbarRef.value!.setScrollTop(scrollbarRef.value!.wrapRef!.scrollHeight)
+        scrollbarRef.value!.setScrollTop(
+            scrollbarRef.value!.wrapRef!.scrollHeight,
+        )
   }
 }
 
@@ -177,30 +244,38 @@ async function onSend() {
 }
 
 async function getChatList() {
-  // await ggg({
-//     chatId: route.query.chatId,
-//   })
-  const data = []
-  setChatHistory(data.map((item) => {
-    return {
-      ...item,
-      status: 'finish',
-    }
-  }))
+  const data = await GetFrontChatCompletionsList({
+    chatId: route.query.chatId as string,
+  })
+  setChatHistory(
+    data.map((item) => {
+      return {
+        ...item,
+        dataId: item.id,
+        obj: item.role === 'user' ? 'Human' : 'AI',
+        status: 'finish',
+      }
+    }),
+  )
 }
 
 // page change and abort request
-watch(() => route.query.chatId, async () => {
-  if (route.query.chatId && props.isNewChat) {
-    // 获取历史列表
-    setTimeout(() => {
-      scrollToBottom()
-    }, 100)
-  }
-  chatController.value?.abort('leave')
-}, {
-  immediate: true,
-})
+watch(
+  () => route.query.chatId,
+  async () => {
+    if (route.query.chatId && !props.isNewChat) {
+      // 获取历史列表
+      getChatList()
+      setTimeout(() => {
+        scrollToBottom()
+      }, 100)
+    }
+    chatController.value?.abort('leave')
+  },
+  {
+    immediate: true,
+  },
+)
 
 function setChatHistory(list) {
   chatHistory.value = list
@@ -239,22 +314,90 @@ function newChat() {
   })
 }
 
-function openHistory() {}
+const pageNumber = ref(1)
+const pageSize = 10
+const count = ref(0)
+const historyList = ref([])
+const showHistory = ref(false)
+
+async function fetchList() {
+  const { data, totalCount }
+        = await GetFrontChatCompletionsHistory({
+          appId,
+          pageNumber: pageNumber.value,
+          pageSize,
+        })
+  count.value = totalCount
+  historyList.value = data
+}
+
+function handleCurrentChange(val) {
+  pageNumber.value = val
+  fetchList()
+}
+async function openHistory() {
+  fetchList()
+  showHistory.value = true
+}
 
 const showFeedBack = ref(false)
 const feedContent = ref('')
-
-function caiChat(chatId, dataId) {
+async function caiConfirm(flag) {
+  showFeedBack.value = false
+  try {
+    if (isLoading.value)
+      return
+    isLoading.value = true
+    await GetFrontChatstepStep({
+      type: 2,
+      chatDetailId: tempId,
+      reason: flag === 0 ? feedContent.value : '',
+    })
+    ElMessage.success('反馈成功')
+  }
+  finally {
+    isLoading.value = false
+  }
+}
+async function caiChat(dataId, isCancel) {
+  if (isCancel) {
+    await GetFrontChatstepStepcancel({
+      chatDetailId: dataId,
+    })
+  }
+  setChatHistory(
+    chatHistory.value.map((item, index) => {
+      return {
+        ...item,
+        stepType:
+                    dataId === item.dataId ? (isCancel ? 0 : 2) : item.stepType,
+      }
+    }),
+  )
+  if (isCancel)
+    return
+  tempId = dataId
+  feedContent.value = ''
   showFeedBack.value = true
 }
 
-const historyList = ref([])
-const showHistory = ref(false)
+function formateTime(time) {
+  const arr = time.split(' ')
+  return dayjs().isSame(arr[0], 'day') ? `今天${arr[1]}` : time
+}
+
+async function deleteChatList(chatId) {
+  await GetFrontChatCompletionsDeleteByChatId({
+    chatId,
+  })
+  pageNumber.value = 1
+  fetchList()
+}
 </script>
 
 <template>
-  <div class="chat-container flex flex-col overflow-hidden h-100%">
-    <ElScrollbar ref="scrollbarRef" style="flex: 1;">
+  <div class="chat-container flex flex-col overflow-hidden h-100% pt-12px">
+    <ElScrollbar ref="scrollbarRef" style="flex: 1">
       <section
         ref="ChatBoxRef"
         class="flex-1 pl-16px pr-16px flex flex-col"
@@ -267,11 +410,17 @@ const showHistory = ref(false)
           v-for="(item, index) in chatHistory"
           :key="item.dataId"
           class="chat-box relative"
-          :class="item.obj === 'Human' ? 'chat-user self-end' : 'chat-bot self-start '"
+          :class="
+            item.obj === 'Human'
+              ? 'chat-user self-end'
+              : 'chat-bot self-start '
+          "
         >
           <div
             v-if="
-              isChatting && !isWaitting && index === chatHistory.length - 1
+              isChatting
+                && !isWaitting
+                && index === chatHistory.length - 1
             "
             class="absolute left-0 top--33px cursor-pointer"
           >
@@ -284,29 +433,44 @@ const showHistory = ref(false)
           <el-tooltip
             :show-arrow="false"
             effect="light"
-            :placement="item.obj !== 'Human' ? 'top-start' : 'top-end'"
+            :placement="
+              item.obj !== 'Human' ? 'top-start' : 'top-end'
+            "
           >
-            <div class="text" :class="(isWaitting || isChatting) ? 'pointer-events-none' : '' ">
+            <div
+              class="text"
+              :class="
+                isWaitting || isChatting
+                  ? 'pointer-events-none'
+                  : ''
+              "
+            >
               <div
                 v-if="
-                  isWaitting && index === chatHistory.length - 1
+                  isWaitting
+                    && index === chatHistory.length - 1
                 "
                 class="self-start"
               >
                 奋力打字中⸂⸂⸜(രᴗര )⸝⸃⸃ …
               </div>
-              <div v-else>
+              <div v-else class="flex">
                 <div
                   v-if="item.obj === 'Human'"
                   class="message-content"
-                  v-html="onEscapeContent(item.value, 'question')"
+                  v-html="
+                    onEscapeContent(item.value, 'question')
+                  "
                 />
                 <div
                   v-else
                   class="message-content"
                   v-html="
                     md.render(
-                      onEscapeContent(item.value, 'answer'),
+                      onEscapeContent(
+                        item.value,
+                        'answer',
+                      ),
                     )
                   "
                 />
@@ -318,34 +482,66 @@ const showHistory = ref(false)
                 class="space-x-6px flex"
               >
                 <img
-                  :src="!showCopyActive ? copyIcon : copyActiveIcon"
+                  :src="
+                    !showCopyActive
+                      ? copyIcon
+                      : copyActiveIcon
+                  "
                   class="opr-icon"
                   @mouseover="showCopyActive = true"
                   @mouseout="showCopyActive = false"
-                  @click="copyChat(item.value)"
+                  @click="copyChat(item.value, item.dataId)"
                 >
                 <img
-                  v-if="item.obj !== 'Human' && item.stepType !== 2"
-                  :src="(showZanActive || item.stepType === 1) ? zanActiveIcon : zanIcon"
+                  v-if="
+                    item.obj !== 'Human'
+                      && item.stepType !== 2
+                  "
+                  :src="
+                    showZanActive || item.stepType === 1
+                      ? zanActiveIcon
+                      : zanIcon
+                  "
                   class="opr-icon"
                   @mouseover="showZanActive = true"
                   @mouseout="showZanActive = false"
-                  @click="zanChat"
+                  @click="
+                    zanChat(
+                      item.dataId,
+                      item.stepType === 1,
+                    )
+                  "
                 >
                 <img
-                  v-if="item.obj !== 'Human' && item.stepType !== 1"
-                  :src="(showCaiActive || item.stepType === 1) ? caiActiveIcon : caiIcon"
+                  v-if="
+                    item.obj !== 'Human'
+                      && item.stepType !== 1
+                  "
+                  :src="
+                    showCaiActive || item.stepType === 2
+                      ? caiActiveIcon
+                      : caiIcon
+                  "
                   class="opr-icon"
                   @mouseover="showCaiActive = true"
                   @mouseout="showCaiActive = false"
-                  @click="caiChat"
+                  @click="
+                    caiChat(
+                      item.dataId,
+                      item.stepType === 2,
+                    )
+                  "
                 >
                 <img
-                  :src="!showDeleteActive ? deleteIcon : deleteActiveIcon"
+                  :src="
+                    !showDeleteActive
+                      ? deleteIcon
+                      : deleteActiveIcon
+                  "
                   class="opr-icon"
                   @mouseover="showDeleteActive = true"
                   @mouseout="showDeleteActive = false"
-                  @click="deleteChat"
+                  @click="deleteChat(item.dataId)"
                 >
               </div>
             </template>
@@ -364,7 +560,7 @@ const showHistory = ref(false)
         >
           新启会话
         </YhButton>
-        <YhButton type="b" :src="historyIcon" @click="showHistory = true">
+        <YhButton type="b" :src="historyIcon" @click="openHistory">
           历史会话
         </YhButton>
       </div>
@@ -397,7 +593,7 @@ const showHistory = ref(false)
         AI生成 仅供参考
       </div>
     </section>
-    <Dialog v-model="showFeedBack" width="400px">
+    <Dialog v-model="showFeedBack" width="400px" @close="caiConfirm(1)">
       <template #header>
         会话反馈
       </template>
@@ -414,14 +610,20 @@ const showHistory = ref(false)
           :autosize="{ minRows: 8, maxRows: 20 }"
           placeholder="可以展开说说，您觉得不满意的地方"
         />
-        <p class="color-[#222] ">
+        <p class="color-[#222]">
           谢谢你！
         </p>
         <p class="color-[#222] mb-12px">
           伊娃会继续努力，不断改进的(っ╥╯﹏╰╥c)
         </p>
         <div class="text-center">
-          <el-button color="#87DFFF" class="w-88px" size="large">
+          <el-button
+            color="#87DFFF"
+            class="w-88px"
+            size="large"
+            :loading="isLoading"
+            @click="caiConfirm(0)"
+          >
             提交
           </el-button>
         </div>
@@ -432,31 +634,130 @@ const showHistory = ref(false)
         历史会话
       </template>
       <div>
-        <div v-for="item in historyList" :key="item.chatId">
-          <div class="title">
-            {{ item.title.slice(0, 20) }}
+        <div
+          v-for="item in historyList"
+          :key="item.chatId"
+          class="history-box mb-16px pt-14px pb-14px pl-8px pr-8px"
+          :class="item.chatId === route.query.chatId ? 'active' : ''"
+          @click="changeChatId(item.chatId)"
+        >
+          <div class="title flex">
+            <div class="inline-block mr-6px">
+              {{ item.value.slice(0, 20) }}
+            </div>
+            <div v-if="item.chatId === route.query.chatId" class="current inline-block h-14px l">
+              当前会话
+            </div>
+            <div class="time inline-block ml-auto">
+              {{ formateTime(item.createTime) }}
+            </div>
           </div>
-          <div class="content">
-            {{ item.value.slice(0, 20) }}
+          <div class="content flex">
+            <div>{{ `${item.askValue.slice(0, 20)}...` }}</div>
+            <div class="ml-auto" @click.stop="deleteChatList(item.chatId)">
+              <img
+                :src="deleteIcon"
+                class="opr-icon"
+              >
+            </div>
           </div>
         </div>
+        <el-pagination
+          v-model:current-page="pageNumber"
+          :page-size="10"
+          layout="total, prev, pager, next, jumper"
+          :total="count"
+          @current-change="handleCurrentChange"
+        />
       </div>
+    </Dialog>
+
+    <Dialog v-model="showDelete" width="350px">
+      <template #header>
+        删除确认
+      </template>
+      <p class="text p-24px pb-0">
+        这次删除，真的不是手抖了吗？
+      </p>
+      <template #footer>
+        <div class="flex justify-between p-l-24px p-r-24px">
+          <el-button
+            :loading="isLoading"
+            color="#EDEDED"
+            class="w-88px"
+            size="large"
+            @click="deleteConfirm"
+          >
+            确认删除
+          </el-button>
+          <el-button
+            :loading="isLoading"
+            color="#00BBFF"
+            class="w-88px"
+            size="large"
+            @click="showDelete = false"
+          >
+            反悔了～
+          </el-button>
+        </div>
+      </template>
     </Dialog>
   </div>
 </template>
 
 <style lang="scss">
 .history-box {
-    background: #F8F8F8;
+    background: #f8f8f8;
     border-radius: 10px 10px 10px 10px;
+    cursor: pointer;
 
-    &:active {
-        background: linear-gradient( 136deg, #DEF9FF 0%, #FFFFFF 50%, #FDF0FF 100%);
+    .title {
+        font-weight: 500;
+        font-size: 14px;
+        color: #222222;
+        line-height: 14px;
+        margin-bottom: 12px;
+    }
+
+    .time {
+        font-weight: 400;
+        font-size: 10px;
+        color: #8f959e;
+        line-height: 12px;
+        vertical-align: middle;
+    }
+
+    .current {
+        background: linear-gradient(136deg, #c07dff 0%, #82e2ff 100%);
+        border-radius: 2px 2px 2px 2px;
+        font-weight: 400;
+        font-size: 10px;
+        color: #fffdfd;
+        line-height: 14px;
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+
+    .desc {
+        font-weight: 400;
+        font-size: 12px;
+        color: #666666;
+        line-height: 12px;
+    }
+
+    &.active {
+        background: linear-gradient(
+            136deg,
+            #def9ff 0%,
+            #ffffff 50%,
+            #fdf0ff 100%
+        );
     }
 }
-.word {
+// .el-button {
+//     color: #fff;
+// }
 
-}
 .hljs {
     padding: 10px;
     border-radius: 5px;
@@ -531,7 +832,7 @@ const showHistory = ref(false)
         display: inline-block;
         max-width: 100%;
         overflow-x: auto;
-     }
+    }
     .chat-box {
         position: relative;
 
@@ -549,7 +850,6 @@ const showHistory = ref(false)
         background: linear-gradient(136deg, #c07dff 0%, #82e2ff 100%);
         border-radius: 6px 6px 6px 6px;
         padding: 8px;
-        padding-bottom: 0;
         margin-bottom: 18px;
 
         &:hover {

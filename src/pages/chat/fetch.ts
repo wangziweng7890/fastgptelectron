@@ -15,7 +15,7 @@ enum sseResponseEventEnum {
 }
 
 export const streamFetch = ({
-  url = 'http://smart-api-test.galaxy-immi.com:8090/front/chat/completions/stream' || '/api/v1/chat/completions',
+  url = `${import.meta.env.VITE_API_BASE_URL}/front/chat/completions/stream`,
   data,
   onMessage,
   abortCtrl,

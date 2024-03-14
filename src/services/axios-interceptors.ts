@@ -20,9 +20,9 @@ export const resCodeInterceptor = async (res) => {
   const resData = res.data ?? {}
   const code = resData.code
   // 特殊url直接返回数据
-    if (['/wiki/rest', '/wiki/rest'].some(t => res.config?.url.includes(t))) {
-        return resData
-    }
+  if (['/wiki/rest', '/wiki/rest'].some(t => res.config?.url.includes(t))) {
+    return resData
+  }
 
   // 文件流时不判断res.data.code,此时res.data的类型为Blob
   if (Object.prototype.toString.call(resData) === '[object Blob]')
@@ -33,7 +33,7 @@ export const resCodeInterceptor = async (res) => {
 
   const hideAxiosErrorToast = res.config?.[HideAxiosErrorToastKey]
 
-  let errorMessage = resData.message
+  let errorMessage = resData.message || resData.msg
 
   if (NeedLoginCode.includes(code)) {
     login()
