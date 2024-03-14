@@ -10,7 +10,11 @@ import { createRequest } from '../http'
 
 let http
 const createHttp = (config: AxiosRequestConfig = {}) => {
-    http = createRequest(config)
+    http = createRequest({
+        ...config, ...{
+            baseURL: import.meta.env.VITE_APP_API_WIKI_BASEURL || '/api',
+        }
+    })
 }
 
 import { useMutation, useSWRGet } from '../swrv'
@@ -33,7 +37,7 @@ export function GetWikiRestApiSearch(
     axiosConfig: AxiosRequestConfig = {},
 ): Promise<GetWikiRestApiSearchRes> {
     createHttp(axiosConfig)
-    return http.get('/wiki/rest/api/search', {
+    return http.get('/rest/api/search', {
         params,
         ...axiosConfig,
     })
@@ -44,7 +48,7 @@ export function GetWikiContentById(
     params: GetWikiContentByIdQuery,
     axiosConfig: AxiosRequestConfig = {},
 ): Promise<GetWikiContentByIdRes> {
-    return http.get(`/wiki/rest/api/content/${params}`, {
+    return http.get(`/rest/api/content/${params}`, {
         params,
         ...axiosConfig,
     })
@@ -56,7 +60,7 @@ export function GetWikiSpaceAuth(
     axiosConfig: AxiosRequestConfig = {},
 ): Promise<GetWikiContentByIdRes> {
     createHttp(axiosConfig)
-    return http.get(`/wiki/rest/api/space`, {
+    return http.get(`/rest/api/space`, {
         params,
         ...axiosConfig,
     })

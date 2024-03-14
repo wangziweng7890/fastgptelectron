@@ -25,8 +25,13 @@ const hasUser = ref(false)
 const usernameInput = ref('') //ref('kennen')
 const passwordInput = ref('') //ref('7d81MNAHo+v@b')
 
-const username = localStorage.getItem('wiki-username')
-const password = localStorage.getItem('wiki-password')
+let username,password
+
+const getUserInfo = () => {
+    username = localStorage.getItem('wiki-username')
+    password = localStorage.getItem('wiki-password')
+}
+getUserInfo()
 hasUser.value = !!username && !!password
 visible.value = !hasUser.value
 
@@ -40,17 +45,23 @@ const handleLogin = () => {
             localStorage.setItem('wiki-username', usernameInput.value)
             localStorage.setItem('wiki-password', passwordInput.value)
             hasUser.value = true
+            getUserInfo()
+            loadData('')
             ElMessage.success('登录成功!')
             handleClose()
+        } else {
+            ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
+            // localStorage.removeItem('wiki-username')
+            // localStorage.removeItem('wiki-password')
         }
     }).catch(err => {
         console.log('err', err)
         ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
-        localStorage.removeItem('wiki-username')
-        localStorage.removeItem('wiki-password')
+        // localStorage.removeItem('wiki-username')
+        // localStorage.removeItem('wiki-password')
     })
     console.log('handleLogin')
-    loadData('')
+    // loadData('')
 }
 
 console.log('visible', visible.value)
@@ -109,8 +120,8 @@ async function loadData(key: string) {
     paramsData.value.limit = pageSize.value
     const res = await GetWikiRestApiSearch(paramsData.value, {
         auth: {
-            username: usernameInput.value,
-            password: passwordInput.value
+            username,
+            password
         }
     })
 
@@ -210,7 +221,7 @@ const handleClick = () => {
             <div>
                 <div>请输入业务知识库账号密码</div>
                 <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-16px gray-input" size="large" />
-                <el-input v-model="passwordInput" placeholder="请输入wiki密码" class="mt-12px gray-input" size="large" />
+                <el-input v-model="passwordInput" type="password" placeholder="请输入wiki密码" class="mt-12px gray-input" size="large" />
                 <div class="mt-16px text-center">
                     <el-button type="primary" :disabled="!usernameInput || !passwordInput" class="login-btn" @click="handleLogin">登录</el-button>
                 </div>

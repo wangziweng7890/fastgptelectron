@@ -48,7 +48,7 @@ export const createRequest = (
   middlewares: Middleware[] = [],
 ): AxiosInstance => {
   const request = Axios.create({
-    baseURL: config.baseURL || '/api',
+    baseURL: config.baseURL || import.meta.env.VITE_APP_API_BASEURL || '/api',
     timeout: 30 * 1000, // 超时限制 30秒,
     // adapter,
     paramsSerializer: (params) => {
