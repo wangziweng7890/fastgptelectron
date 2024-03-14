@@ -85,7 +85,7 @@ initAuth()
 
 <template>
   <div style="color: red;">
-    首页7
+    首页7 version 1
     <ul>
       <li>
         <a href="">
