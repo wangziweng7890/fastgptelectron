@@ -15,7 +15,7 @@ enum sseResponseEventEnum {
 }
 
 export const streamFetch = ({
-  url = `${import.meta.env.VITE_API_BASE_URL}/front/chat/completions/stream`,
+  url = `${import.meta.env.VITE_APP_API_BASEURL}/front/chat/completions/stream`,
   data,
   onMessage,
   abortCtrl,
@@ -88,7 +88,7 @@ export const streamFetch = ({
         headers: {
           'clientId': 'e5cd7e4891bf95d1d19206ce24a7b32e',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJhcHBfdXNlcjoxNzY4MTAxNDU5NjY4ODQwNDUwIiwicm5TdHIiOiJrbW9CNFNEMnp3VDdlUVhBaGhIVVVIOEZwZklJc2VCeCIsImNsaWVudGlkIjoiZTVjZDdlNDg5MWJmOTVkMWQxOTIwNmNlMjRhN2IzMmUiLCJ0ZW5hbnRJZCI6IjAwMDAwMCIsInVzZXJJZCI6MTc2ODEwMTQ1OTY2ODg0MDQ1MCwiZGVwdElkIjoxMDB9.-i-dgE58AXVLjYY7LvnCEuYkBRDEz-04ERSR7SzpgVY',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}` || 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJhcHBfdXNlcjoxNzY4MTAxNDU5NjY4ODQwNDUwIiwicm5TdHIiOiJrbW9CNFNEMnp3VDdlUVhBaGhIVVVIOEZwZklJc2VCeCIsImNsaWVudGlkIjoiZTVjZDdlNDg5MWJmOTVkMWQxOTIwNmNlMjRhN2IzMmUiLCJ0ZW5hbnRJZCI6IjAwMDAwMCIsInVzZXJJZCI6MTc2ODEwMTQ1OTY2ODg0MDQ1MCwiZGVwdElkIjoxMDB9.-i-dgE58AXVLjYY7LvnCEuYkBRDEz-04ERSR7SzpgVY',
         },
         signal: abortCtrl.signal,
         body: JSON.stringify({

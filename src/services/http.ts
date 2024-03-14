@@ -32,7 +32,7 @@ const composeMiddlewares = (middlewares: Middleware[]) => {
 }
 
 const setTokenMiddleware: Middleware = (config: any) => {
-  const access_token = localStorage.getItem('token')
+  const access_token = localStorage.getItem('access_token')
   if (access_token) {
     config.headers.Authorization = `Bearer ${access_token}`
     config.headers.clientId = 'e5cd7e4891bf95d1d19206ce24a7b32e'
@@ -46,7 +46,7 @@ export const createRequest = (
   middlewares: Middleware[] = [],
 ): AxiosInstance => {
   const request = Axios.create({
-    baseURL: config.baseURL || '/api',
+    baseURL: config.baseURL || import.meta.env.VITE_APP_API_BASEURL || '/api',
     timeout: 30 * 1000, // 超时限制 30秒,
     // adapter,
     paramsSerializer: (params) => {
@@ -60,10 +60,6 @@ export const createRequest = (
   return request
 }
 
-const http = createRequest(
-  {
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-  },
-)
+const http = createRequest()
 
 export default http

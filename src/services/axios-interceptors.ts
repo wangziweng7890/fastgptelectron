@@ -20,7 +20,7 @@ export const resCodeInterceptor = async (res) => {
   const resData = res.data ?? {}
   const code = resData.code
   // 特殊url直接返回数据
-  if (['/wiki/rest', '/wiki/rest'].some(t => res.config?.url.includes(t))) {
+  if (['/rest/api', '/wiki/rest'].some(t => res.config?.url.includes(t))) {
     return resData
   }
 
