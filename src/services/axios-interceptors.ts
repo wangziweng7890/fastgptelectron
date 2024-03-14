@@ -19,6 +19,11 @@ export const HideAxiosErrorToastKey = Symbol('_hide_axios_error_toast_key_')
 export const resCodeInterceptor = async (res) => {
   const resData = res.data ?? {}
   const code = resData.code
+  // 特殊url直接返回数据
+    if (['/wiki/rest', '/wiki/rest'].some(t => res.config?.url.includes(t))) {
+        return resData
+    }
+
   // 文件流时不判断res.data.code,此时res.data的类型为Blob
   if (Object.prototype.toString.call(resData) === '[object Blob]')
     return resData

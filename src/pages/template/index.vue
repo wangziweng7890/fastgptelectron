@@ -10,11 +10,11 @@
 
 <script setup lang="ts" name="tempalte">
 const setPageTitle = () => {
-  window.electronAPI.setTitle('手动设置的标题')
+  window.electronAPI?.setTitle('手动设置的标题')
 }
 const filePath = ref('')
 const openFile = async () => {
-  const selectedFilePath = await window.electronAPI.openFile()
+  const selectedFilePath = await window.electronAPI?.openFile()
   filePath.value = selectedFilePath
 }
 </script>
