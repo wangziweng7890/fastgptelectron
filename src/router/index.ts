@@ -2,7 +2,7 @@
  * @FilePath: /vue3-admin-template/src/router/index.ts
  * @Description:
  */
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import '@/styles/nprogress.scss'
 import { useNProgress } from '@vueuse/integrations/useNProgress'
 import { asyncRoutes, systemRoutes } from './routes'
@@ -10,7 +10,7 @@ import useSettingsStore from '@/store/modules/settings'
 const { isLoading } = useNProgress()
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     ...systemRoutes,
     ...asyncRoutes,

@@ -28,6 +28,7 @@ const versionInfo = `本应用正在使用 Chrome (v${window.electronAPI?.chrome
 
 function initAuth() {
     const urlParams = new URLSearchParams(window.location.search);
+    localStorage.setItem('urlParams', JSON.stringify(urlParams))
     console.log('urlParams', urlParams)
     const socialCode = urlParams.get('code');
     const socialState = urlParams.get('state');
