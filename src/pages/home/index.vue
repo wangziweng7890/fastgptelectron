@@ -27,7 +27,7 @@ const versionInfo = `本应用正在使用 Chrome (v${window.electronAPI.chromeV
 
 <template>
   <div style="color: red;">
-    首页7
+    首页7 version 1
     <ul>
       <li>
         <a href="">

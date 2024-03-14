@@ -1,6 +1,6 @@
 {
   "name": "document-system",
-  "version": "0.1.5",
+  "version": "0.0.2",
   "private": true,
   "packageManager": "pnpm@7.4.0",
   "main": "dist-electron/main.js",
@@ -38,6 +38,7 @@
     "axios": "^0.27.2",
     "crypto-js": "4",
     "dayjs": "^1.11.7",
+    "electron-updater": "^6.1.8",
     "element-plus": "^2.3.4",
     "lodash-es": "^4.17.21",
     "nprogress": "^0.2.0",
@@ -131,7 +132,7 @@
     "IE >= 11"
   ],
   "build": {
-    "appId": "com.electron.desktop",
+    "appId": "com.galaxy.desktop",
     "productName": "银河助手",
     "asar": true,
     "copyright": "Copyright © 2024 银河集团",
@@ -146,17 +147,13 @@
     "mac": {
       "artifactName": "${productName}_${version}.${ext}",
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ]
     },
     "win": {
       "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
+        "nsis", "zip"
       ],
       "artifactName": "${productName}_${version}.${ext}"
     },
@@ -169,7 +166,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "http://127.0.0.1:8080"
+        "url": "https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/auto"
       }
     ],
     "releaseInfo": {
