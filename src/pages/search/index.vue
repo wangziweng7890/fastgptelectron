@@ -1,69 +1,39 @@
 <route>
-  {
-    meta: {
-      title: "搜搜首页",
-      constant: false,
-      layout: 'blank'
-    }
-  }
+{
+meta: {
+title: "搜搜首页",
+constant: false,
+layout: 'blank'
+}
+}
 </route>
 
 <script setup lang="ts" name="search">
 import { debounce } from 'lodash-es'
-import { Search } from '@element-plus/icons-vue'
 import { GetWikiRestApiSearch, GetWikiSpaceAuth } from '@/services/wiki/apifox'
+import { Search } from '@element-plus/icons-vue'
 const router = useRouter()
 
 // 登录弹窗
 const visible = ref(false)
 const handleClose = () => {
-  visible.value = false
+    visible.value = false
 }
 
 // 检查账号密码
 const hasUser = ref(false)
-const usernameInput = ref('') // ref('kennen')
-const passwordInput = ref('') // ref('7d81MNAHo+v@b')
+const usernameInput = ref('') //ref('kennen')
+const passwordInput = ref('') //ref('7d81MNAHo+v@b')
 
-let username, password
+let username,password
 
 const getUserInfo = () => {
-  username = localStorage.getItem('wiki-username')
-  password = localStorage.getItem('wiki-password')
+    username = localStorage.getItem('wiki-username')
+    password = localStorage.getItem('wiki-password')
 }
 getUserInfo()
 hasUser.value = !!username && !!password
 visible.value = !hasUser.value
-
-const handleLogin = () => {
-  const auth = {
-    username: usernameInput.value,
-    password: passwordInput.value,
-  }
-  GetWikiSpaceAuth(auth, { auth }).then((res) => {
-    if (res) {
-      localStorage.setItem('wiki-username', usernameInput.value)
-      localStorage.setItem('wiki-password', passwordInput.value)
-      hasUser.value = true
-      getUserInfo()
-      loadData('')
-      ElMessage.success('登录成功!')
-      handleClose()
-    }
-    else {
-      ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
-      // localStorage.removeItem('wiki-username')
-      // localStorage.removeItem('wiki-password')
-    }
-  }).catch((err) => {
-    console.log('err', err)
-    ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
-    // localStorage.removeItem('wiki-username')
-    // localStorage.removeItem('wiki-password')
-  })
-  console.log('handleLogin')
-  // loadData('')
-}
 
 console.log('visible', visible.value)
 const isSearch = ref(false) // 是否触发过搜搜
@@ -75,10 +45,10 @@ const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(20)
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
+    console.log(`${val} items per page`)
 }
 const handleCurrentChange = () => {
-  loadData(keyword.value)
+    loadData(keyword.value)
 }
 
 interface paramsModel {
@@ -91,18 +61,55 @@ interface paramsModel {
     includeArchivedSpaces: boolean
 }
 const paramsData = ref<paramsModel>({
-  cql: '',
-  start: 0,
-  limit: 20,
-  excerpt: 'highlight',
-  expand: 'space.icon',
-  src: 'next.ui.search',
-  includeArchivedSpaces: false,
+    cql: '',
+    start: 0,
+    limit: 20,
+    excerpt: "highlight",
+    expand: "space.icon",
+    src: "next.ui.search",
+    includeArchivedSpaces: false
 })
+
+// 登录
+const handleLogin = async () => {
+    const auth = {
+        username: usernameInput.value,
+        password: passwordInput.value
+    }
+
+    try {
+        const res = await GetWikiRestApiSearch({
+            ...paramsData.value,
+            cql: 'siteSearch ~ "key"',
+        }, {
+            auth
+            // headers: {
+            //     'Authorization': 'Basic ' + btoa(`${usernameInput.value}:${passwordInput.value}`)
+            // }
+        })
+        console.log('123', res)
+        if (res?.results) {
+            localStorage.setItem('wiki-username', usernameInput.value)
+            localStorage.setItem('wiki-password', passwordInput.value)
+            hasUser.value = true
+            getUserInfo()
+            loadData('login')
+            ElMessage.success('登录成功!')
+            handleClose()
+        } else {
+            ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
+            // localStorage.removeItem('wiki-username')
+            // localStorage.removeItem('wiki-password')
+        }
+    } catch (error) {
+        console.log('error', error)
+        ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
+    }
+}
 
 // 自动拼接成 高亮字符串
 const highlightText = (str: string) => {
-  return str.replace(/@@@hl@@@/g, '<em>').replace(/@@@endhl@@@/g, '</em>')
+    return str.replace(/@@@hl@@@/g, '<em>').replace(/@@@endhl@@@/g, '</em>')
 }
 
 /**
@@ -110,142 +117,142 @@ const highlightText = (str: string) => {
  * $description 清除不需要的筛选参数
  * */
 async function loadData(key: string) {
-  if (!key) {
-    list.value = []
-    total.value = 0
-    return
-  }
-  const keywordStr = `siteSearch ~ "${key}" AND type in ("space","user","com.atlassian.confluence.extra.team-calendars:calendar-content-type","attachment","page","com.atlassian.confluence.extra.team-calendars:space-calendars-view-content-type","blogpost")`
-  paramsData.value.cql = keywordStr // 关键字 //encodeURIComponent(`siteSearch ~ "${keyword.value}"`)
-  paramsData.value.start = (currentPage.value - 1) * pageSize.value // 页码
-  paramsData.value.limit = pageSize.value
-  const res = await GetWikiRestApiSearch(paramsData.value, {
-    auth: {
-      username,
-      password,
-    },
-  })
-
-  total.value = res.totalSize || 0
-  list.value = res.results?.map((t) => {
-    return {
-      id: t.content?.id,
-      title: highlightText(t.title),
-      content: highlightText(t.excerpt),
-      from: t.resultGlobalContainer?.title,
-      _links: t.content?._links,
+    if (!key) {
+        list.value = []
+        total.value = 0
+        return
     }
-  }) || []
+    const keywordStr = `siteSearch ~ "${key}" AND type in ("space","user","com.atlassian.confluence.extra.team-calendars:calendar-content-type","attachment","page","com.atlassian.confluence.extra.team-calendars:space-calendars-view-content-type","blogpost")`
+    paramsData.value.cql = keywordStr // 关键字 //encodeURIComponent(`siteSearch ~ "${keyword.value}"`)
+    paramsData.value.start = (currentPage.value - 1) * pageSize.value // 页码
+    paramsData.value.limit = pageSize.value
+    const res = await GetWikiRestApiSearch(paramsData.value, {
+        auth: {
+            username,
+            password
+        }
+    })
+
+    total.value = res.totalSize || 0
+    list.value = res.results?.map(t => {
+        return {
+            id: t.content?.id,
+            title: highlightText(t.title),
+            content: highlightText(t.excerpt),
+            from: t.resultGlobalContainer?.title,
+            _links: t.content?._links
+        }
+    }) || []
 }
 
 // 是否触发过搜索
 const handleKeydown = debounce(async () => {
-  isSearch.value = true
-  loadData(keyword.value)
+    isSearch.value = true
+    loadData(keyword.value)
 }, 200)
 
 const handleItem = async (item: any) => {
-  console.log('item.content?._links?.webui', item._links?.webui)
-  window.open(`http://wiki.galaxy-immi.com:8090/${item._links?.webui}`)
+    console.log('item.content?._links?.webui', item._links?.webui)
+    window.open('http://wiki.galaxy-immi.com:8090/' + item._links?.webui)
 }
 
 const handleClick = () => {
-  router.push('/chat')
+    router.push('/chat')
 }
+
+
+
 </script>
 
 <template>
-  <div class="content-container">
-    <div class="back-button" @click="handleClick">
-      <img src="~@/assets/images/back.png" alt="" class="back-icon">
-      返回会话
-    </div>
-    <div v-if="!isSearch" class="sousou-logo-img">
-      <img src="~@/assets/images/search-logo.png" alt="">
-    </div>
-    <div v-if="!isSearch" class="sousou-title-img">
-      <img src="~@/assets/images/search-title.png" alt="">
-    </div>
-    <div class="search-box">
-      <el-input
-        v-model="keyword"
-        size="large"
-        placeholder="我想知道..."
-        class="search-input gray-input"
-        :prefix-icon="Search"
-        @keydown="handleKeydown"
-      />
-    </div>
-    <div class="sousou-desc" :class="[{ 'is-search': isSearch }]">
-      数据来源:业务知识库
-    </div>
-    <div v-if="isSearch" class="search-result">
-      <div v-for="(item, index) in list" :key="item.title" :index="index" class="result-item" @click="handleItem(item)">
-        <div class="item-title" v-html="item.title" />
-        <div class="item-content" v-html="item.content" />
-        <div class="item-from">
-          摘自：
-          <span>{{ item.from }}</span>
+    <div class="content-container">
+        <div class="back-button" @click="handleClick">
+            <img src="~@/assets/images/back.png" alt="" class="back-icon">
+            返回会话
         </div>
-      </div>
-      <el-empty v-if="!list.length" :image-size="200" />
-    </div>
-    <div class="pagination-container">
-      <el-pagination
-        v-if="isSearch"
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        layout="prev, pager, next, jumper, total"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </div>
-    <!--   使用element-plus实现登录弹窗     -->
-    <el-dialog
-      v-model="visible"
-      width="500px"
-      align-center
-      destroy-on-close
-      custom-class="login-dialog"
-      :close-on-click-modal="false"
-      @close="handleClose"
-    >
-      <template #header>
-        <div class="header-title">
-          <span>登录</span>
+        <div v-if="!isSearch" class="sousou-logo-img">
+            <img src="~@/assets/images/search-logo.png" alt="">
         </div>
-      </template>
-      <!-- #body -->
-      <div>
-        <div>请输入业务知识库账号密码</div>
-        <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-16px gray-input" size="large" />
-        <el-input v-model="passwordInput" type="password" placeholder="请输入wiki密码" class="mt-12px gray-input" size="large" />
-        <div class="mt-16px text-center">
-          <el-button type="primary" :disabled="!usernameInput || !passwordInput" class="login-btn" @click="handleLogin">
-            登录
-          </el-button>
+        <div v-if="!isSearch" class="sousou-title-img">
+            <img src="~@/assets/images/search-title.png" alt="">
         </div>
-      </div>
-    </el-dialog>
-    <!--        <el-dialog -->
-    <!--            title="登录" -->
-    <!--            :visible.sync="visible" -->
-    <!--            width="300px" -->
-    <!--            center -->
-    <!--        > -->
-    <!--            <div>请输入业务知识库账号密码</div> -->
-    <!--            <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-12px ml-12px mr-12px gray-input" /> -->
-    <!--            <el-input v-model="passwordInput" placeholder="请输入wiki密码" class="mt-12px ml-12px mr-12px gray-input" /> -->
-    <!--            <el-button type="primary" @click="handleLogin" class="w-100% mt-12px">登录</el-button> -->
-    <!--        </el-dialog> -->
-  </div>
-<!--    <div v-else class="login-container"> -->
-<!--        <div>请输入wiki账号密码</div> -->
-<!--        <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-12px ml-12px mr-12px gray-input" /> -->
-<!--        <el-input v-model="passwordInput" placeholder="请输入wiki密码" class="mt-12px ml-12px mr-12px gray-input" /> -->
-<!--        <el-button type="primary" @click="handleLogin" class="w-100% mt-12px">登录</el-button> -->
-<!--    </div> -->
+        <div class="search-box">
+            <el-input
+                v-model="keyword"
+                size="large"
+                placeholder="我想知道..."
+                class="search-input gray-input"
+                :prefix-icon="Search"
+                @keydown="handleKeydown"
+            >
+            </el-input>
+        </div>
+        <div :class="['sousou-desc', { 'is-search': isSearch }]">数据来源:业务知识库</div>
+        <div v-if="isSearch" class="search-result">
+            <div v-for="(item, index) in list" :key="item.title" :index="index" class="result-item" @click="handleItem(item)">
+                <div v-html="item.title" class="item-title"></div>
+                <div v-html="item.content" class="item-content"></div>
+                <div class="item-from">
+                    摘自：
+                    <span>{{ item.from }}</span>
+                </div>
+            </div>
+            <el-empty v-if="!list.length" :image-size="200" />
+        </div>
+        <div class="pagination-container">
+            <el-pagination
+                v-if="isSearch"
+                v-model:current-page="currentPage"
+                v-model:page-size="pageSize"
+                layout="prev, pager, next, jumper, total"
+                :total="total"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+            />
+        </div>
+        <!--   使用element-plus实现登录弹窗     -->
+        <el-dialog
+            v-model="visible"
+            width="500px"
+            align-center
+            destroy-on-close
+            custom-class="login-dialog"
+            :close-on-click-modal="false"
+            @close="handleClose"
+        >
+            <template #header>
+                <div class="header-title">
+                    <span>登录</span>
+                </div>
+            </template>
+            <!-- #body -->
+            <div>
+                <div>请输入业务知识库账号密码</div>
+                <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-16px gray-input" size="large" />
+                <el-input v-model="passwordInput" type="password" placeholder="请输入wiki密码" class="mt-12px gray-input" size="large" />
+                <div class="mt-16px text-center">
+                    <el-button type="primary" :disabled="!usernameInput || !passwordInput" class="login-btn" @click="handleLogin">登录</el-button>
+                </div>
+            </div>
+        </el-dialog>
+        <!--        <el-dialog-->
+        <!--            title="登录"-->
+        <!--            :visible.sync="visible"-->
+        <!--            width="300px"-->
+        <!--            center-->
+        <!--        >-->
+        <!--            <div>请输入业务知识库账号密码</div>-->
+        <!--            <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-12px ml-12px mr-12px gray-input" />-->
+        <!--            <el-input v-model="passwordInput" placeholder="请输入wiki密码" class="mt-12px ml-12px mr-12px gray-input" />-->
+        <!--            <el-button type="primary" @click="handleLogin" class="w-100% mt-12px">登录</el-button>-->
+        <!--        </el-dialog>-->
+    </div>
+    <!--    <div v-else class="login-container">-->
+    <!--        <div>请输入wiki账号密码</div>-->
+    <!--        <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-12px ml-12px mr-12px gray-input" />-->
+    <!--        <el-input v-model="passwordInput" placeholder="请输入wiki密码" class="mt-12px ml-12px mr-12px gray-input" />-->
+    <!--        <el-button type="primary" @click="handleLogin" class="w-100% mt-12px">登录</el-button>-->
+    <!--    </div>-->
 </template>
 
 <style lang="scss" scoped>

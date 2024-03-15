@@ -80,8 +80,11 @@ function initAuth() {
     })
 }
 
-initAuth()
 
+onMounted(() => {
+    // initAuth()
+    AuthLogin({kai: 'kai'})
+})
 </script>
 
 <template>

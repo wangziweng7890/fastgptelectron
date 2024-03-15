@@ -15,7 +15,7 @@ const router = useRouter()
 
 const data = ref({
   inter: null,
-  countdown: 5,
+  countdown: 1,
 })
 
 onBeforeRouteLeave(() => {

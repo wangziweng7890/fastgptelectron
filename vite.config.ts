@@ -69,16 +69,16 @@ export default ({ mode, command }: ConfigEnv) => {
       hmr: true,
       cors: true,
       proxy: {
-        // '/api/wiki/rest/': {
-        //   target: 'http://wiki.galaxy-immi.com:8090/',
-        //   changeOrigin: true,
-        //   rewrite: path => path.replace(/\/api\/wiki/, ''),
-        // },
-        // '/api/auth/binding/': {
-        //   target: 'http://smart-api-test.galaxy-immi.com:8090/',
-        //   changeOrigin: true,
-        //   rewrite: path => path.replace(/\/api/, ''),
-        // },
+          '/api/rest': {
+              target: 'http://wiki.galaxy-immi.com:8090/',
+              changeOrigin: true,
+              rewrite: path => path.replace(/\/api/, ''),
+          },
+          '/api': {
+            target: 'http://smart-h5-test.galaxy-immi.com:8090/prod-api/',
+            changeOrigin: true,
+            rewrite: path => path.replace(/\/api/, ''),
+          }
       },
     },
     build: {
@@ -144,18 +144,18 @@ export default ({ mode, command }: ConfigEnv) => {
       Vue({
         // reactivityTransform: true,
       }),
-      //   electron({
-      //     main: {
-      //       entry: 'electron/main.ts',
-      //     },
-      //     preload: {
-      //       input: 'electron/preload.ts',
-      //     },
-      //     // Optional: Use Node.js API in the Renderer process
-      //     renderer: {},
-      //   }),
-      //   electronRenderer(),
-      //   polyfillExports(),
+      electron({
+        main: {
+          entry: 'electron/main.ts',
+        },
+        preload: {
+          input: 'electron/preload.ts',
+        },
+        // Optional: Use Node.js API in the Renderer process
+        renderer: {},
+      }),
+      electronRenderer(),
+      polyfillExports(),
       viteMockServe({
         mockPath: 'mock',
         enable: command !== 'build',

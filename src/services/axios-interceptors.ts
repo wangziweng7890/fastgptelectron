@@ -7,9 +7,8 @@ import type { Middleware, ResponseError } from './types'
 const router = useRouter()
 function login() {
   console.log('跳转登录')
-  router.push({
-    path: '/login',
-  })
+  // TODO 企业微信重新授权
+  // location.href = '/'
 }
 
 // 如果不想通过拦截器统一弹出axios的error message, 在axios的config中加入key是 HideAxiosErrorToastKey ，value：true的选项
@@ -55,6 +54,9 @@ export const resCodeInterceptor = async (res) => {
 }
 
 export const resErrorInterceptor = (error: AxiosError<ResponseError>) => {
+    if (['/rest/api', '/wiki/rest'].some(t => error.config?.url.includes(t))) {
+        return Promise.reject(error)
+    }
   if (NeedLoginCode.includes(error.response?.status || 0)) {
     login()
   }
