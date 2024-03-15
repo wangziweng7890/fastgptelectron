@@ -13,7 +13,7 @@ export function AuthBinding(
     params: AuthBindingQuery,
     axiosConfig: AxiosRequestConfig = {},
 ): Promise<AuthBindingRes> {
-    return http.get(`/auth/binding/${params}`, {
+    return http.get(`/auth/binding/${params.type}`, {
         params,
         ...axiosConfig,
     })

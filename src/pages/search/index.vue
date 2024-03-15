@@ -126,15 +126,20 @@ async function loadData(key: string) {
     paramsData.value.cql = keywordStr // 关键字 //encodeURIComponent(`siteSearch ~ "${keyword.value}"`)
     paramsData.value.start = (currentPage.value - 1) * pageSize.value // 页码
     paramsData.value.limit = pageSize.value
-    const res = await GetWikiRestApiSearch(paramsData.value, {
-        auth: {
+    let auth
+    if (username && password) {
+        auth = {
             username,
             password
         }
+
+    }
+    const res = await GetWikiRestApiSearch(paramsData.value, {
+        auth
     })
 
     total.value = res.totalSize || 0
-    list.value = res.results?.map(t => {
+    list.value = res.results?.map((t: any) => {
         return {
             id: t.content?.id,
             title: highlightText(t.title),
@@ -211,127 +216,99 @@ const handleClick = () => {
             />
         </div>
         <!--   使用element-plus实现登录弹窗     -->
-        <el-dialog
-            v-model="visible"
-            width="500px"
-            align-center
-            destroy-on-close
-            custom-class="login-dialog"
-            :close-on-click-modal="false"
-            @close="handleClose"
-        >
+        <Dialog v-model="visible" width="300px" @close="handleClose">
             <template #header>
-                <div class="header-title">
-                    <span>登录</span>
-                </div>
+                登录
             </template>
-            <!-- #body -->
             <div>
                 <div>请输入业务知识库账号密码</div>
-                <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-16px gray-input" size="large" />
-                <el-input v-model="passwordInput" type="password" placeholder="请输入wiki密码" class="mt-12px gray-input" size="large" />
+                <el-input v-model="usernameInput" placeholder="账号" class="mt-16px gray-input" size="large" />
+                <el-input v-model="passwordInput" type="password" placeholder="密码" class="mt-12px gray-input" size="large" />
                 <div class="mt-16px text-center">
                     <el-button type="primary" :disabled="!usernameInput || !passwordInput" class="login-btn" @click="handleLogin">登录</el-button>
                 </div>
             </div>
-        </el-dialog>
-        <!--        <el-dialog-->
-        <!--            title="登录"-->
-        <!--            :visible.sync="visible"-->
-        <!--            width="300px"-->
-        <!--            center-->
-        <!--        >-->
-        <!--            <div>请输入业务知识库账号密码</div>-->
-        <!--            <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-12px ml-12px mr-12px gray-input" />-->
-        <!--            <el-input v-model="passwordInput" placeholder="请输入wiki密码" class="mt-12px ml-12px mr-12px gray-input" />-->
-        <!--            <el-button type="primary" @click="handleLogin" class="w-100% mt-12px">登录</el-button>-->
-        <!--        </el-dialog>-->
+        </Dialog>
     </div>
-    <!--    <div v-else class="login-container">-->
-    <!--        <div>请输入wiki账号密码</div>-->
-    <!--        <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-12px ml-12px mr-12px gray-input" />-->
-    <!--        <el-input v-model="passwordInput" placeholder="请输入wiki密码" class="mt-12px ml-12px mr-12px gray-input" />-->
-    <!--        <el-button type="primary" @click="handleLogin" class="w-100% mt-12px">登录</el-button>-->
-    <!--    </div>-->
 </template>
 
 <style lang="scss" scoped>
 .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    height: 100vh;
-    font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 100vh;
+  font-size: 14px;
 }
 
 .content-container {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    height: 100vh;
-    font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100vh;
+  font-size: 14px;
 }
 
 .back-button {
-    display: inline-flex;
-    align-items: center;
-    margin: 12px 0 0 16px;
-    padding: 6px 8px;
-    width: 90px;
-    background: #ECFCFF;
-    color: #606060;
-    border-radius: 4px;
-    cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  margin: 12px 0 0 16px;
+  padding: 6px 8px;
+  width: 90px;
+  background: #ecfcff;
+  color: #606060;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .back-icon {
-    margin-right: 4px;
-    width: 13px;
-    height: 11px;
-    border-radius: 0px 0px 0px 0px;
+  margin-right: 4px;
+  width: 13px;
+  height: 11px;
+  border-radius: 0;
 }
 
 .sousou-logo-img {
-    margin-top: 35vh;
+  margin-top: 35vh;
 }
 
 .sousou-logo-img img {
-    margin: 0 auto;
-    width: 84px;
-    height: 32px;
+  margin: 0 auto;
+  width: 84px;
+  height: 32px;
 }
 
 .sousou-title-img {
-    margin-top: 22px;
+  margin-top: 22px;
 }
 
 .sousou-title-img img {
-    margin: 0 auto;
-    width: 240px;
-    height: 34px;
+  margin: 0 auto;
+  width: 240px;
+  height: 34px;
 }
 
 .search-box {
-    margin-top: 34px;
-    padding: 0 16px;
-    width: 100%;
+  margin-top: 34px;
+  padding: 0 16px;
+  width: 100%;
 }
 
 .search-input {
-    //background: #F9F9FC;
-    //border-radius: 10px;
+  //background: #F9F9FC;
+  //border-radius: 10px;
 }
 
 .gray-input :deep {
-    .el-input__wrapper {
-        height: 46px;
-        background: #F9F9FC;
-        border-radius: 10px;
-        box-shadow: none;
-        border: none;
-    }
+  .el-input__wrapper {
+    height: 46px;
+    background: #f9f9fc;
+    border-radius: 10px;
+    box-shadow: none;
+    border: none;
+  }
 }
 
 //.search-input .el-input__inner {
@@ -339,92 +316,77 @@ const handleClick = () => {
 //}
 
 .sousou-desc {
-    margin-top: 30px;
-    font-size: 12px;
-    color: #909090;
-    text-align: center;
+  margin-top: 30px;
+  font-size: 12px;
+  color: #909090;
+  text-align: center;
 }
 
 .sousou-desc.is-search {
-    margin-top: 12px;
+  margin-top: 12px;
 }
 
 .search-result {
-    padding: 16px;
-    flex: 1;
-    height: 0;
-    overflow-y: auto;
+  padding: 16px;
+  flex: 1;
+  height: 0;
+  overflow-y: auto;
 }
 
 .result-item {
-    margin-bottom: 16px;
-    padding: 16px 8px;
-    background: #F8F8F8;
-    border-radius: 10px;
-    cursor: pointer;
+  margin-bottom: 16px;
+  padding: 16px 8px;
+  background: #f8f8f8;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .result-item :deep em {
-    color: #00C4FF;
-    font-style: normal;
+  color: #00c4ff;
+  font-style: normal;
 }
 
 .result-item:hover {
-    background: linear-gradient( 136deg, #DEF9FF 0%, #FFFFFF 50%, #FDF0FF 100%);
+  background: linear-gradient(136deg, #def9ff 0%, #fff 50%, #fdf0ff 100%);
 }
 
 .item-title {
-    color: #333;
+  color: #333;
 }
 
 .item-content {
-    margin-top: 12px;
-    color: #666;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* 控制显示行数 */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis; /* 超出部分显示省略号 */
-    white-space: normal; /* 显示换行 */
-    word-wrap: break-word; /* 允许单词内换行 */
-    overflow-wrap: break-word; /* 允许单词内换行 */
+  margin-top: 12px;
+  color: #666;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 控制显示行数 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 超出部分显示省略号 */
+  white-space: normal; /* 显示换行 */
+  word-wrap: break-word; /* 允许单词内换行 */
+  overflow-wrap: break-word; /* 允许单词内换行 */
 }
 
 .item-from {
-    margin-top: 12px;
-    color: #999;
+  margin-top: 12px;
+  color: #999;
 }
 
 .pagination-container {
-    display: flex;
-    justify-content: end;
-    padding: 16px 32px;
-}
-//.mt-12 {
-//    margin-top: 12px;
-//}
-:deep {
-    .login-dialog .el-dialog__header {
-        margin-right: 0;
-        padding: 20px 16px;
-        border-bottom: 1px solid #F6F6F6;
-    }
-}
-.header-title {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
-    color: #222;
+  display: flex;
+  justify-content: end;
+  padding: 16px 32px;
 }
 
 .login-btn {
-    background: #87DFFF;
-    border-radius: 6px;
-    border: none;
-    width: 93px;
-    height: 36px;
-    &.is-disabled, &.is-disabled:hover {
-        background: #ededed;
-    }
+  background: #87dfff;
+  border-radius: 6px;
+  border: none;
+  width: 93px;
+  height: 36px;
+  &.is-disabled,
+  &.is-disabled:hover {
+    background: #ededed;
+  }
 }
 </style>

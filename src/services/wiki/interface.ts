@@ -1,19 +1,7 @@
 
 export interface GetWikiRestApiSearchQuery {
-    /** 主申人姓名  example:  */
-    application_name?: string
-    /** 合同号  example:  */
-    order_sn?: string
-    /** 订单号  example:  */
-    order_id?: number
-    /** 签约时间  example:  */
-    sign_time?: string[]
-    /** 服务专家  example:  */
-    service_butler?: number
-    /** 页码 example: 1 */
-    page: number
-    /** 一页条数 example: 20 */
-    page_size: number
+    /** 关键字  */
+    cql: string
 }
 export interface GetWikiRestApiSearchRes {
     /** 搜索关键字  */
