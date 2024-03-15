@@ -400,6 +400,14 @@ async function deleteChatList(chatId) {
   pageNumber.value = 1
   fetchList()
 }
+
+function changeChatId(chatId) {
+  chatController.value?.abort('leave')
+  chatHistory.value = []
+  router.replace({
+    query: { chatId },
+  })
+}
 </script>
 
 <template>
