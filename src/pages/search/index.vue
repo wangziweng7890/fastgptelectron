@@ -216,21 +216,10 @@ const handleClick = () => {
             />
         </div>
         <!--   使用element-plus实现登录弹窗     -->
-        <el-dialog
-            v-model="visible"
-            width="300px"
-            align-center
-            destroy-on-close
-            custom-class="login-dialog"
-            :close-on-click-modal="false"
-            @close="handleClose"
-        >
+        <Dialog v-model="visible" width="300px" @close="handleClose">
             <template #header>
-                <div class="header-title">
-                    <span>登录</span>
-                </div>
+                登录
             </template>
-            <!-- #body -->
             <div>
                 <div>请输入业务知识库账号密码</div>
                 <el-input v-model="usernameInput" placeholder="账号" class="mt-16px gray-input" size="large" />
@@ -239,7 +228,7 @@ const handleClick = () => {
                     <el-button type="primary" :disabled="!usernameInput || !passwordInput" class="login-btn" @click="handleLogin">登录</el-button>
                 </div>
             </div>
-        </el-dialog>
+        </Dialog>
     </div>
 </template>
 
@@ -387,28 +376,6 @@ const handleClick = () => {
   display: flex;
   justify-content: end;
   padding: 16px 32px;
-}
-//.mt-12 {
-//    margin-top: 12px;
-//}
-:deep {
-  .login-dialog {
-    border-radius: 12px;
-    .el-dialog__header {
-      margin-right: 0;
-      padding: 20px 16px;
-      border-bottom: 1px solid #f6f6f6;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      background: linear-gradient(136deg, #def9ff 0%, #fff 50%, #fdf0ff 100%), linear-gradient(180deg, rgb(255 255 255 / 0%) 0%, #fff 14%, #fff 100%);
-    }
-  }
-}
-.header-title {
-  text-align: center;
-  font-size: 14px;
-  font-weight: 500;
-  color: #222;
 }
 
 .login-btn {
