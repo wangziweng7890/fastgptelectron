@@ -128,8 +128,7 @@ export const streamFetch = ({
             }
           }
         },
-        onmessage({ event, data }) {
-          console.log(11, event, 22, data)
+        onmessage({ data }) {
           if (data === '[DONE]' || finished) {
             finished = true
             return
