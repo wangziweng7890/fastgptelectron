@@ -4,7 +4,6 @@ import { handleFileOpen, handleSetTitle } from './utils/help'
 import { checkUpdate, showVersion } from './utils/appVersion'
 
 const isMac = process.platform === 'darwin'
-let updateInterval
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
@@ -14,6 +13,7 @@ const createWindow = () => {
       contextIsolation: true, // 是否开启隔离上下文
       nodeIntegration: true, // 渲染进程使用Node API
       preload: path.join(__dirname, 'preload.js'),
+      webviewTag: true,
     },
   })
   // mac
@@ -33,6 +33,10 @@ const createWindow = () => {
           click: () => checkUpdate(win),
           label: '检查版本更新',
         },
+        {
+          click: () => win.webContents.openDevTools(),
+          label: '开发者',
+        },
         isMac ? { role: 'close' } : { role: 'quit' },
       ],
     },
@@ -48,13 +52,9 @@ const createWindow = () => {
   else {
     // Load your file
     win.loadFile('dist-electron/index.html')
-    win.webContents.openDevTools()
   }
   console.log('info...', app.name, app.getVersion())
-  checkUpdate(win)
-  updateInterval = setInterval(() => {
-    checkUpdate(win)
-  }, 1000 * 60 * 15)
+  !isMac && checkUpdate(win)
 }
 
 app.whenReady().then(() => {
@@ -76,9 +76,9 @@ app.whenReady().then(() => {
   })
 })
 
-app.on('before-quit', () => {
-  clearInterval(updateInterval)
-})
+// app.on('before-quit', () => {
+//   clearInterval(updateInterval)
+// })
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

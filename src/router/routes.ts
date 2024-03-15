@@ -17,6 +17,14 @@ const systemRoutes: any = [
     redirect: '/chat',
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/pages/login/index.vue'),
+    meta: {
+      title: '登陆',
+    },
+  },
+  {
     path: '/:all(.*)*',
     name: 'notFound',
     component: () => import('@/pages/[...all].vue'),

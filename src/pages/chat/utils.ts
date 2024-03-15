@@ -1,4 +1,4 @@
-import MarkdownIt from 'markdown-it'
+import MarkdownIt from 'markdown-it/dist/markdown-it'
 import highlight from 'highlight.js'
 import 'highlight.js/styles/an-old-hope.css'
 

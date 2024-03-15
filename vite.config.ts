@@ -25,7 +25,6 @@ import iconfontLoader, { FileSystemIconLoader } from '@galaxy-fe/vite-plugin-uno
 import autoOptimizeDeps from '@galaxy-fe/vite-plugin-auto-optimize'
 import viteCompression from 'vite-plugin-compression'
 import electronRenderer from 'vite-plugin-electron-renderer'
-import polyfillExports from 'vite-plugin-electron-renderer'
 // sentry
 
 const autoprefixer = require('autoprefixer')
@@ -69,16 +68,16 @@ export default ({ mode, command }: ConfigEnv) => {
       hmr: true,
       cors: true,
       proxy: {
-          // '/api/rest': {
-          //     target: 'http://wiki.galaxy-immi.com:8090/',
-          //     changeOrigin: true,
-          //     rewrite: path => path.replace(/\/api/, ''),
-          // },
-          // '/api': {
-          //   target: 'http://smart-h5-test.galaxy-immi.com:8090/prod-api/',
-          //   changeOrigin: true,
-          //   rewrite: path => path.replace(/\/api/, ''),
-          // }
+        // '/api/rest': {
+        //     target: 'http://wiki.galaxy-immi.com:8090/',
+        //     changeOrigin: true,
+        //     rewrite: path => path.replace(/\/api/, ''),
+        // },
+        // '/api': {
+        //   target: 'http://smart-h5-test.galaxy-immi.com:8090/prod-api/',
+        //   changeOrigin: true,
+        //   rewrite: path => path.replace(/\/api/, ''),
+        // }
       },
     },
     build: {
@@ -144,7 +143,7 @@ export default ({ mode, command }: ConfigEnv) => {
       Vue({
         // reactivityTransform: true,
       }),
-      !mode.includes('h5') && (electron({
+      electron({
         main: {
           entry: 'electron/main.ts',
         },
@@ -155,7 +154,6 @@ export default ({ mode, command }: ConfigEnv) => {
         renderer: {},
       }),
       electronRenderer(),
-      polyfillExports()),
       viteMockServe({
         mockPath: 'mock',
         enable: command !== 'build',

@@ -6,13 +6,13 @@ import {
 import {
   getErrText,
 } from './utils'
-enum sseResponseEventEnum {
-    error = 'error',
-    answer = 'answer', // animation stream
-    response = 'response', // direct response, not animation
-    moduleStatus = 'moduleStatus',
-    appStreamResponse = 'appStreamResponse', // sse response request
-}
+// enum sseResponseEventEnum {
+//     error = 'error',
+//     answer = 'answer', // animation stream
+//     response = 'response', // direct response, not animation
+//     moduleStatus = 'moduleStatus',
+//     appStreamResponse = 'appStreamResponse', // sse response request
+// }
 
 export const streamFetch = ({
   url = `${import.meta.env.VITE_APP_API_BASEURL}/front/chat/completions/stream`,

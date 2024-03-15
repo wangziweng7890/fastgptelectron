@@ -1,4 +1,3 @@
-
 export interface GetWikiRestApiSearchQuery {
     /** 关键字  */
     cql: string

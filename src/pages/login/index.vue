@@ -1,59 +1,61 @@
 <script setup lang="ts">
+import { AuthBinding, AuthLogin } from '~/services/auth/apifox'
 const router = useRouter()
-import {AuthBinding, AuthLogin} from "~/services/auth/apifox";
 const loginUrl = ref('')
 
 // 登录,获取access_token
 function initAuth(url: string) {
-    const urlParams = new URLSearchParams(url.split('?')[1]);
-    localStorage.setItem('urlParams', JSON.stringify(urlParams))
-    const socialCode = urlParams.get('code');
-    const socialState = urlParams.get('state');
+  const urlParams = new URLSearchParams(url.split('?')[1])
+  localStorage.setItem('urlParams', JSON.stringify(urlParams))
+  const socialCode = urlParams.get('code')
+  const socialState = urlParams.get('state')
 
-    let params = {
-        socialCode,//上步回调页面返回的code
-        socialState,//上步回调页面返回的state
-        "tenantId": "000000",//固定
-        "source": "wechat_enterprise",//企微就是 wechat_enterprise
-        "clientId": "e5cd7e4891bf95d1d19206ce24a7b32e",//固定
-        "grantType": "social"//固定
-    }
+  const params = {
+    socialCode, // 上步回调页面返回的code
+    socialState, // 上步回调页面返回的state
+    tenantId: '000000', // 固定
+    source: 'wechat_enterprise', // 企微就是 wechat_enterprise
+    clientId: 'e5cd7e4891bf95d1d19206ce24a7b32e', // 固定
+    grantType: 'social', // 固定
+  }
 
-    AuthLogin(params).then((res: any) => {
-        console.log('登录-res', res)
-        localStorage.setItem('access_token', res.access_token)
-        localStorage.setItem('refresh_token', res.refresh_token)
-        router.push('/chat') // 成功跳转到聊天页面
-    }).catch((err: any) => {
-        console.log('err', err)
-        ElMessage.error('登录失败');
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('refresh_token')
-    })
+  AuthLogin(params).then((res: any) => {
+    console.log('登录-res', res)
+    localStorage.setItem('access_token', res.access_token)
+    localStorage.setItem('refresh_token', res.refresh_token)
+    router.push('/chat') // 成功跳转到聊天页面
+  }).catch((err: any) => {
+    console.log('err', err)
+    ElMessage.error('登录失败')
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
+  })
 }
 
 // 获取企业微信的登录url
 async function loadLoginUrl() {
-    try {
-        const res = await AuthBinding({
-            type: 'wechat_enterprise'
-        })
-        console.log('res', res)
-        loginUrl.value = res
-    } catch (err) {
-        console.log('err', err)
-        ElMessage.error('认证失败');
-    }
+  try {
+    const res = await AuthBinding({
+      type: 'wechat_enterprise',
+    })
+    console.log('res', res)
+    loginUrl.value = res
+  }
+  catch (err) {
+    console.log('err', err)
+    ElMessage.error('认证失败')
+  }
 }
 
 // 登录的方法：获取webview的event事件，并打印
-async function init(fn) {
-    await loadLoginUrl()
-    const webview = document.querySelector('webview')
-    webview.addEventListener('will-navigate', (e) => {
-        console.log('will-navigate', e)
-        initAuth(e.url)
-    })
+const init = async () => {
+  await loadLoginUrl()
+  const webview = document.querySelector('webview')
+  webview?.addEventListener('will-navigate', (e) => {
+    console.log('will-navigate', e)
+    loginUrl.value = ''
+    initAuth(e.url)
+  })
 }
 
 onMounted(() => {
@@ -62,7 +64,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <webview v-if="loginUrl" ref="webwiewRef" :src="loginUrl" style="display: inline-flex; width: 640px; height: 800px;" />
+  <webview v-if="loginUrl" :src="loginUrl" style="display: inline-flex; width: 640px; height: 800px;" />
 </template>
 
 <style scoped lang="scss">
