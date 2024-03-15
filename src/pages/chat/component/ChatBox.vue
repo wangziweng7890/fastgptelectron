@@ -14,8 +14,10 @@ import deleteIcon from '../img/delete.png'
 import deleteActiveIcon from '../img/delete-active.png'
 import zanIcon from '../img/zan.png'
 import zanActiveIcon from '../img/zan-active.png'
+import zanSelectIcon from '../img/zan-Select.png'
 import caiIcon from '../img/cai.png'
 import caiActiveIcon from '../img/cai-active.png'
+import caiSelectIcon from '../img/cai-select.png'
 import stopIcon from '../img/stop.png'
 import { appId } from '../config'
 import YhButton from './YhButton.vue'
@@ -35,6 +37,9 @@ const props = defineProps({
   },
   isNewChat: {
     type: Boolean,
+  },
+  intro: {
+    type: String,
   },
 })
 
@@ -112,6 +117,14 @@ const showCopyActive = ref(false)
 const showDeleteActive = ref(false)
 const showZanActive = ref(false)
 const showCaiActive = ref(false)
+
+function setUnActive() {
+  console.log(111111111111111111)
+  showCopyActive.value = false
+  showDeleteActive.value = false
+  showZanActive.value = false
+  showCaiActive.value = false
+}
 
 // 转义对话内容
 function onEscapeContent(content, type) {
@@ -269,6 +282,7 @@ async function getChatList() {
 watch(
   () => route.query.chatId,
   async () => {
+    console.log('chatId change', route.query.chatId)
     if (route.query.chatId && !props.isNewChat) {
       // 获取历史列表
       getChatList()
@@ -403,10 +417,12 @@ async function deleteChatList(chatId) {
 
 function changeChatId(chatId) {
   chatController.value?.abort('leave')
-  chatHistory.value = []
+  //   chatHistory.value = []
   router.replace({
+    path: '/chat',
     query: { chatId },
   })
+  showHistory.value = false
 }
 </script>
 
@@ -417,9 +433,9 @@ function changeChatId(chatId) {
         ref="ChatBoxRef"
         class="flex-1 pl-16px pr-16px flex flex-col"
       >
-        <div v-if="chatHistory.length === 0" class="chat-box chat-bot">
+        <div v-if="chatHistory.length === 0" class="chat-box chat-bot mt-10px flex p-8px">
           <div class="text" />
-          Hi,我是Eva伊娃，你的新同事，初来乍到～作为你的私人助理，想做你的贴心小棉袄~
+          {{ props.intro || 'Hi,我是Eva伊娃，你的新同事，初来乍到～作为你的私人助理，想做你的贴心小棉袄~' }}
         </div>
         <div
           v-for="(item, index) in chatHistory"
@@ -448,6 +464,7 @@ function changeChatId(chatId) {
           <el-tooltip
             :show-arrow="false"
             effect="light"
+            :offset="8"
             :placement="
               item.obj !== 'Human' ? 'top-start' : 'top-end'
             "
@@ -513,9 +530,7 @@ function changeChatId(chatId) {
                       && item.stepType !== 2
                   "
                   :src="
-                    showZanActive || item.stepType === 1
-                      ? zanActiveIcon
-                      : zanIcon
+                    showZanActive ? zanActiveIcon : item.stepType === 1 ? zanSelectIcon : zanIcon
                   "
                   class="opr-icon"
                   @mouseover="showZanActive = true"
@@ -533,9 +548,7 @@ function changeChatId(chatId) {
                       && item.stepType !== 1
                   "
                   :src="
-                    showCaiActive || item.stepType === 2
-                      ? caiActiveIcon
-                      : caiIcon
+                    showCaiActive ? caiActiveIcon : item.stepType === 2 ? caiSelectIcon : caiIcon
                   "
                   class="opr-icon"
                   @mouseover="showCaiActive = true"
@@ -573,7 +586,7 @@ function changeChatId(chatId) {
           :src="newChatIcon"
           @click="newChat"
         >
-          新启会话
+          新起会话
         </YhButton>
         <YhButton type="b" :src="historyIcon" @click="openHistory">
           历史会话
@@ -587,7 +600,7 @@ function changeChatId(chatId) {
           type="textarea"
           :maxlength="1000"
           :autosize="{ minRows: 1, maxRows: 20 }"
-          placeholder="和我说说话嘛～"
+          placeholder="需要什么帮助吗，来问我~"
           @keydown="onEnter"
         />
         <img
@@ -605,7 +618,7 @@ function changeChatId(chatId) {
         >
       </div>
       <div class="tip">
-        AI生成 仅供参考
+        银河AI生成，内容仅供参考
       </div>
     </section>
     <Dialog v-model="showFeedBack" width="400px" @close="caiConfirm(1)">
@@ -648,35 +661,38 @@ function changeChatId(chatId) {
       <template #header>
         历史会话
       </template>
-      <div>
-        <div
-          v-for="item in historyList"
-          :key="item.chatId"
-          class="history-box mb-16px pt-14px pb-14px pl-8px pr-8px"
-          :class="item.chatId === route.query.chatId ? 'active' : ''"
-          @click="changeChatId(item.chatId)"
-        >
-          <div class="title flex">
-            <div class="inline-block mr-6px">
-              {{ item.value.slice(0, 20) }}
+      <div class="">
+        <el-empty v-if="!historyList.length" :image-size="200" />
+        <ElScrollbar max-height="600px">
+          <div
+            v-for="item in historyList"
+            :key="item.chatId"
+            class="history-box mb-16px pt-14px pb-14px pl-8px pr-8px "
+            :class="item.chatId === route.query.chatId ? 'active' : ''"
+            @click="changeChatId(item.chatId)"
+          >
+            <div class="title flex">
+              <div class="inline-block mr-6px">
+                {{ item.value.slice(0, 20) }}
+              </div>
+              <div v-if="item.chatId === route.query.chatId" class="current inline-block h-14px l">
+                当前会话
+              </div>
+              <div class="time inline-block ml-auto">
+                {{ formateTime(item.createTime) }}
+              </div>
             </div>
-            <div v-if="item.chatId === route.query.chatId" class="current inline-block h-14px l">
-              当前会话
-            </div>
-            <div class="time inline-block ml-auto">
-              {{ formateTime(item.createTime) }}
+            <div class="content flex">
+              <div>{{ `${item.askValue.slice(0, 20)}...` }}</div>
+              <div class="ml-auto" @click.stop="deleteChatList(item.chatId)">
+                <img
+                  :src="deleteIcon"
+                  class="opr-icon"
+                >
+              </div>
             </div>
           </div>
-          <div class="content flex">
-            <div>{{ `${item.askValue.slice(0, 20)}...` }}</div>
-            <div class="ml-auto" @click.stop="deleteChatList(item.chatId)">
-              <img
-                :src="deleteIcon"
-                class="opr-icon"
-              >
-            </div>
-          </div>
-        </div>
+        </ElScrollbar>
         <el-pagination
           v-model:current-page="pageNumber"
           :page-size="10"
@@ -760,7 +776,7 @@ function changeChatId(chatId) {
         line-height: 12px;
     }
 
-    &.active {
+    &.active, &:hover{
         background: linear-gradient(
             136deg,
             #def9ff 0%,
@@ -862,15 +878,13 @@ function changeChatId(chatId) {
     }
     .chat-user {
         max-width: 80%;
-        background: linear-gradient(136deg, #c07dff 0%, #82e2ff 100%);
+        background: #52A5F2;
         border-radius: 6px 6px 6px 6px;
-        padding: 8px;
         margin-bottom: 18px;
 
         &:hover {
-            background: linear-gradient(136deg, #c07dff 0%, #82e2ff 100%),
-                rgba(255, 255, 255, 0.3);
-            box-shadow: 0px 0px 4px 0px #d1d1d1;
+            opacity: 0.6;
+            box-shadow: 0px 0px 4px 0px #D1D1D1;
         }
 
         .pending {
@@ -888,12 +902,12 @@ function changeChatId(chatId) {
             font-size: 14px;
             color: #ffffff;
             line-height: 21px;
+            padding: 8px;
         }
     }
     .chat-bot {
         max-width: 80%;
         background: #f8f8f8;
-        padding: 8px;
         border-radius: 6px 6px 6px 6px;
         margin-bottom: 18px;
 
@@ -906,6 +920,7 @@ function changeChatId(chatId) {
             font-size: 14px;
             color: #222222;
             line-height: 21px;
+            padding: 8px;
         }
     }
 

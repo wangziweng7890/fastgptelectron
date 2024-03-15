@@ -52,9 +52,11 @@ async function onSend(StartChatFnProps) {
 
 const avatar = ref('')
 const chatName = ref('')
+const intro = ref('')
 GetFrontAppGet({ appId }).then((data) => {
   avatar.value = data.avatar
   chatName.value = data.name
+  intro.value = data.intro
 })
 
 const levelName = ref()
@@ -75,7 +77,7 @@ function jumpToSousou() {
 
 <template>
   <div class="min-w-600px flex justify-center items-center h-100%">
-    <div class="flex flex-col justify-center items-center bg-white pt-12px h-100% overflow-hidden">
+    <div class="flex flex-col w-100% justify-center items-center bg-white pt-12px h-100% overflow-hidden">
       <section class="relative w-100%">
         <YhButton
           class="absolute top-12px right-20px"
@@ -92,6 +94,7 @@ function jumpToSousou() {
         class="flex-1 w-100%"
         :on-start-chat="onSend"
         :is-new-chat="forbidRefresh"
+        :intro="intro"
         @refresh="getUserInfo"
       />
     </div>
