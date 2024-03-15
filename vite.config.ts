@@ -39,6 +39,20 @@ export default ({ mode, command }: ConfigEnv) => {
     if (fs.statSync(`src/styles/resources/${dirname}`).isFile())
       scssResources.push(`@use "src/styles/resources/${dirname}" as *;`)
   })
+  const electronArr = (!mode.includes('h5') && mode !== 'development') ? [
+    electron({
+      main: {
+        entry: 'electron/main.ts',
+      },
+      preload: {
+        input: 'electron/preload.ts',
+      },
+      // Optional: Use Node.js API in the Renderer process
+      renderer: {},
+    }),
+    electronRenderer(),
+    polyfillExports(),
+  ] : []
   return defineConfig({
     // base: './',
     resolve: {
@@ -144,18 +158,7 @@ export default ({ mode, command }: ConfigEnv) => {
       Vue({
         // reactivityTransform: true,
       }),
-      !mode.includes('h5') && (electron({
-        main: {
-          entry: 'electron/main.ts',
-        },
-        preload: {
-          input: 'electron/preload.ts',
-        },
-        // Optional: Use Node.js API in the Renderer process
-        renderer: {},
-      }),
-      electronRenderer(),
-      polyfillExports()),
+      ...electronArr,
       viteMockServe({
         mockPath: 'mock',
         enable: command !== 'build',
