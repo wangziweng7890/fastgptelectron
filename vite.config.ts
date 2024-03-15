@@ -25,6 +25,7 @@ import iconfontLoader, { FileSystemIconLoader } from '@galaxy-fe/vite-plugin-uno
 import autoOptimizeDeps from '@galaxy-fe/vite-plugin-auto-optimize'
 import viteCompression from 'vite-plugin-compression'
 import electronRenderer from 'vite-plugin-electron-renderer'
+import polyfillExports from 'vite-plugin-electron-renderer'
 // sentry
 
 const autoprefixer = require('autoprefixer')
@@ -38,7 +39,7 @@ export default ({ mode, command }: ConfigEnv) => {
     if (fs.statSync(`src/styles/resources/${dirname}`).isFile())
       scssResources.push(`@use "src/styles/resources/${dirname}" as *;`)
   })
-  const electronArr = (!mode.includes('h5') && mode !== 'development') ? [
+  const electronArr = (!mode.includes('h5')) ? [
     electron({
       main: {
         entry: 'electron/main.ts',
