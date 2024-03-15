@@ -153,6 +153,7 @@
       "./dist-electron"
     ],
     "mac": {
+      "icon": "public/icon.png",
       "artifactName": "${productName}_${version}.${ext}",
       "target": [
         "dmg",
@@ -161,13 +162,15 @@
       "identity": "CSC_LINK"
     },
     "win": {
+      "icon": "public/icon.png",
       "target": [
-        "nsis", "zip"
+        "nsis",
+        "zip"
       ],
       "artifactName": "${productName}_${version}.${ext}"
     },
     "nsis": {
-      "oneClick": false,
+      "oneClick": true,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false
