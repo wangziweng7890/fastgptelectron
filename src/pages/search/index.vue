@@ -126,11 +126,16 @@ async function loadData(key: string) {
     paramsData.value.cql = keywordStr // 关键字 //encodeURIComponent(`siteSearch ~ "${keyword.value}"`)
     paramsData.value.start = (currentPage.value - 1) * pageSize.value // 页码
     paramsData.value.limit = pageSize.value
-    const res = await GetWikiRestApiSearch(paramsData.value, {
-        auth: {
+    let auth
+    if (username && password) {
+        auth = {
             username,
             password
         }
+
+    }
+    const res = await GetWikiRestApiSearch(paramsData.value, {
+        auth
     })
 
     total.value = res.totalSize || 0
@@ -213,7 +218,7 @@ const handleClick = () => {
         <!--   使用element-plus实现登录弹窗     -->
         <el-dialog
             v-model="visible"
-            width="500px"
+            width="300px"
             align-center
             destroy-on-close
             custom-class="login-dialog"
@@ -404,10 +409,16 @@ const handleClick = () => {
 //    margin-top: 12px;
 //}
 :deep {
-    .login-dialog .el-dialog__header {
-        margin-right: 0;
-        padding: 20px 16px;
-        border-bottom: 1px solid #F6F6F6;
+    .login-dialog {
+        border-radius: 12px;
+        .el-dialog__header {
+            margin-right: 0;
+            padding: 20px 16px;
+            border-bottom: 1px solid #F6F6F6;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            background: linear-gradient( 136deg, #DEF9FF 0%, #FFFFFF 50%, #FDF0FF 100%), linear-gradient( 180deg, rgba(255,255,255,0) 0%, #FFFFFF 14%, #FFFFFF 100%);
+        }
     }
 }
 .header-title {
