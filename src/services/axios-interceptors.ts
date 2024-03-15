@@ -60,9 +60,9 @@ export const resCodeInterceptor = async (res) => {
 }
 
 export const resErrorInterceptor = (error: AxiosError<ResponseError>) => {
-    if (['/rest/api', '/wiki/rest'].some(t => error.config?.url.includes(t))) {
-        return Promise.reject(error)
-    }
+  if (['/rest/api', '/wiki/rest'].some(t => error.config?.url.includes(t))) {
+    return Promise.reject(error)
+  }
   if (NeedLoginCode.includes(error.response?.status || 0)) {
     login()
   }
@@ -97,7 +97,7 @@ export const resErrorInterceptor = (error: AxiosError<ResponseError>) => {
   // else if (error.message.includes('Network')) {
   //   message = '网络错误'
   // }
-  error.message = '请求被妖怪抓走啦'
+  error.message = '网络被妖怪抓走啦'
 
   if (error.message && !hideAxiosErrorToast && !Axios.isCancel(error)) {
     ElMessage.error(error.message)

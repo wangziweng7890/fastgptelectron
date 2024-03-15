@@ -44,7 +44,7 @@ export const streamFetch = ({
     const failedFinish = (err?: any) => {
       finished = true
       reject({
-        message: getErrText(err, errMsg || '响应过程出现异常~'),
+        message: getErrText(err, '网络被妖怪抓走啦~' || errMsg),
         responseText,
       })
     }
