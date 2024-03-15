@@ -15,12 +15,12 @@ export function GetWikiRestApiSearch(
   params: GetWikiRestApiSearchQuery,
   axiosConfig: AxiosRequestConfig = {},
 ): Promise<GetWikiRestApiSearchRes> {
-  return http.get(`http://wiki.galaxy-immi.com/rest/api/search?${qs.stringify(params)}`, axiosConfig)
+  return http.get(`http://kf-wiki.galaxy-immi.com/rest/api/search?${qs.stringify(params)}`, axiosConfig)
 }
 
 export function GetWikiSpaceAuth(
   params: GetWikiContentByIdQuery,
   axiosConfig: AxiosRequestConfig = {},
 ): Promise<GetWikiContentByIdRes> {
-  return http.get(`http://wiki.galaxy-immi.com/rest/api/space?${qs.stringify(params)}`, axiosConfig)
+  return http.get(`http://kf-wiki.galaxy-immi.com/rest/api/space?${qs.stringify(params)}`, axiosConfig)
 }
