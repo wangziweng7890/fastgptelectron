@@ -28,8 +28,8 @@
         padding: 0 20px;
         text-align: center;
         border-bottom: 1px solid #F6F6F6;
-
-        background: linear-gradient( 136deg, #DEF9FF 0%, #FFFFFF 50%, #FDF0FF 100%), linear-gradient( 180deg, rgba(255,255,255,0) 0%, #FFFFFF 14%, #FFFFFF 100%);
+        background-image: linear-gradient(to right, #DEF9FF 0%, #FFFFFF 50%, #FDF0FF 100%), linear-gradient(to bottom, rgba(255,255,255,0), #ffffff);
+        background-blend-mode: screen;
 
         .el-dialog__headerbtn {
             top: 2px;
