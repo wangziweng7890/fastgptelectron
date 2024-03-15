@@ -262,81 +262,81 @@ const handleClick = () => {
 
 <style lang="scss" scoped>
 .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    height: 100vh;
-    font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 100vh;
+  font-size: 14px;
 }
 
 .content-container {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    height: 100vh;
-    font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100vh;
+  font-size: 14px;
 }
 
 .back-button {
-    display: inline-flex;
-    align-items: center;
-    margin: 12px 0 0 16px;
-    padding: 6px 8px;
-    width: 90px;
-    background: #ECFCFF;
-    color: #606060;
-    border-radius: 4px;
-    cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  margin: 12px 0 0 16px;
+  padding: 6px 8px;
+  width: 90px;
+  background: #ecfcff;
+  color: #606060;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .back-icon {
-    margin-right: 4px;
-    width: 13px;
-    height: 11px;
-    border-radius: 0px 0px 0px 0px;
+  margin-right: 4px;
+  width: 13px;
+  height: 11px;
+  border-radius: 0;
 }
 
 .sousou-logo-img {
-    margin-top: 35vh;
+  margin-top: 35vh;
 }
 
 .sousou-logo-img img {
-    margin: 0 auto;
-    width: 84px;
-    height: 32px;
+  margin: 0 auto;
+  width: 84px;
+  height: 32px;
 }
 
 .sousou-title-img {
-    margin-top: 22px;
+  margin-top: 22px;
 }
 
 .sousou-title-img img {
-    margin: 0 auto;
-    width: 240px;
-    height: 34px;
+  margin: 0 auto;
+  width: 240px;
+  height: 34px;
 }
 
 .search-box {
-    margin-top: 34px;
-    padding: 0 16px;
-    width: 100%;
+  margin-top: 34px;
+  padding: 0 16px;
+  width: 100%;
 }
 
 .search-input {
-    //background: #F9F9FC;
-    //border-radius: 10px;
+  //background: #F9F9FC;
+  //border-radius: 10px;
 }
 
 .gray-input :deep {
-    .el-input__wrapper {
-        height: 46px;
-        background: #F9F9FC;
-        border-radius: 10px;
-        box-shadow: none;
-        border: none;
-    }
+  .el-input__wrapper {
+    height: 46px;
+    background: #f9f9fc;
+    border-radius: 10px;
+    box-shadow: none;
+    border: none;
+  }
 }
 
 //.search-input .el-input__inner {
@@ -344,98 +344,99 @@ const handleClick = () => {
 //}
 
 .sousou-desc {
-    margin-top: 30px;
-    font-size: 12px;
-    color: #909090;
-    text-align: center;
+  margin-top: 30px;
+  font-size: 12px;
+  color: #909090;
+  text-align: center;
 }
 
 .sousou-desc.is-search {
-    margin-top: 12px;
+  margin-top: 12px;
 }
 
 .search-result {
-    padding: 16px;
-    flex: 1;
-    height: 0;
-    overflow-y: auto;
+  padding: 16px;
+  flex: 1;
+  height: 0;
+  overflow-y: auto;
 }
 
 .result-item {
-    margin-bottom: 16px;
-    padding: 16px 8px;
-    background: #F8F8F8;
-    border-radius: 10px;
-    cursor: pointer;
+  margin-bottom: 16px;
+  padding: 16px 8px;
+  background: #f8f8f8;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .result-item :deep em {
-    color: #00C4FF;
-    font-style: normal;
+  color: #00c4ff;
+  font-style: normal;
 }
 
 .result-item:hover {
-    background: linear-gradient( 136deg, #DEF9FF 0%, #FFFFFF 50%, #FDF0FF 100%);
+  background: linear-gradient(136deg, #def9ff 0%, #fff 50%, #fdf0ff 100%);
 }
 
 .item-title {
-    color: #333;
+  color: #333;
 }
 
 .item-content {
-    margin-top: 12px;
-    color: #666;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* 控制显示行数 */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis; /* 超出部分显示省略号 */
-    white-space: normal; /* 显示换行 */
-    word-wrap: break-word; /* 允许单词内换行 */
-    overflow-wrap: break-word; /* 允许单词内换行 */
+  margin-top: 12px;
+  color: #666;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 控制显示行数 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 超出部分显示省略号 */
+  white-space: normal; /* 显示换行 */
+  word-wrap: break-word; /* 允许单词内换行 */
+  overflow-wrap: break-word; /* 允许单词内换行 */
 }
 
 .item-from {
-    margin-top: 12px;
-    color: #999;
+  margin-top: 12px;
+  color: #999;
 }
 
 .pagination-container {
-    display: flex;
-    justify-content: end;
-    padding: 16px 32px;
+  display: flex;
+  justify-content: end;
+  padding: 16px 32px;
 }
 //.mt-12 {
 //    margin-top: 12px;
 //}
 :deep {
-    .login-dialog {
-        border-radius: 12px;
-        .el-dialog__header {
-            margin-right: 0;
-            padding: 20px 16px;
-            border-bottom: 1px solid #F6F6F6;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-            background: linear-gradient( 136deg, #DEF9FF 0%, #FFFFFF 50%, #FDF0FF 100%), linear-gradient( 180deg, rgba(255,255,255,0) 0%, #FFFFFF 14%, #FFFFFF 100%);
-        }
+  .login-dialog {
+    border-radius: 12px;
+    .el-dialog__header {
+      margin-right: 0;
+      padding: 20px 16px;
+      border-bottom: 1px solid #f6f6f6;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      background: linear-gradient(136deg, #def9ff 0%, #fff 50%, #fdf0ff 100%), linear-gradient(180deg, rgb(255 255 255 / 0%) 0%, #fff 14%, #fff 100%);
     }
+  }
 }
 .header-title {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
-    color: #222;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
 }
 
 .login-btn {
-    background: #87DFFF;
-    border-radius: 6px;
-    border: none;
-    width: 93px;
-    height: 36px;
-    &.is-disabled, &.is-disabled:hover {
-        background: #ededed;
-    }
+  background: #87dfff;
+  border-radius: 6px;
+  border: none;
+  width: 93px;
+  height: 36px;
+  &.is-disabled,
+  &.is-disabled:hover {
+    background: #ededed;
+  }
 }
 </style>
