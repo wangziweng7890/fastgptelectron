@@ -1,7 +1,10 @@
 {
-  "projectId": "2581365",
+  "projectId": "4130721",
   "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OTEyNzg1LCJ0cyI6ImE1ZGNkODcxMjhmNmNjNmMiLCJpYXQiOjE2ODUwNjk2MjQxOTJ9.xH_x2-ijevjLaP37k9IlykP0cAhGD8Byml0uqDvJQa0",
-  "host": "https://api.apifox.cn",
+  "host": "http://api.apifox.cn",
   "context": "src/services/apifox",
-  "name": "apifox"
+  "name": "apifox",
+  "alias": {
+    "@/": "src/"
+    }
 }

@@ -12,7 +12,7 @@ window.addEventListener('unhandledrejection', (error) => {
 
 <template>
   <el-config-provider :locale="zhCn">
-    <main>
+    <main class="h-100%">
       <router-view />
     </main>
   </el-config-provider>
@@ -22,5 +22,16 @@ window.addEventListener('unhandledrejection', (error) => {
 .el-dropdown__list {
   min-width: 96px;
   min-height: 48px;
+}
+html {
+    height: 100%;
+
+    body {
+        height: 100%;
+
+        #app-main {
+            height: 100%;
+        }
+    }
 }
 </style>

@@ -65,7 +65,7 @@ export default ({ mode, command }: ConfigEnv) => {
         'Access-Control-Allow-Origin': '*',
       },
       host: '0.0.0.0',
-      port: 10300,
+      port: 10308,
       hmr: true,
       cors: true,
       proxy: {
