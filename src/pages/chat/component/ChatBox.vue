@@ -425,6 +425,19 @@ function changeChatId(chatId) {
   })
   showHistory.value = false
 }
+
+let timer
+onMounted(() => {
+  timer = setInterval(() => {
+    if (dayjs().hour() === 4 && route.query.chatId) {
+      newChat()
+    }
+  }, 3000)
+})
+
+onUnmounted(() => {
+  clearInterval(timer)
+})
 </script>
 
 <template>
@@ -631,6 +644,9 @@ function changeChatId(chatId) {
           class="absolute cursor-not-allowed z-3 right-10px bottom-10px w-24px h-24px"
           alt=""
         >
+        <div class="absolute color-#666 right-6px bottom-1px text-12px">
+          {{ messageContent.length }}/1000
+        </div>
       </div>
       <div class="tip">
         银河AI生成，内容仅供参考
@@ -649,6 +665,7 @@ function changeChatId(chatId) {
           class="mb-12px"
           resize="none"
           type="textarea"
+          show-word-limit
           :maxlength="1000"
           :autosize="{ minRows: 8, maxRows: 20 }"
           placeholder="可以展开说说，您觉得不满意的地方"
