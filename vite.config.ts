@@ -69,16 +69,16 @@ export default ({ mode, command }: ConfigEnv) => {
       hmr: true,
       cors: true,
       proxy: {
-          '/api/rest': {
-              target: 'http://wiki.galaxy-immi.com:8090/',
-              changeOrigin: true,
-              rewrite: path => path.replace(/\/api/, ''),
-          },
-          '/api': {
-            target: 'http://smart-h5-test.galaxy-immi.com:8090/prod-api/',
-            changeOrigin: true,
-            rewrite: path => path.replace(/\/api/, ''),
-          }
+        '/api/rest': {
+          target: 'http://wiki.galaxy-immi.com:8090/',
+          changeOrigin: true,
+          rewrite: path => path.replace(/\/api/, ''),
+        },
+        '/api': {
+          target: 'http://smart-h5-test.galaxy-immi.com:8090/prod-api/',
+          changeOrigin: true,
+          rewrite: path => path.replace(/\/api/, ''),
+        },
       },
     },
     build: {
@@ -144,7 +144,7 @@ export default ({ mode, command }: ConfigEnv) => {
       Vue({
         // reactivityTransform: true,
       }),
-      electron({
+      !mode.includes('h5') && (electron({
         main: {
           entry: 'electron/main.ts',
         },
@@ -155,7 +155,7 @@ export default ({ mode, command }: ConfigEnv) => {
         renderer: {},
       }),
       electronRenderer(),
-      polyfillExports(),
+      polyfillExports()),
       viteMockServe({
         mockPath: 'mock',
         enable: command !== 'build',
