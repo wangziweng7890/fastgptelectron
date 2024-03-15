@@ -98,14 +98,14 @@ const handleLogin = async () => {
       handleClose()
     }
     else {
-      ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
+      ElMessage.error('对不起，您的用户名或密码不正确。请重试。')
       // localStorage.removeItem('wiki-username')
       // localStorage.removeItem('wiki-password')
     }
   }
   catch (error) {
     console.log('error', error)
-    ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
+    ElMessage.error('对不起，您的用户名或密码不正确。请重试。')
   }
 }
 
