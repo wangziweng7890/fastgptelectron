@@ -4,7 +4,12 @@
 -->
 <script setup lang="ts">
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-
+const router = useRouter()
+if (!localStorage.getItem('access_token')) {
+  router.push({
+    path: '/login',
+  })
+}
 window.addEventListener('unhandledrejection', (error) => {
   console.log('unhandledrejection:', error)
 })

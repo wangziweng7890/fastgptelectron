@@ -641,7 +641,7 @@ onUnmounted(() => {
         <img
           v-else
           :src="notSendIcon"
-          class="absolute cursor-not-allowed z-3 right-10px bottom-10px w-24px h-24px"
+          class="absolute cursor-not-allowed z-3 right-10px bottom-15px w-24px h-24px"
           alt=""
         >
         <div class="absolute color-#666 right-6px bottom-1px text-12px">

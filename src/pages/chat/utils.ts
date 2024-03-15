@@ -18,7 +18,8 @@ export function replaceSensitiveText(text: string) {
 }
 
 export function getErrText(err: any, def = '') {
-  const msg: string = typeof err === 'string' ? err : err?.message || def || ''
+//   const msg: string = typeof err === 'string' ? err : err?.message || def || ''
+  const msg = '网络被妖怪抓走啦'
   msg && console.log('error =>', msg)
   return replaceSensitiveText(msg)
 }
