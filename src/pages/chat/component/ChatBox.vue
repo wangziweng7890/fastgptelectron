@@ -442,8 +442,9 @@ onUnmounted(() => {
 
 <template>
   <div class="chat-container flex flex-col overflow-hidden h-100% pt-12px">
-    <ElScrollbar ref="scrollbarRef" style="flex: 1">
+    <ElScrollbar ref="scrollbarRef" style="flex: 1" class="overflow-hidden">
       <section
+        id="ChatBoxRef"
         ref="ChatBoxRef"
         class="flex-1 pl-16px pr-16px flex flex-col"
       >
@@ -483,6 +484,7 @@ onUnmounted(() => {
           </div>
           <el-tooltip
             :show-arrow="false"
+            append-to="#ChatBoxRef"
             effect="light"
             :offset="8"
             :placement="
@@ -695,7 +697,7 @@ onUnmounted(() => {
       </template>
       <div>
         <el-empty v-if="!historyList.length" :image-size="200" />
-        <ElScrollbar max-height="600px" class="mb-16px">
+        <ElScrollbar max-height="500px" class="mb-16px">
           <div
             v-for="item in historyList"
             :key="item.chatId"
