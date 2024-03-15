@@ -4,11 +4,10 @@ import { ElMessage } from 'element-plus'
 import { NeedLoginCode, NoErrorResponseCode } from './types'
 import type { Middleware, ResponseError } from './types'
 
-const router = useRouter()
 function login() {
   console.log('跳转登录')
   // TODO 企业微信重新授权
-  // location.href = '/'
+  location.href = '/login'
 }
 
 // 如果不想通过拦截器统一弹出axios的error message, 在axios的config中加入key是 HideAxiosErrorToastKey ，value：true的选项
@@ -18,6 +17,13 @@ export const HideAxiosErrorToastKey = Symbol('_hide_axios_error_toast_key_')
 export const resCodeInterceptor = async (res) => {
   const resData = res.data ?? {}
   const code = resData.code
+
+  // 没有access_token，且不在登录页，则跳转登录
+  const access_token = localStorage.getItem('access_token')
+  if (!access_token && !location.href.includes('/login')) {
+    login()
+  }
+
   // 特殊url直接返回数据
   if (['/rest/api', '/wiki/rest'].some(t => res.config?.url.includes(t))) {
     return resData

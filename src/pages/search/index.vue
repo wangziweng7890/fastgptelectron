@@ -139,7 +139,7 @@ async function loadData(key: string) {
     })
 
     total.value = res.totalSize || 0
-    list.value = res.results?.map(t => {
+    list.value = res.results?.map((t: any) => {
         return {
             id: t.content?.id,
             title: highlightText(t.title),
@@ -233,31 +233,14 @@ const handleClick = () => {
             <!-- #body -->
             <div>
                 <div>请输入业务知识库账号密码</div>
-                <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-16px gray-input" size="large" />
-                <el-input v-model="passwordInput" type="password" placeholder="请输入wiki密码" class="mt-12px gray-input" size="large" />
+                <el-input v-model="usernameInput" placeholder="账号" class="mt-16px gray-input" size="large" />
+                <el-input v-model="passwordInput" type="password" placeholder="密码" class="mt-12px gray-input" size="large" />
                 <div class="mt-16px text-center">
                     <el-button type="primary" :disabled="!usernameInput || !passwordInput" class="login-btn" @click="handleLogin">登录</el-button>
                 </div>
             </div>
         </el-dialog>
-        <!--        <el-dialog-->
-        <!--            title="登录"-->
-        <!--            :visible.sync="visible"-->
-        <!--            width="300px"-->
-        <!--            center-->
-        <!--        >-->
-        <!--            <div>请输入业务知识库账号密码</div>-->
-        <!--            <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-12px ml-12px mr-12px gray-input" />-->
-        <!--            <el-input v-model="passwordInput" placeholder="请输入wiki密码" class="mt-12px ml-12px mr-12px gray-input" />-->
-        <!--            <el-button type="primary" @click="handleLogin" class="w-100% mt-12px">登录</el-button>-->
-        <!--        </el-dialog>-->
     </div>
-    <!--    <div v-else class="login-container">-->
-    <!--        <div>请输入wiki账号密码</div>-->
-    <!--        <el-input v-model="usernameInput" placeholder="请输入wiki账号" class="mt-12px ml-12px mr-12px gray-input" />-->
-    <!--        <el-input v-model="passwordInput" placeholder="请输入wiki密码" class="mt-12px ml-12px mr-12px gray-input" />-->
-    <!--        <el-button type="primary" @click="handleLogin" class="w-100% mt-12px">登录</el-button>-->
-    <!--    </div>-->
 </template>
 
 <style lang="scss" scoped>
