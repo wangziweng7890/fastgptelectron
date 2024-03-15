@@ -49,6 +49,7 @@ const route = useRoute()
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 24)
 const messageContent = ref('')
+const chatHistory = ref<any>([])
 
 async function zanChat(dataId, isCancel) {
   if (isCancel) {
@@ -83,9 +84,11 @@ function copyChat(content, dataId) {
 
 const showDelete = ref(false)
 let tempId = ''
+let deleteType = ''
 function deleteChat(dataId) {
   tempId = dataId
   showDelete.value = true
+  deleteType = 'dataId'
 }
 
 const isLoading = ref(false)
@@ -93,14 +96,23 @@ async function deleteConfirm() {
   if (isLoading.value)
     return
   try {
-    await GetFrontChatCompletionsDelete({
-      id: tempId,
-    })
+    if (deleteType === 'dataId') {
+      await GetFrontChatCompletionsDelete({
+        id: tempId,
+      })
+      setChatHistory(
+        chatHistory.value.filter(item => item.dataId !== tempId),
+      )
+    }
+    else {
+      await GetFrontChatCompletionsDeleteByChatId({
+        chatId: tempId,
+      })
+      pageNumber.value = 1
+      fetchList()
+    }
     ElMessage.success('删得干净，心情美丽')
     showDelete.value = false
-    setChatHistory(
-      chatHistory.value.filter(item => item.dataId !== tempId),
-    )
   }
   finally {
     isLoading.value = false
@@ -117,14 +129,6 @@ const showCopyActive = ref(false)
 const showDeleteActive = ref(false)
 const showZanActive = ref(false)
 const showCaiActive = ref(false)
-
-function setUnActive() {
-  console.log(111111111111111111)
-  showCopyActive.value = false
-  showDeleteActive.value = false
-  showZanActive.value = false
-  showCaiActive.value = false
-}
 
 // 转义对话内容
 function onEscapeContent(content, type) {
@@ -148,8 +152,6 @@ async function onEnter(e) {
     onSend()
   }
 }
-
-const chatHistory = ref<any>([])
 
 const isChatting = computed<boolean>(() => {
   const list = chatHistory.value
@@ -282,7 +284,6 @@ async function getChatList() {
 watch(
   () => route.query.chatId,
   async () => {
-    console.log('chatId change', route.query.chatId)
     if (route.query.chatId && !props.isNewChat) {
       // 获取历史列表
       getChatList()
@@ -302,7 +303,6 @@ function setChatHistory(list) {
 }
 
 function generatingMessage({ text = '', status, name }) {
-  console.log(text, status, name)
   isWaitting.value = false
   chatHistory.value = chatHistory.value.map((item, index) => {
     if (index !== chatHistory.value.length - 1)
@@ -337,16 +337,15 @@ function newChat() {
 const pageNumber = ref(1)
 const pageSize = 10
 const count = ref(0)
-const historyList = ref([])
+const historyList = ref<any[]>([])
 const showHistory = ref(false)
 
 async function fetchList() {
-  const { data, totalCount }
-        = await GetFrontChatCompletionsHistory({
-          appId,
-          pageNumber: pageNumber.value,
-          pageSize,
-        })
+  const { data, totalCount } = await GetFrontChatCompletionsHistory({
+    appId,
+    pageNumber: pageNumber.value,
+    pageSize,
+  })
   count.value = totalCount
   historyList.value = data
 }
@@ -387,11 +386,10 @@ async function caiChat(dataId, isCancel) {
     })
   }
   setChatHistory(
-    chatHistory.value.map((item, index) => {
+    chatHistory.value.map((item) => {
       return {
         ...item,
-        stepType:
-                    dataId === item.dataId ? (isCancel ? 0 : 2) : item.stepType,
+        stepType: dataId === item.dataId ? (isCancel ? 0 : 2) : item.stepType,
       }
     }),
   )
@@ -408,11 +406,9 @@ function formateTime(time) {
 }
 
 async function deleteChatList(chatId) {
-  await GetFrontChatCompletionsDeleteByChatId({
-    chatId,
-  })
-  pageNumber.value = 1
-  fetchList()
+  tempId = chatId
+  showDelete.value = true
+  deleteType = 'chatId'
 }
 
 function changeChatId(chatId) {
@@ -433,9 +429,15 @@ function changeChatId(chatId) {
         ref="ChatBoxRef"
         class="flex-1 pl-16px pr-16px flex flex-col"
       >
-        <div v-if="chatHistory.length === 0" class="chat-box chat-bot mt-10px flex p-8px">
+        <div
+          v-if="chatHistory.length === 0"
+          class="chat-box chat-bot mt-10px flex p-8px"
+        >
           <div class="text" />
-          {{ props.intro || 'Hi,我是Eva伊娃，你的新同事，初来乍到～作为你的私人助理，想做你的贴心小棉袄~' }}
+          {{
+            props.intro
+              || "Hi,我是Eva伊娃，你的新同事，初来乍到～作为你的私人助理，想做你的贴心小棉袄~"
+          }}
         </div>
         <div
           v-for="(item, index) in chatHistory"
@@ -530,7 +532,11 @@ function changeChatId(chatId) {
                       && item.stepType !== 2
                   "
                   :src="
-                    showZanActive ? zanActiveIcon : item.stepType === 1 ? zanSelectIcon : zanIcon
+                    showZanActive
+                      ? zanActiveIcon
+                      : item.stepType === 1
+                        ? zanSelectIcon
+                        : zanIcon
                   "
                   class="opr-icon"
                   @mouseover="showZanActive = true"
@@ -548,7 +554,11 @@ function changeChatId(chatId) {
                       && item.stepType !== 1
                   "
                   :src="
-                    showCaiActive ? caiActiveIcon : item.stepType === 2 ? caiSelectIcon : caiIcon
+                    showCaiActive
+                      ? caiActiveIcon
+                      : item.stepType === 2
+                        ? caiSelectIcon
+                        : caiIcon
                   "
                   class="opr-icon"
                   @mouseover="showCaiActive = true"
@@ -661,21 +671,26 @@ function changeChatId(chatId) {
       <template #header>
         历史会话
       </template>
-      <div class="">
+      <div>
         <el-empty v-if="!historyList.length" :image-size="200" />
-        <ElScrollbar max-height="600px">
+        <ElScrollbar max-height="600px" class="mb-16px">
           <div
             v-for="item in historyList"
             :key="item.chatId"
-            class="history-box mb-16px pt-14px pb-14px pl-8px pr-8px "
-            :class="item.chatId === route.query.chatId ? 'active' : ''"
+            class="history-box mb-16px pt-14px pb-14px pl-8px pr-8px"
+            :class="
+              item.chatId === route.query.chatId ? 'active' : ''
+            "
             @click="changeChatId(item.chatId)"
           >
             <div class="title flex">
               <div class="inline-block mr-6px">
                 {{ item.value.slice(0, 20) }}
               </div>
-              <div v-if="item.chatId === route.query.chatId" class="current inline-block h-14px l">
+              <div
+                v-if="item.chatId === route.query.chatId"
+                class="current inline-block h-14px l"
+              >
                 当前会话
               </div>
               <div class="time inline-block ml-auto">
@@ -684,17 +699,18 @@ function changeChatId(chatId) {
             </div>
             <div class="content flex">
               <div>{{ `${item.askValue.slice(0, 20)}...` }}</div>
-              <div class="ml-auto" @click.stop="deleteChatList(item.chatId)">
-                <img
-                  :src="deleteIcon"
-                  class="opr-icon"
-                >
+              <div
+                class="ml-auto"
+                @click.stop="deleteChatList(item.chatId)"
+              >
+                <img :src="deleteIcon" class="opr-icon">
               </div>
             </div>
           </div>
         </ElScrollbar>
         <el-pagination
           v-model:current-page="pageNumber"
+          :pager-count="3"
           :page-size="10"
           layout="total, prev, pager, next, jumper"
           :total="count"
@@ -715,7 +731,7 @@ function changeChatId(chatId) {
           <el-button
             :loading="isLoading"
             color="#EDEDED"
-            class="w-88px"
+            class="w-88px color-#666"
             size="large"
             @click="deleteConfirm"
           >
@@ -724,7 +740,7 @@ function changeChatId(chatId) {
           <el-button
             :loading="isLoading"
             color="#00BBFF"
-            class="w-88px"
+            class="w-88px color-#fff"
             size="large"
             @click="showDelete = false"
           >
@@ -776,7 +792,8 @@ function changeChatId(chatId) {
         line-height: 12px;
     }
 
-    &.active, &:hover{
+    &.active,
+    &:hover {
         background: linear-gradient(
             136deg,
             #def9ff 0%,
@@ -878,13 +895,13 @@ function changeChatId(chatId) {
     }
     .chat-user {
         max-width: 80%;
-        background: #52A5F2;
+        background: #52a5f2;
         border-radius: 6px 6px 6px 6px;
         margin-bottom: 18px;
 
         &:hover {
             opacity: 0.6;
-            box-shadow: 0px 0px 4px 0px #D1D1D1;
+            box-shadow: 0px 0px 4px 0px #d1d1d1;
         }
 
         .pending {
