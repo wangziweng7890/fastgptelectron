@@ -3,11 +3,12 @@ import Axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { NeedLoginCode, NoErrorResponseCode } from './types'
 import type { Middleware, ResponseError } from './types'
+import router from '~/router'
 
 function login() {
   console.log('跳转登录')
   // TODO 企业微信重新授权
-  location.href = '/login'
+  router.push('/login')
 }
 
 // 如果不想通过拦截器统一弹出axios的error message, 在axios的config中加入key是 HideAxiosErrorToastKey ，value：true的选项
