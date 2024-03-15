@@ -67,7 +67,7 @@ function getUserInfo() {
     percentage.value = data.point
   })
 }
-
+getUserInfo()
 function jumpToSousou() {
   router.push({
     path: '/search',

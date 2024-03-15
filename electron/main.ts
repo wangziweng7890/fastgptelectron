@@ -8,7 +8,7 @@ const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 900,
-    icon: path.join(__dirname, 'favicon.svg'),
+    icon: path.join(__dirname, isMac ? 'favicon.icns' : 'favicon.ico'),
     webPreferences: {
       contextIsolation: true, // 是否开启隔离上下文
       nodeIntegration: true, // 渲染进程使用Node API
@@ -16,10 +16,6 @@ const createWindow = () => {
       webviewTag: true,
     },
   })
-  // mac
-  if (isMac) {
-    // app.dock.setIcon(path.join(__dirname, './favicon.svg'))
-  }
 
   const menu = Menu.buildFromTemplate([
     {

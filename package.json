@@ -141,7 +141,7 @@
   ],
   "build": {
     "appId": "com.galaxy.desktop",
-    "productName": "银河助手",
+    "productName": "银河数字助理",
     "asar": true,
     "copyright": "Copyright © 2024 银河集团",
     "directories": {

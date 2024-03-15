@@ -76,11 +76,11 @@ async function zanChat(dataId, isCancel) {
   !isCancel && ElMessage.success('点赞完成，你成功引起了我的注意')
 }
 
-function copyChat(content, dataId) {
+function copyChat(content, dataId, type) {
   const res = copy(content.replace(/<[^>]+>|&[^>]+;/g, '').trim())
   res && ElMessage.success('复制成功，感觉自己像个魔术师')
 
-  GetFrontChatstepStep({
+  type === 'AI' && GetFrontChatstepStep({
     type: 3,
     chatDetailId: dataId,
   })
@@ -542,7 +542,7 @@ onUnmounted(() => {
                   class="opr-icon"
                   @mouseover="showCopyActive = true"
                   @mouseout="showCopyActive = false"
-                  @click="copyChat(item.value, item.dataId)"
+                  @click="copyChat(item.value, item.dataId, item.obj)"
                 >
                 <img
                   v-if="
@@ -707,7 +707,7 @@ onUnmounted(() => {
           >
             <div class="title flex">
               <div class="inline-block mr-6px">
-                {{ item.value.slice(0, 20) }}
+                {{ item.value.slice(0, 15) + (item.value.length > 15 ? '...' : '') }}
               </div>
               <div
                 v-if="item.chatId === route.query.chatId"
@@ -720,7 +720,7 @@ onUnmounted(() => {
               </div>
             </div>
             <div class="content flex">
-              <div>{{ `${item.askValue.slice(0, 20)}...` }}</div>
+              <div>{{ `${item.askValue.slice(0, 20)}${item.askValue.length > 20 ? '...' : ''}` }}</div>
               <div
                 class="ml-auto"
                 @click.stop="deleteChatList(item.chatId)"
