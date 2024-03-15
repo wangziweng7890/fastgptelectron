@@ -35,35 +35,6 @@ getUserInfo()
 hasUser.value = !!username && !!password
 visible.value = !hasUser.value
 
-const handleLogin = () => {
-    const auth = {
-        username: usernameInput.value,
-        password: passwordInput.value
-    }
-    GetWikiSpaceAuth(auth, { auth }).then(res => {
-        if (res) {
-            localStorage.setItem('wiki-username', usernameInput.value)
-            localStorage.setItem('wiki-password', passwordInput.value)
-            hasUser.value = true
-            getUserInfo()
-            loadData('')
-            ElMessage.success('登录成功!')
-            handleClose()
-        } else {
-            ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
-            // localStorage.removeItem('wiki-username')
-            // localStorage.removeItem('wiki-password')
-        }
-    }).catch(err => {
-        console.log('err', err)
-        ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
-        // localStorage.removeItem('wiki-username')
-        // localStorage.removeItem('wiki-password')
-    })
-    console.log('handleLogin')
-    // loadData('')
-}
-
 console.log('visible', visible.value)
 const isSearch = ref(false) // 是否触发过搜搜
 const keyword = ref('') // 搜索的关键字
@@ -98,6 +69,43 @@ const paramsData = ref<paramsModel>({
     src: "next.ui.search",
     includeArchivedSpaces: false
 })
+
+// 登录
+const handleLogin = async () => {
+    const auth = {
+        username: usernameInput.value,
+        password: passwordInput.value
+    }
+
+    try {
+        const res = await GetWikiRestApiSearch({
+            ...paramsData.value,
+            cql: 'siteSearch ~ "key"',
+        }, {
+            auth
+            // headers: {
+            //     'Authorization': 'Basic ' + btoa(`${usernameInput.value}:${passwordInput.value}`)
+            // }
+        })
+        console.log('123', res)
+        if (res?.results) {
+            localStorage.setItem('wiki-username', usernameInput.value)
+            localStorage.setItem('wiki-password', passwordInput.value)
+            hasUser.value = true
+            getUserInfo()
+            loadData('login')
+            ElMessage.success('登录成功!')
+            handleClose()
+        } else {
+            ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
+            // localStorage.removeItem('wiki-username')
+            // localStorage.removeItem('wiki-password')
+        }
+    } catch (error) {
+        console.log('error', error)
+        ElMessage.error('对不起，您的用户名和/或密码不正确。请重新再试。')
+    }
+}
 
 // 自动拼接成 高亮字符串
 const highlightText = (str: string) => {

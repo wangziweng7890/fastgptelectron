@@ -55,6 +55,9 @@ export const resCodeInterceptor = async (res) => {
 }
 
 export const resErrorInterceptor = (error: AxiosError<ResponseError>) => {
+    if (['/rest/api', '/wiki/rest'].some(t => error.config?.url.includes(t))) {
+        return Promise.reject(error)
+    }
   if (NeedLoginCode.includes(error.response?.status || 0)) {
     login()
   }
