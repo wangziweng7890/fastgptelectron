@@ -33,7 +33,7 @@ onMounted(() => {
 })
 
 function goBack() {
-  router.push('/')
+  router.push('/chat')
 }
 </script>
 

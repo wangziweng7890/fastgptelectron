@@ -19,9 +19,9 @@ const systemRoutes: any = [
   {
     path: '/:all(.*)*',
     name: 'notFound',
-    component: () => import('@/pages/[...all].vue'),
+    component: () => import('@/pages/chat/index.vue'),
     meta: {
-      title: '找不到页面',
+      title: '银河数字助理',
     },
   },
 ]
