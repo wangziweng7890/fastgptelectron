@@ -79,6 +79,11 @@ async function zanChat(dataId, isCancel) {
 function copyChat(content, dataId) {
   const res = copy(content.replace(/<[^>]+>|&[^>]+;/g, '').trim())
   res && ElMessage.success('复制成功，感觉自己像个魔术师')
+
+  GetFrontChatstepStep({
+    type: 3,
+    chatDetailId: dataId,
+  })
   updatePoint(dataId)
 }
 
