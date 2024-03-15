@@ -64,7 +64,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <webview v-if="loginUrl" :src="loginUrl" style="display: inline-flex; width: 640px; height: 800px;" />
+  <webview v-if="loginUrl" :src="loginUrl" style="display: flex; width: 100%; height: 100%;" />
 </template>
 
 <style scoped lang="scss">
