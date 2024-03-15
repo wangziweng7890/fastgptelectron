@@ -6,7 +6,7 @@
   "main": "dist-electron/main.js",
   "scripts": {
     "sign": "codesign --deep --force --verbose --sign - node_modules/electron/dist/electron.app",
-    "electron:build:test": "vite build --mode test && electron-builder",
+    "electron:build:test": "vite build --mode test && electron-builder -mw",
     "preinstall": "npx only-allow pnpm",
     "build:only": "node ./run.js build",
     "publish:test": "node ./run.js publish",
@@ -150,7 +150,8 @@
       "target": [
         "dmg",
         "zip"
-      ]
+      ],
+      "identity": "CSC_LINK"
     },
     "win": {
       "target": [

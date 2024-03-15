@@ -31,6 +31,9 @@ const versionInfo = `本应用正在使用 Chrome (v${window.electronAPI.chromeV
     <ul>
       <li>
         <a href="">
+          <p @click="handleRedirect">
+            链接跳转template页
+          </p>
           <router-link to="/template">
             链接跳转template页
           </router-link>
