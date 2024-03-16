@@ -12,7 +12,7 @@ export const showVersion = () => {
 }
 
 // 很奇怪 会弹多次，所以用变量控制
-let isShowedError = false
+// const isShowedError = false
 let isShowedUpdateDialog = false
 let isShowedNewVersionDialog = false
 
@@ -34,9 +34,9 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
   // 监听'error'事件
   autoUpdater.on('error', (err) => {
     console.log(`出错拉${err}`)
-    !isShowedError && dialog.showErrorBox('更新出错拉！', err.message)
-    isShowedError = true
-    clearInterval(updateInterval)
+    // !isShowedError && dialog.showErrorBox('更新出错拉！', err.message)
+    // isShowedError = true
+    // clearInterval(updateInterval)
   })
 
   // 监听'update-available'事件，发现有新版本时触发
@@ -78,13 +78,11 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
         clearInterval(updateInterval)
         if (buttonIndex.response === 0) {
           // 选择是，则退出程序，安装新版本
-          // win.webContents.send('quit')
+          win.webContents.send('quit')
           autoUpdater.quitAndInstall()
           // autoUpdater.quitAndInstall(true, true)
-          // if (win && win.destroy) {
-          //   win.destroy()
-          // }
-          // app.quit()
+          win?.destroy?.()
+          app?.quit?.()
         }
         else {
           isShowedUpdateDialog = false
