@@ -27,3 +27,5 @@ export async function handleFileOpen() {
     return filePaths[0]
   }
 }
+
+export const isMac = process.platform === 'darwin'
