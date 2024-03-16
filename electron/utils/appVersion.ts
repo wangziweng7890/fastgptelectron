@@ -11,7 +11,8 @@ export const showVersion = () => {
   })
 }
 
-let isShowError = false
+let isShowedError = false
+let isShowedUpdateDialog = false
 
 /** 检测更新 */
 export const checkUpdate = (win: BrowserWindow, updateInterval) => {
@@ -31,8 +32,8 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
   // 监听'error'事件
   autoUpdater.on('error', (err) => {
     console.log(`出错拉${err}`)
-    !isShowError && dialog.showErrorBox('更新出错拉！', err.message)
-    isShowError = true
+    !isShowedError && dialog.showErrorBox('更新出错拉！', err.message)
+    isShowedError = true
     clearInterval(updateInterval)
   })
 
@@ -63,7 +64,7 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
 
   // 监听'update-downloaded'事件，新版本下载完成时触发
   autoUpdater.on('update-downloaded', () => {
-    dialog
+    !isShowedUpdateDialog && dialog
       .showMessageBox({
         type: 'info',
         title: '应用更新',
@@ -82,6 +83,10 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
           // }
           // app.quit()
         }
+        else {
+          isShowedUpdateDialog = false
+        }
       })
+    isShowedUpdateDialog = true
   })
 }

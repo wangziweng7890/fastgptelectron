@@ -1,6 +1,6 @@
 {
   "name": "galaxy-helper",
-  "version": "0.0.15",
+  "version": "0.0.18",
   "private": true,
   "packageManager": "pnpm@7.4.0",
   "main": "dist-electron/main.js",
