@@ -158,8 +158,7 @@ const handleKeydown = debounce(async () => {
 }, 200)
 
 const handleItem = async (item: any) => {
-  console.log('item.content?._links?.webui', item._links?.webui)
-  window.open(`http://kf-wiki.galaxy-immi.com/${item._links?.webui}`)
+  window.electronAPI.openURL(`http://kf-wiki.galaxy-immi.com/${item._links?.webui}`)
 }
 
 const handleClick = () => {

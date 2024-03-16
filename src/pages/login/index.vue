@@ -51,10 +51,16 @@ async function loadLoginUrl() {
 const init = async () => {
   await loadLoginUrl()
   const webview = document.querySelector('webview')
-  webview?.addEventListener('will-navigate', (e) => {
+  webview?.addEventListener('will-navigate', (e: any) => {
     console.log('will-navigate', e)
+    const targetUrl = e.url || ''
+    // 跳转的域名和企业微信的域名一致，表示刷新页面
+    if (loginUrl.value.slice(0, loginUrl.value.indexOf('?')) === targetUrl.slice(0, targetUrl.indexOf('?'))) {
+        (webview.reload || location.reload)()
+        return
+    }
     loginUrl.value = ''
-    initAuth(e.url)
+    initAuth(targetUrl)
   })
 }
 

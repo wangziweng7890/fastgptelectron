@@ -1,4 +1,4 @@
-import { BrowserWindow, IpcMainEvent, dialog } from 'electron'
+import { BrowserWindow, IpcMainEvent, dialog, shell } from 'electron'
 
 /**
  * 通过窗口事件获取发送者的窗口
@@ -14,7 +14,7 @@ export function getWindowByEvent(event: IpcMainEvent): BrowserWindow | null {
   return null
 }
 
-export function handleSetTitle(event, title) {
+export function handleSetTitle(event, title: string) {
   const webContents = event.sender
   const win = BrowserWindow.fromWebContents(webContents)
   win?.setTitle(title)
@@ -29,3 +29,7 @@ export async function handleFileOpen() {
 }
 
 export const isMac = process.platform === 'darwin'
+
+export const onOpenURL = (event, url: string) => {
+  shell.openExternal(url)
+}

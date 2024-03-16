@@ -1,6 +1,6 @@
 import path from 'path'
 import { BrowserWindow, app, ipcMain } from 'electron'
-import { handleFileOpen, handleSetTitle, isMac } from './utils/help'
+import { handleFileOpen, handleSetTitle, isMac, onOpenURL } from './utils/help'
 import { checkUpdate } from './utils/appVersion'
 import { setMenu } from './utils/menu'
 
@@ -37,7 +37,11 @@ app.whenReady().then(() => {
   ipcMain.handle('ping', () => 'pong2222')
   ipcMain.on('set-title', handleSetTitle)
   ipcMain.handle('dialog:openFile', handleFileOpen)
-  createWindow()
+  ipcMain.on('open-url', onOpenURL)
+  console.log('whenReady')
+  if (!mainWindow) {
+    createWindow()
+  }
 
   app.on('activate', () => {
     console.log('app activate')
