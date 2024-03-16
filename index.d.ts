@@ -7,6 +7,7 @@ export interface IElectronAPI {
   ping: () => Promise<void>,
   setTitle: (string) => void,
   openFile: () => Promise<string>,
+  openURL: (string) => void,
 }
 
 declare global {
