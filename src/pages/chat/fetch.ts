@@ -6,6 +6,7 @@ import {
 import {
   getErrText,
 } from './utils'
+import router from '@/router'
 // enum sseResponseEventEnum {
 //     error = 'error',
 //     answer = 'answer', // animation stream
@@ -117,8 +118,10 @@ export const streamFetch = ({
             abortCtrl.abort('error')
             errMsg = '登录已过期，请重新登录'
             localStorage.clear()
-            location.href = '/login'
-            return
+            router.push({
+              path: '/login',
+            })
+            return failedFinish()
           }
 
           // failed stream

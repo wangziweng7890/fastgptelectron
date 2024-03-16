@@ -3,10 +3,13 @@ import Axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { NeedLoginCode, NoErrorResponseCode } from './types'
 import type { Middleware, ResponseError } from './types'
+import router from '@/router'
 
 function login() {
   localStorage.clear()
-  location.href = '/login'
+  router.push({
+    path: '/login',
+  })
 }
 
 // 如果不想通过拦截器统一弹出axios的error message, 在axios的config中加入key是 HideAxiosErrorToastKey ，value：true的选项

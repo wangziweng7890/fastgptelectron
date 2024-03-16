@@ -7,10 +7,14 @@ import { NeedLoginCode, NoErrorResponseCode } from '../types'
 import type { ResponseError } from '../types'
 import { install } from './error-fallback'
 import { axiosErrorHandler } from './axios-error-handler'
+import router from '@/router'
+
 function login() {
   console.log('跳转登录')
   localStorage.clear()
-  location.href = '/login'
+  router.push({
+    path: '/login',
+  })
 }
 export function installAxiosErrorFallback(
   instance: AxiosInstance,
