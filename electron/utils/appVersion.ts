@@ -45,7 +45,8 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
       message: `发现新版本(v${info.version})，正在下载安装包`,
     })
     isShowedNewVersionDialog = true
-    clearInterval(updateInterval)
+    // 考虑断网时, 资源没有下载好，还需要定时去检查，所以这里不能clearInterval
+    // clearInterval(updateInterval)
   })
   // 有问题
   // autoUpdater.on('update-not-available', () => {
@@ -67,6 +68,7 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
 
   // 监听'update-downloaded'事件，新版本下载完成时触发
   autoUpdater.on('update-downloaded', () => {
+    clearInterval(updateInterval)
     !isShowedUpdateDialog && dialog
       .showMessageBox({
         type: 'info',
@@ -75,7 +77,6 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
         buttons: ['是', '否'],
       })
       .then((buttonIndex) => {
-        clearInterval(updateInterval)
         if (buttonIndex.response === 0) {
           // 选择是，则退出程序，安装新版本
           win.webContents.send('quit')

@@ -1,6 +1,6 @@
 {
   "name": "galaxy-helper",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "private": true,
   "packageManager": "pnpm@7.4.0",
   "main": "dist-electron/main.js",
@@ -165,8 +165,7 @@
     "win": {
       "icon": "public/icon.png",
       "target": [
-        "nsis",
-        "zip"
+        "nsis"
       ],
       "artifactName": "${productName}_${version}.${ext}"
     },
