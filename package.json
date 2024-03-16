@@ -165,8 +165,7 @@
     "win": {
       "icon": "public/icon.png",
       "target": [
-        "nsis",
-        "zip"
+        "nsis"
       ],
       "artifactName": "${productName}_${version}.${ext}"
     },
