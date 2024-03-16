@@ -512,14 +512,14 @@ onUnmounted(() => {
               <div v-else class="flex">
                 <div
                   v-if="item.obj === 'Human'"
-                  class="message-content"
+                  class="message-content markdown"
                   v-html="
                     onEscapeContent(item.value, 'question')
                   "
                 />
                 <div
                   v-else
-                  class="message-content"
+                  class="message-content markdown"
                   v-html="
                     md.render(
                       onEscapeContent(
@@ -778,6 +778,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss">
+@import '../chat.scss';
 .history-box {
     background: #f8f8f8;
     border-radius: 10px 10px 10px 10px;

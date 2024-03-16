@@ -118,7 +118,7 @@ export const streamFetch = ({
             errMsg = '登录已过期，请重新登录'
             localStorage.clear()
             location.href = '/login'
-            return failedFinish()
+            return
           }
 
           // failed stream
