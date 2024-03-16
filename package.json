@@ -1,12 +1,13 @@
 {
   "name": "galaxy-helper",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "private": true,
   "packageManager": "pnpm@7.4.0",
   "main": "dist-electron/main.js",
   "scripts": {
     "sign": "codesign --deep --force --verbose --sign - node_modules/electron/dist/electron.app",
     "electron:build:test": "vite build --mode test && electron-builder",
+    "electron:build": "vite build --mode prod && electron-builder",
     "preinstall": "npx only-allow pnpm",
     "build:only": "node ./run.js build",
     "publish:test": "node ./run.js publish",

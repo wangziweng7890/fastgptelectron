@@ -11,8 +11,10 @@ export const showVersion = () => {
   })
 }
 
+// 很奇怪 会弹多次，所以用变量控制
 let isShowedError = false
 let isShowedUpdateDialog = false
+let isShowedNewVersionDialog = false
 
 /** 检测更新 */
 export const checkUpdate = (win: BrowserWindow, updateInterval) => {
@@ -39,9 +41,10 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
 
   // 监听'update-available'事件，发现有新版本时触发
   autoUpdater.on('update-available', (info: UpdateInfo) => {
-    dialog.showMessageBox({
+    !isShowedNewVersionDialog && dialog.showMessageBox({
       message: `发现新版本(v${info.version})，正在下载安装包`,
     })
+    isShowedNewVersionDialog = true
     clearInterval(updateInterval)
   })
   // 有问题
