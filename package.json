@@ -1,6 +1,6 @@
 {
   "name": "galaxy-helper",
-  "version": "0.0.12",
+  "version": "0.0.15",
   "private": true,
   "packageManager": "pnpm@7.4.0",
   "main": "dist-electron/main.js",
@@ -170,7 +170,7 @@
       "artifactName": "${productName}_${version}.${ext}"
     },
     "nsis": {
-      "oneClick": true,
+      "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false
