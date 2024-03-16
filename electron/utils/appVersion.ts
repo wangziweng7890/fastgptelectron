@@ -1,5 +1,6 @@
-import { autoUpdater } from 'electron-updater'
+import { UpdateInfo, autoUpdater } from 'electron-updater'
 import { BrowserWindow, app, dialog } from 'electron'
+import { isMac } from './help'
 
 const updateUrl = 'https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/auto'
 
@@ -15,7 +16,7 @@ export const checkUpdate = (win: BrowserWindow) => {
   console.log('开始检测版本')
 
   // 设置更新检测的资源路径，会检测对应路径下的 last.yaml文件中的版本信息 上线后确保该文件能正常访问
-  if (process.platform === 'darwin') {
+  if (isMac) {
     autoUpdater.setFeedURL(`${updateUrl}/mac`)
   }
   else {
@@ -32,10 +33,15 @@ export const checkUpdate = (win: BrowserWindow) => {
   })
 
   // 监听'update-available'事件，发现有新版本时触发
-  autoUpdater.on('update-available', () => {
-    console.log('found new version')
+  autoUpdater.on('update-available', (info: UpdateInfo) => {
     dialog.showMessageBox({
-      message: '发现新版本，正在下载安装包',
+      message: `发现新版本(v${info.version})，正在下载安装包`,
+    })
+  })
+
+  autoUpdater.on('update-not-available', () => {
+    dialog.showMessageBox({
+      message: '当前已经是最新版本',
     })
   })
 
@@ -62,7 +68,7 @@ export const checkUpdate = (win: BrowserWindow) => {
       .then((buttonIndex) => {
         if (buttonIndex.response === 0) {
           // 选择是，则退出程序，安装新版本
-          autoUpdater.quitAndInstall()
+          autoUpdater.quitAndInstall(true, true)
         }
       })
   })
