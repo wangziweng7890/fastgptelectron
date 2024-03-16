@@ -2,7 +2,7 @@
 {
   name: 'notFound',
   meta: {
-    title: "找不到页面",
+    title: "银河数字助理",
     constant: true,
     layout: false
   }

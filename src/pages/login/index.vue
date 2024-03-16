@@ -55,7 +55,7 @@ const init = async () => {
     console.log('will-navigate', e)
     const targetUrl = e.url || ''
     // 跳转的域名和企业微信的域名一致，表示刷新页面
-    if (loginUrl.value.slice(0, loginUrl.value.indexOf('?')) === targetUrl.slice(0, targetUrl.indexOf('?'))) {
+    if (loginUrl.value !== targetUrl && loginUrl.value.slice(0, loginUrl.value.indexOf('?')) === targetUrl.slice(0, targetUrl.indexOf('?'))) {
         (webview.reload || location.reload)()
         return
     }
@@ -81,7 +81,7 @@ onMounted(() => {
 <route>
 {
   meta: {
-    title: "登录",
+    title: "银河数字助理",
     layout: 'blank'
   }
 }
