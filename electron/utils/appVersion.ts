@@ -11,8 +11,10 @@ export const showVersion = () => {
   })
 }
 
+let isShowError = false
+
 /** 检测更新 */
-export const checkUpdate = (win: BrowserWindow) => {
+export const checkUpdate = (win: BrowserWindow, updateInterval) => {
   console.log('开始检测版本')
 
   // 设置更新检测的资源路径，会检测对应路径下的 last.yaml文件中的版本信息 上线后确保该文件能正常访问
@@ -29,7 +31,9 @@ export const checkUpdate = (win: BrowserWindow) => {
   // 监听'error'事件
   autoUpdater.on('error', (err) => {
     console.log(`出错拉${err}`)
-    dialog.showErrorBox('更新出错拉！', err.message)
+    !isShowError && dialog.showErrorBox('更新出错拉！', err.message)
+    isShowError = true
+    clearInterval(updateInterval)
   })
 
   // 监听'update-available'事件，发现有新版本时触发
@@ -37,6 +41,7 @@ export const checkUpdate = (win: BrowserWindow) => {
     dialog.showMessageBox({
       message: `发现新版本(v${info.version})，正在下载安装包`,
     })
+    clearInterval(updateInterval)
   })
   // 有问题
   // autoUpdater.on('update-not-available', () => {
@@ -66,6 +71,7 @@ export const checkUpdate = (win: BrowserWindow) => {
         buttons: ['是', '否'],
       })
       .then((buttonIndex) => {
+        clearInterval(updateInterval)
         if (buttonIndex.response === 0) {
           // 选择是，则退出程序，安装新版本
           // win.webContents.send('quit')

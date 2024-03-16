@@ -5,6 +5,7 @@ import { checkUpdate } from './utils/appVersion'
 import { setMenu } from './utils/menu'
 
 let mainWindow: BrowserWindow
+let updateInterval
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 800,
@@ -30,7 +31,10 @@ const createWindow = () => {
   else {
     mainWindow.loadFile('dist-electron/index.html')
   }
-  !isMac && checkUpdate(mainWindow)
+  !isMac && checkUpdate(mainWindow, updateInterval)
+  updateInterval = setInterval(() => {
+    !isMac && checkUpdate(mainWindow, updateInterval)
+  }, 1000 * 60 * 60 * 12)
 }
 
 app.whenReady().then(() => {
@@ -67,9 +71,9 @@ else {
   })
 }
 
-// app.on('before-quit', () => {
-//   clearInterval(updateInterval)
-// })
+app.on('before-quit', () => {
+  clearInterval(updateInterval)
+})
 
 app.on('window-all-closed', () => {
   console.log('window-all-closed')
