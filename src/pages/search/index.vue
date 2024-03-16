@@ -1,17 +1,19 @@
 <route>
 {
-meta: {
-title: "搜搜首页",
-constant: false,
-layout: 'blank'
-}
+  meta: {
+    title: "银河数字助理",
+    constant: false,
+    layout: 'blank'
+  }
 }
 </route>
 
 <script setup lang="ts" name="search">
 import { debounce } from 'lodash-es'
 import { Search } from '@element-plus/icons-vue'
-import { GetWikiRestApiSearch, GetWikiSpaceAuth } from '@/services/wiki/apifox'
+import { GetWikiRestApiSearch } from '@/services/wiki/apifox'
+import { GetFrontConfluenceAccount, PostFrontConfluenceAccountAdd } from '@/services/apifox/zhiNengKeFu/confluence/apifox'
+
 const router = useRouter()
 
 // 登录弹窗
@@ -20,22 +22,40 @@ const handleClose = () => {
   visible.value = false
 }
 
-// 检查账号密码
-const hasUser = ref(false)
+// 账号密码输入框
 const usernameInput = ref('') // ref('kennen')
 const passwordInput = ref('') // ref('7d81MNAHo+v@b')
+let currentUsername, currentPassword // 记录当前的账号密码
 
-let username, password
+// 检查账号密码
+const loadConfluenceAccount = async () => {
+    const readLocalUser = localStorage.getItem('wiki-local')
+    if (!!readLocalUser) {
+        currentUsername = localStorage.getItem('wiki-username')
+        currentPassword = localStorage.getItem('wiki-password')
+        return
+    }
+    try {
+        const res = (await GetFrontConfluenceAccount()) || {}
+        if (!!res.username && !!res.password) {
+            currentUsername = res.username
+            currentPassword = res.password
+            localStorage.setItem('wiki-username', currentUsername)
+            localStorage.setItem('wiki-password', currentPassword)
+        } else {
+            visible.value = true
+        }
+    }
+    catch (error) {
+        console.log('error', error)
+    }
+}
 
 const getUserInfo = () => {
-  username = localStorage.getItem('wiki-username')
-  password = localStorage.getItem('wiki-password')
+  currentUsername = localStorage.getItem('wiki-username')
+  currentPassword = localStorage.getItem('wiki-password')
 }
-getUserInfo()
-hasUser.value = !!username && !!password
-visible.value = !hasUser.value
 
-console.log('visible', visible.value)
 const isSearch = ref(false) // 是否触发过搜搜
 const keyword = ref('') // 搜索的关键字
 const list = ref([]) // 搜索的内容
@@ -45,7 +65,7 @@ const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(20)
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
+    loadData(keyword.value)
 }
 const handleCurrentChange = () => {
   loadData(keyword.value)
@@ -89,13 +109,22 @@ const handleLogin = async () => {
     })
     console.log('123', res)
     if (res?.results) {
-      localStorage.setItem('wiki-username', usernameInput.value)
-      localStorage.setItem('wiki-password', passwordInput.value)
-      hasUser.value = true
-      getUserInfo()
-      loadData('login')
-      ElMessage.success('登录成功!')
-      handleClose()
+        // TODO保存账号密码
+        const btoaPassword = window.btoa(passwordInput.value)
+        PostFrontConfluenceAccountAdd({
+            username: usernameInput.value,
+            password: btoaPassword,
+        }).then((accountRes: any) => {
+            console.log('PostFrontConfluenceAccountAdd--res', accountRes)
+            localStorage.setItem('wiki-username', usernameInput.value)
+            localStorage.setItem('wiki-password', btoaPassword)
+            getUserInfo()
+            loadData('login')
+            ElMessage.success('登录成功!')
+            handleClose()
+        }).catch((err: any) => {
+            console.log('err', err)
+        })
     }
     else {
       ElMessage.error('对不起，您的用户名或密码不正确。请重试。')
@@ -129,10 +158,10 @@ async function loadData(key: string) {
   paramsData.value.start = (currentPage.value - 1) * pageSize.value // 页码
   paramsData.value.limit = pageSize.value
   let auth
-  if (username && password) {
+  if (currentUsername && currentPassword) {
     auth = {
-      username,
-      password,
+      username: currentUsername,
+      password: window.atob(currentPassword),
     }
   }
   const res = await GetWikiRestApiSearch(paramsData.value, {
@@ -164,6 +193,12 @@ const handleItem = async (item: any) => {
 const handleClick = () => {
   router.push('/chat')
 }
+
+const init = async () => {
+    await loadConfluenceAccount()
+}
+init()
+
 </script>
 
 <template>

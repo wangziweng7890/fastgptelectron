@@ -2,7 +2,6 @@ import { BrowserWindow, Menu, app } from 'electron'
 import { checkUpdate, showVersion } from './appVersion'
 import { isMac } from './help'
 
-const refreshKey = isMac ? 'Cmd+R' : 'Ctrl+R'
 const copyKey = isMac ? 'Cmd+C' : 'Ctrl+C'
 const pasteKey = isMac ? 'Cmd+V' : 'Ctrl+V'
 const cutKey = isMac ? 'Cmd+X' : 'Ctrl+X'
