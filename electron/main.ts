@@ -38,7 +38,10 @@ app.whenReady().then(() => {
   ipcMain.handle('ping', () => 'pong2222')
   ipcMain.on('set-title', handleSetTitle)
   ipcMain.handle('dialog:openFile', handleFileOpen)
-  createWindow()
+  console.log('whenReady')
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow()
+  }
 
   app.on('activate', () => {
     console.log('app activate')
