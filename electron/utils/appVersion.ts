@@ -68,8 +68,9 @@ export const checkUpdate = (win: BrowserWindow) => {
       .then((buttonIndex) => {
         if (buttonIndex.response === 0) {
           // 选择是，则退出程序，安装新版本
-          win.webContents.send('quit')
-          autoUpdater.quitAndInstall(true, true)
+          // win.webContents.send('quit')
+          autoUpdater.quitAndInstall()
+          // autoUpdater.quitAndInstall(true, true)
           // if (win && win.destroy) {
           //   win.destroy()
           // }
