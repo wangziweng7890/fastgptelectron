@@ -38,12 +38,12 @@ export const checkUpdate = (win: BrowserWindow) => {
       message: `发现新版本(v${info.version})，正在下载安装包`,
     })
   })
-
-  autoUpdater.on('update-not-available', () => {
-    dialog.showMessageBox({
-      message: '当前已经是最新版本',
-    })
-  })
+  // 有问题
+  // autoUpdater.on('update-not-available', () => {
+  //   dialog.showMessageBox({
+  //     message: '当前已经是最新版本',
+  //   })
+  // })
 
   // 更新包下载百分比回调
   autoUpdater.on('download-progress', (progressObj) => {
@@ -70,10 +70,10 @@ export const checkUpdate = (win: BrowserWindow) => {
           // 选择是，则退出程序，安装新版本
           win.webContents.send('quit')
           autoUpdater.quitAndInstall(true, true)
-          if (win && win.destroy) {
-            win.destroy()
-          }
-          app.quit()
+          // if (win && win.destroy) {
+          //   win.destroy()
+          // }
+          // app.quit()
         }
       })
   })

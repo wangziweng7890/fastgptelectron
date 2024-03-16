@@ -14,11 +14,6 @@ export const setMenu = (mainWindow: BrowserWindow) => {
       label: '数字助理',
       submenu: [
         {
-          accelerator: refreshKey,
-          label: '刷新',
-          click: () => { mainWindow.reload() },
-        },
-        {
           click: () => showVersion(),
           label: `当前版本：V${app.getVersion()}`,
         },
