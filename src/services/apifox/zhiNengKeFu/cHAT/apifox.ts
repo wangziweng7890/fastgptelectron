@@ -25,6 +25,9 @@ import {
     GetFrontChatCompletionsHistoryRes,
     GetFrontChatCompletionsDeleteByChatIdQuery,
     GetFrontChatCompletionsDeleteByChatIdRes,
+    PostFrontChatstepStepQuery,
+    PostFrontChatstepStepReq,
+    PostFrontChatstepStepRes,
 } from './interface'
 
 /** axios 根据appId获取机器人信息 */
@@ -71,17 +74,6 @@ export function GetFrontChatCompletionsDelete(
     })
 }
 
-/** axios 点赞(踩) */
-export function GetFrontChatstepStep(
-    params: GetFrontChatstepStepQuery,
-    axiosConfig: AxiosRequestConfig = {},
-): Promise<GetFrontChatstepStepRes> {
-    return http.get('/front/chatstep/step', {
-        params,
-        ...axiosConfig,
-    })
-}
-
 /** axios 点赞(点踩)-取消 */
 export function GetFrontChatstepStepcancel(
     params: GetFrontChatstepStepcancelQuery,
@@ -113,4 +105,12 @@ export function GetFrontChatCompletionsDeleteByChatId(
         params,
         ...axiosConfig,
     })
+}
+
+/** axios 点赞(踩) */
+export function PostFrontChatstepStep(
+    params: any = {},
+    axiosConfig: AxiosRequestConfig = {},
+): Promise<PostFrontChatstepStepRes> {
+    return http.post('/front/chatstep/step', params, axiosConfig)
 }

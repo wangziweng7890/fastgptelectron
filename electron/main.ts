@@ -16,7 +16,6 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js'),
       webviewTag: true,
     },
-    skipTaskbar: true, // 是否在任务栏中显示窗口
     title: '银河数字助理',
   })
 

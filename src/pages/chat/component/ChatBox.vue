@@ -28,8 +28,8 @@ import {
   GetFrontChatCompletionsDeleteByChatId,
   GetFrontChatCompletionsHistory,
   GetFrontChatCompletionsList,
-  GetFrontChatstepStep,
   GetFrontChatstepStepcancel,
+  PostFrontChatstepStep,
 } from '@/services/apifox/zhiNengKeFu/cHAT/apifox'
 const props = defineProps({
   onStartChat: {
@@ -58,7 +58,7 @@ async function zanChat(dataId, isCancel) {
     })
   }
   else {
-    await GetFrontChatstepStep({
+    await PostFrontChatstepStep({
       type: 1,
       chatDetailId: dataId,
     })
@@ -80,7 +80,7 @@ function copyChat(content, dataId, type) {
   const res = copy(content.replace(/<[^>]+>|&[^>]+;/g, '').trim())
   res && ElMessage.success('复制成功，感觉自己像个魔术师')
 
-  type === 'AI' && GetFrontChatstepStep({
+  type === 'AI' && PostFrontChatstepStep({
     type: 3,
     chatDetailId: dataId,
   })
@@ -373,7 +373,7 @@ async function caiConfirm(flag) {
     if (isLoading.value)
       return
     isLoading.value = true
-    await GetFrontChatstepStep({
+    await PostFrontChatstepStep({
       type: 2,
       chatDetailId: tempId,
       reason: flag === 0 ? feedContent.value : '',

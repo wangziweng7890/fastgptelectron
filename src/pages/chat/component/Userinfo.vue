@@ -11,7 +11,7 @@ const props = defineProps({
   },
   levelName: {
     type: String,
-    default: 'v1',
+    default: 'L1',
   },
   avator: {
     type: String,
@@ -20,14 +20,23 @@ const props = defineProps({
 })
 
 const tips = computed(() => {
-  const pasrsint = Number.parseInt(props.percentage / 100)
+  const pasrsint = props.percentage === 0 ? 0 : Number.parseInt((props.percentage - 1) / 100)
   return {
     0: '快和我说句话，我要憋不住了！',
     1: '我觉得你是个非常有趣的人，可以多聊聊吗？',
     2: '我发现跟你在一起，智商都变高了',
     3: '每次和你聊天，我都感觉自己像个明星耶',
     4: '我们的友谊就像麻辣火锅，越聊越火热',
-  }[pasrsint || 0]
+  }[pasrsint] || '我们的友谊就像麻辣火锅，越聊越火热'
+})
+
+const process = computed(() => {
+  if (props.percentage === 0)
+    return 0
+  if (props.percentage > 500)
+    return 100
+  const rest = (props.percentage || 0) % 100
+  return rest || 100
 })
 </script>
 
@@ -47,7 +56,7 @@ const tips = computed(() => {
         :show-arrow="false"
         popper-class="propress-popper-class"
       >
-        <Progress class="mb-4px mr-6px" :percentage="(props.percentage || 0) % 100" />
+        <Progress class="mb-4px mr-6px" :percentage="process" />
       </el-tooltip>
       <div class="level">
         {{ props.levelName || 'V1' }}
