@@ -34,7 +34,7 @@ const createWindow = () => {
   !isMac && checkUpdate(mainWindow, updateInterval)
   updateInterval = setInterval(() => {
     !isMac && checkUpdate(mainWindow, updateInterval)
-  }, 1000 * 60 * 60 * 12)
+  }, 1000 * 60 * 60 * 2)
 }
 
 app.whenReady().then(() => {

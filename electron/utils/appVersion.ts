@@ -11,7 +11,10 @@ export const showVersion = () => {
   })
 }
 
-let isShowError = false
+// 很奇怪 会弹多次，所以用变量控制
+// const isShowedError = false
+let isShowedUpdateDialog = false
+let isShowedNewVersionDialog = false
 
 /** 检测更新 */
 export const checkUpdate = (win: BrowserWindow, updateInterval) => {
@@ -31,16 +34,17 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
   // 监听'error'事件
   autoUpdater.on('error', (err) => {
     console.log(`出错拉${err}`)
-    !isShowError && dialog.showErrorBox('更新出错拉！', err.message)
-    isShowError = true
-    clearInterval(updateInterval)
+    // !isShowedError && dialog.showErrorBox('更新出错拉！', err.message)
+    // isShowedError = true
+    // clearInterval(updateInterval)
   })
 
   // 监听'update-available'事件，发现有新版本时触发
   autoUpdater.on('update-available', (info: UpdateInfo) => {
-    dialog.showMessageBox({
+    !isShowedNewVersionDialog && dialog.showMessageBox({
       message: `发现新版本(v${info.version})，正在下载安装包`,
     })
+    isShowedNewVersionDialog = true
     clearInterval(updateInterval)
   })
   // 有问题
@@ -63,7 +67,7 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
 
   // 监听'update-downloaded'事件，新版本下载完成时触发
   autoUpdater.on('update-downloaded', () => {
-    dialog
+    !isShowedUpdateDialog && dialog
       .showMessageBox({
         type: 'info',
         title: '应用更新',
@@ -74,14 +78,16 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
         clearInterval(updateInterval)
         if (buttonIndex.response === 0) {
           // 选择是，则退出程序，安装新版本
-          // win.webContents.send('quit')
+          win.webContents.send('quit')
           autoUpdater.quitAndInstall()
           // autoUpdater.quitAndInstall(true, true)
-          // if (win && win.destroy) {
-          //   win.destroy()
-          // }
-          // app.quit()
+          win?.destroy?.()
+          app?.quit?.()
+        }
+        else {
+          isShowedUpdateDialog = false
         }
       })
+    isShowedUpdateDialog = true
   })
 }

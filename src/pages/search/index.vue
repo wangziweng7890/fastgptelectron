@@ -11,7 +11,7 @@
 <script setup lang="ts" name="search">
 import { debounce } from 'lodash-es'
 import { Search } from '@element-plus/icons-vue'
-import { GetWikiRestApiSearch } from '@/services/wiki/apifox'
+import { GetWikiRestApiSearch, PostDoLogin } from '@/services/wiki/apifox'
 import { GetFrontConfluenceAccount, PostFrontConfluenceAccountAdd } from '@/services/apifox/zhiNengKeFu/confluence/apifox'
 
 const router = useRouter()
@@ -21,11 +21,26 @@ const visible = ref(false)
 const handleClose = () => {
   visible.value = false
 }
-
 // 账号密码输入框
 const usernameInput = ref('') // ref('kennen')
 const passwordInput = ref('') // ref('7d81MNAHo+v@b')
 let currentUsername, currentPassword // 记录当前的账号密码
+
+// 登录confluence的dologin.action
+const doLoginConfluence = () => {
+    try {
+        PostDoLogin({
+            os_usemame: currentUsername,
+            os_password: window.atob(currentPassword),
+            login: '登录',
+            os_destination: ''
+        })
+
+    } catch (error) {
+        console.log('PostDoLogin-error', error)
+    }
+}
+
 
 // 检查账号密码
 const loadConfluenceAccount = async () => {
@@ -42,6 +57,7 @@ const loadConfluenceAccount = async () => {
       currentPassword = res.password
       localStorage.setItem('wiki-username', currentUsername)
       localStorage.setItem('wiki-password', currentPassword)
+      doLoginConfluence()
     } else {
       visible.value = true
     }
@@ -120,6 +136,7 @@ const handleLogin = async () => {
         localStorage.setItem('wiki-password', btoaPassword)
         getUserInfo()
         loadData('login')
+        doLoginConfluence()
         ElMessage.success('登录成功!')
         handleClose()
       }).catch((err: any) => {
@@ -215,7 +232,7 @@ init()
     </div>
     <div class="search-box">
       <el-input v-model="keyword" size="large" placeholder="我想知道..." class="search-input gray-input"
-        :prefix-icon="Search" @keydown="handleKeydown" />
+        :prefix-icon="Search" @input="handleKeydown" />
     </div>
     <div class="sousou-desc" :class="[{ 'is-search': isSearch }]">
       数据来源:业务知识库

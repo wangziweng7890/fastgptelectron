@@ -4,10 +4,10 @@ import type { AxiosRequestConfig } from 'axios'
 import http from '../http'
 
 import {
-  GetWikiRestApiSearchQuery,
-  GetWikiContentByIdQuery,
-  GetWikiRestApiSearchRes,
-  GetWikiContentByIdRes,
+    GetWikiRestApiSearchQuery,
+    GetWikiRestApiSearchRes,
+    GetDoLoginQuery,
+    GetDoLoginRes
 } from './interface'
 
 /** 根据关键字搜索所有内容 */
@@ -18,9 +18,14 @@ export function GetWikiRestApiSearch(
   return http.get(`http://kf-wiki.galaxy-immi.com/rest/api/search?${qs.stringify(params)}`, axiosConfig)
 }
 
-export function GetWikiSpaceAuth(
-  params: GetWikiContentByIdQuery,
+export function PostDoLogin(
+  params: GetDoLoginQuery,
   axiosConfig: AxiosRequestConfig = {},
-): Promise<GetWikiContentByIdRes> {
-  return http.get(`http://kf-wiki.galaxy-immi.com/rest/api/space?${qs.stringify(params)}`, axiosConfig)
+): Promise<GetDoLoginRes> {
+  return http.post(`http://kf-wiki.galaxy-immi.com/dologin.action`, qs.stringify(params), {
+      ...axiosConfig,
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded',
+      }
+  })
 }

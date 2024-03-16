@@ -27,3 +27,12 @@ export interface GetWikiContentByIdQuery {
 export interface GetWikiContentByIdRes {
 
 }
+
+export interface GetDoLoginQuery {
+    os_usemame: string
+    os_password: string
+    login: string
+    os_destination: string
+}
+
+export interface GetDoLoginRes {}
