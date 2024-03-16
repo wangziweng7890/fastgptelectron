@@ -232,7 +232,7 @@ init()
     </div>
     <div class="search-box">
       <el-input v-model="keyword" size="large" placeholder="我想知道..." class="search-input gray-input"
-        :prefix-icon="Search" @keydown="handleKeydown" />
+        :prefix-icon="Search" @input="handleKeydown" />
     </div>
     <div class="sousou-desc" :class="[{ 'is-search': isSearch }]">
       数据来源:业务知识库
