@@ -29,26 +29,26 @@ let currentUsername, currentPassword // 记录当前的账号密码
 
 // 检查账号密码
 const loadConfluenceAccount = async () => {
-    const readLocalUser = localStorage.getItem('wiki-local')
-    if (!!readLocalUser) {
-        currentUsername = localStorage.getItem('wiki-username')
-        currentPassword = localStorage.getItem('wiki-password')
-        return
+  const readLocalUser = localStorage.getItem('wiki-local')
+  if (!!readLocalUser) {
+    currentUsername = localStorage.getItem('wiki-username')
+    currentPassword = localStorage.getItem('wiki-password')
+    return
+  }
+  try {
+    const res = (await GetFrontConfluenceAccount()) || {}
+    if (!!res.username && !!res.password) {
+      currentUsername = res.username
+      currentPassword = res.password
+      localStorage.setItem('wiki-username', currentUsername)
+      localStorage.setItem('wiki-password', currentPassword)
+    } else {
+      visible.value = true
     }
-    try {
-        const res = (await GetFrontConfluenceAccount()) || {}
-        if (!!res.username && !!res.password) {
-            currentUsername = res.username
-            currentPassword = res.password
-            localStorage.setItem('wiki-username', currentUsername)
-            localStorage.setItem('wiki-password', currentPassword)
-        } else {
-            visible.value = true
-        }
-    }
-    catch (error) {
-        console.log('error', error)
-    }
+  }
+  catch (error) {
+    console.log('error', error)
+  }
 }
 
 const getUserInfo = () => {
@@ -65,20 +65,20 @@ const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(20)
 const handleSizeChange = (val: number) => {
-    loadData(keyword.value)
+  loadData(keyword.value)
 }
 const handleCurrentChange = () => {
   loadData(keyword.value)
 }
 
 interface paramsModel {
-    cql: string
-    start: number
-    limit: number
-    excerpt: string
-    expand: string
-    src: string
-    includeArchivedSpaces: boolean
+  cql: string
+  start: number
+  limit: number
+  excerpt: string
+  expand: string
+  src: string
+  includeArchivedSpaces: boolean
 }
 const paramsData = ref<paramsModel>({
   cql: '',
@@ -109,22 +109,22 @@ const handleLogin = async () => {
     })
     console.log('123', res)
     if (res?.results) {
-        // TODO保存账号密码
-        const btoaPassword = window.btoa(passwordInput.value)
-        PostFrontConfluenceAccountAdd({
-            username: usernameInput.value,
-            password: btoaPassword,
-        }).then((accountRes: any) => {
-            console.log('PostFrontConfluenceAccountAdd--res', accountRes)
-            localStorage.setItem('wiki-username', usernameInput.value)
-            localStorage.setItem('wiki-password', btoaPassword)
-            getUserInfo()
-            loadData('login')
-            ElMessage.success('登录成功!')
-            handleClose()
-        }).catch((err: any) => {
-            console.log('err', err)
-        })
+      // TODO保存账号密码
+      const btoaPassword = window.btoa(passwordInput.value)
+      PostFrontConfluenceAccountAdd({
+        username: usernameInput.value,
+        password: btoaPassword,
+      }).then((accountRes: any) => {
+        console.log('PostFrontConfluenceAccountAdd--res', accountRes)
+        localStorage.setItem('wiki-username', usernameInput.value)
+        localStorage.setItem('wiki-password', btoaPassword)
+        getUserInfo()
+        loadData('login')
+        ElMessage.success('登录成功!')
+        handleClose()
+      }).catch((err: any) => {
+        console.log('err', err)
+      })
     }
     else {
       ElMessage.error('对不起，您的用户名或密码不正确。请重试。')
@@ -195,7 +195,7 @@ const handleClick = () => {
 }
 
 const init = async () => {
-    await loadConfluenceAccount()
+  await loadConfluenceAccount()
 }
 init()
 
@@ -214,14 +214,8 @@ init()
       <img src="~@/assets/images/search-title.png" alt="">
     </div>
     <div class="search-box">
-      <el-input
-        v-model="keyword"
-        size="large"
-        placeholder="我想知道..."
-        class="search-input gray-input"
-        :prefix-icon="Search"
-        @keydown="handleKeydown"
-      />
+      <el-input v-model="keyword" size="large" placeholder="我想知道..." class="search-input gray-input"
+        :prefix-icon="Search" @keydown="handleKeydown" />
     </div>
     <div class="sousou-desc" :class="[{ 'is-search': isSearch }]">
       数据来源:业务知识库
@@ -238,15 +232,9 @@ init()
       <el-empty v-if="!list.length" :image-size="200" />
     </div>
     <div class="pagination-container">
-      <el-pagination
-        v-if="isSearch"
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        layout="prev, pager, next, jumper, total"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+      <el-pagination v-if="isSearch" v-model:current-page="currentPage" v-model:page-size="pageSize"
+        layout="prev, pager, next, jumper, total" :total="total" @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" />
     </div>
     <!--   使用element-plus实现登录弹窗     -->
     <Dialog v-model="visible" width="300px" @close="handleClose">
@@ -393,13 +381,13 @@ init()
   margin-top: 12px;
   color: #666;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* 控制显示行数 */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis; /* 超出部分显示省略号 */
-  white-space: normal; /* 显示换行 */
-  word-wrap: break-word; /* 允许单词内换行 */
-  overflow-wrap: break-word; /* 允许单词内换行 */
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .item-from {
@@ -419,6 +407,7 @@ init()
   border: none;
   width: 93px;
   height: 36px;
+
   &.is-disabled,
   &.is-disabled:hover {
     background: #ededed;

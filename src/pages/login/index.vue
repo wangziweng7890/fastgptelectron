@@ -54,8 +54,8 @@ const init = async () => {
   webview?.addEventListener('will-navigate', (e: any) => {
     console.log('will-navigate', e)
     const targetUrl = e.url || ''
-    // 跳转的域名和企业微信的域名一致，表示刷新页面
-    if (loginUrl.value !== targetUrl && loginUrl.value.slice(0, loginUrl.value.indexOf('?')) === targetUrl.slice(0, targetUrl.indexOf('?'))) {
+    // 包含redirect_uri的url，表示还是跳转登录页
+    if (targetUrl.includes('redirect_uri')) {
         (webview.reload || location.reload)()
         return
     }
