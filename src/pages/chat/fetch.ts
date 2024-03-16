@@ -28,7 +28,7 @@ export const streamFetch = ({
     // response data
     let responseText = ''
     let remainTextList: string[] = []
-    const errMsg = ''
+    let errMsg = ''
     const responseData = []
     let finished = false
 
@@ -89,6 +89,7 @@ export const streamFetch = ({
           'clientId': 'e5cd7e4891bf95d1d19206ce24a7b32e',
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('access_token')}` || 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJhcHBfdXNlcjoxNzY4MTAxNDU5NjY4ODQwNDUwIiwicm5TdHIiOiJrbW9CNFNEMnp3VDdlUVhBaGhIVVVIOEZwZklJc2VCeCIsImNsaWVudGlkIjoiZTVjZDdlNDg5MWJmOTVkMWQxOTIwNmNlMjRhN2IzMmUiLCJ0ZW5hbnRJZCI6IjAwMDAwMCIsInVzZXJJZCI6MTc2ODEwMTQ1OTY2ODg0MDQ1MCwiZGVwdElkIjoxMDB9.-i-dgE58AXVLjYY7LvnCEuYkBRDEz-04ERSR7SzpgVY',
+          'Accept': '*/*',
         },
         signal: abortCtrl.signal,
         body: JSON.stringify({
@@ -109,6 +110,15 @@ export const streamFetch = ({
           // not stream
           if (contentType?.startsWith('text/plain')) {
             return failedFinish(await res.clone().text())
+          }
+
+          // 401
+          if (contentType?.startsWith('application/json')) {
+            abortCtrl.abort('error')
+            errMsg = '登录已过期，请重新登录'
+            localStorage.clear()
+            location.href = '/login'
+            return failedFinish()
           }
 
           // failed stream
@@ -177,8 +187,9 @@ export const streamFetch = ({
           finished = true
         },
         onerror(e) {
+          console.error('fetchError', e)
           clearTimeout(timeoutId)
-          failedFinish(getErrText(e))
+          failedFinish()
         },
         openWhenHidden: true,
       })

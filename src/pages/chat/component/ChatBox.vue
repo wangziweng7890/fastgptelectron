@@ -139,12 +139,13 @@ const showCaiActive = ref(false)
 function onEscapeContent(content, type) {
   if (type === 'question') {
     return content
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;')
-      .replace(/\n/g, '<br>')
+    // return content
+    //   .replace(/&/g, '&amp;')
+    //   .replace(/</g, '&lt;')
+    //   .replace(/>/g, '&gt;')
+    //   .replace(/"/g, '&quot;')
+    //   .replace(/'/g, '&#39;')
+    //   .replace(/\n/g, '<br>')
   }
   return Base64.decode(Base64.encode(content))
 }

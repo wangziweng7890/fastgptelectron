@@ -18,8 +18,7 @@ export function replaceSensitiveText(text: string) {
 }
 
 export function getErrText(err: any, def = '') {
-//   const msg: string = typeof err === 'string' ? err : err?.message || def || ''
-  const msg = '网络被妖怪抓走啦'
+  const msg: string = typeof err === 'string' ? err : err?.message || def || '网络被妖怪抓走啦'
   msg && console.log('error =>', msg)
   return replaceSensitiveText(msg)
 }
@@ -50,8 +49,10 @@ export const md = new MarkdownIt({
         )
         // 语言
         const languageName = `<b class="language-name">${lang}</b>`
-        const textAreaHtml = `<textarea class="copy-textarea" id="copy${codeIndex}">${str}</textarea>`
-        const copyButton = `<button class="copy-btn iconfont icon-icon_fuzhi"  data-clipboard-action="copy" data-clipboard-target="#copy${codeIndex}" type="button"></button>`
+        const textAreaHtml = ''
+        // const textAreaHtml = `<textarea class="copy-textarea" id="copy${codeIndex}">${str}</textarea>`
+        // const copyButton = `<button class="copy-btn iconfont icon-icon_fuzhi"  data-clipboard-action="copy" data-clipboard-target="#copy${codeIndex}" type="button"></button>`
+        const copyButton = ''
         return (
           `<pre class="hljs language-${lang}"><code>${highlight.highlight(lang, str, true).value}${languageName}${copyButton}${textAreaHtml}</code></pre>`
         )
