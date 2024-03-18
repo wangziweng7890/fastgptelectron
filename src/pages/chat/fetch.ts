@@ -147,7 +147,18 @@ export const streamFetch = ({
             return
           }
 
-          for (const item of data) {
+          // parse text to json
+          const parseJson = (() => {
+            try {
+              return JSON.parse(data)
+            }
+            catch (error) {
+              return {
+                content: '',
+              }
+            }
+          })()
+          for (const item of parseJson.content) {
             remainTextList.push(item)
           }
 
