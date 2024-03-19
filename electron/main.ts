@@ -61,7 +61,7 @@ app.whenReady().then(() => {
   mainWindow.on('close', (e) => {
     if (!isMac) {
       e.preventDefault()
-      mainWindow.minimize()
+      mainWindow.hide()
     }
   })
 })
