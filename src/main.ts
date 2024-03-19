@@ -38,3 +38,12 @@ if (import.meta.env.VITE_APP_ENV === 'production') {
 
 instance.mount('#app-main')
 
+setTimeout(() => {
+  window.electronAPI.logout(() => {
+    localStorage.clear()
+    router.push({
+      path: '/login',
+    })
+  })
+}, 0)
+

@@ -19,6 +19,9 @@ const router = useRouter()
 // 登录弹窗
 const visible = ref(false)
 const handleClose = () => {
+  if (!localStorage.getItem('wiki-username')) {
+    handleClick()
+  }
   visible.value = false
 }
 // 账号密码输入框
@@ -28,24 +31,23 @@ let currentUsername, currentPassword // 记录当前的账号密码
 
 // 登录confluence的dologin.action
 const doLoginConfluence = () => {
-    try {
-        PostDoLogin({
-            os_usemame: currentUsername,
-            os_password: window.atob(currentPassword),
-            login: '登录',
-            os_destination: ''
-        })
-
-    } catch (error) {
-        console.log('PostDoLogin-error', error)
-    }
+  try {
+    PostDoLogin({
+      os_usemame: currentUsername,
+      os_password: window.atob(currentPassword),
+      login: '登录',
+      os_destination: '',
+    })
+  }
+  catch (error) {
+    console.log('PostDoLogin-error', error)
+  }
 }
-
 
 // 检查账号密码
 const loadConfluenceAccount = async () => {
   const readLocalUser = localStorage.getItem('wiki-local')
-  if (!!readLocalUser) {
+  if (readLocalUser) {
     currentUsername = localStorage.getItem('wiki-username')
     currentPassword = localStorage.getItem('wiki-password')
     return
@@ -58,7 +60,8 @@ const loadConfluenceAccount = async () => {
       localStorage.setItem('wiki-username', currentUsername)
       localStorage.setItem('wiki-password', currentPassword)
       doLoginConfluence()
-    } else {
+    }
+    else {
       visible.value = true
     }
   }
@@ -208,14 +211,13 @@ const handleItem = async (item: any) => {
 }
 
 const handleClick = () => {
-  router.push('/chat')
+  router.back()
 }
 
 const init = async () => {
   await loadConfluenceAccount()
 }
 init()
-
 </script>
 
 <template>
@@ -231,8 +233,14 @@ init()
       <img src="~@/assets/images/search-title.png" alt="">
     </div>
     <div class="search-box">
-      <el-input v-model="keyword" size="large" placeholder="我想知道..." class="search-input gray-input"
-        :prefix-icon="Search" @input="handleKeydown" />
+      <el-input
+        v-model="keyword"
+        size="large"
+        placeholder="我想知道..."
+        class="search-input gray-input"
+        :prefix-icon="Search"
+        @input="handleKeydown"
+      />
     </div>
     <div class="sousou-desc" :class="[{ 'is-search': isSearch }]">
       数据来源:业务知识库
@@ -249,9 +257,15 @@ init()
       <el-empty v-if="!list.length" :image-size="200" />
     </div>
     <div class="pagination-container">
-      <el-pagination v-if="isSearch" v-model:current-page="currentPage" v-model:page-size="pageSize"
-        layout="prev, pager, next, jumper, total" :total="total" @size-change="handleSizeChange"
-        @current-change="handleCurrentChange" />
+      <el-pagination
+        v-if="isSearch"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        layout="prev, pager, next, jumper, total"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
     <!--   使用element-plus实现登录弹窗     -->
     <Dialog v-model="visible" width="300px" @close="handleClose">
@@ -263,9 +277,18 @@ init()
         <el-input v-model="usernameInput" placeholder="账号" class="mt-16px gray-input" size="large" />
         <el-input v-model="passwordInput" type="password" placeholder="密码" class="mt-12px gray-input" size="large" />
         <div class="mt-16px text-center">
-          <el-button type="primary" :disabled="!usernameInput || !passwordInput" class="login-btn" @click="handleLogin">
+          <el-button type="primary" :disabled="!usernameInput || !passwordInput" class="login-btn mb-12px" @click="handleLogin">
             登录
           </el-button>
+          <Tooltip placement="bottom">
+            <p class="tips">
+              没有业务知识库账号?
+            </p>
+            <template #content>
+              <P>业务知识库即Confluence</P>
+              <P>注册账号请联系Jovian邓俊威</P>
+            </template>
+          </Tooltip>
         </div>
       </div>
     </Dialog>
@@ -273,6 +296,12 @@ init()
 </template>
 
 <style lang="scss" scoped>
+.tips {
+    font-size: 10px;
+    color: #909090;
+    line-height: 12px;
+    text-decoration-line: underline;
+}
 .login-container {
   display: flex;
   flex-direction: column;

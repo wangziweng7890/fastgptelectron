@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" name="chat">
 import { customAlphabet } from 'nanoid'
 import searchIcon from './img/search.png'
 import YhButton from './component/YhButton.vue'
@@ -53,10 +53,13 @@ async function onSend(StartChatFnProps) {
 const avatar = ref('')
 const chatName = ref('')
 const intro = ref('')
-GetFrontAppGet({ appId }).then((data) => {
+GetFrontAppGet({ appId }, {
+}).then((data) => {
   avatar.value = data.avatar
   chatName.value = data.name
   intro.value = data.intro
+}).then(() => {
+  getUserInfo()
 })
 
 const levelName = ref()
@@ -67,7 +70,7 @@ function getUserInfo() {
     percentage.value = data.point
   })
 }
-getUserInfo()
+
 function jumpToSousou() {
   router.push({
     path: '/search',

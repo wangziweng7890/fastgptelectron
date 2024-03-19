@@ -115,12 +115,19 @@ export const streamFetch = ({
 
           // 401
           if (contentType?.startsWith('application/json')) {
-            abortCtrl.abort('error')
-            errMsg = '登录已过期，请重新登录'
-            localStorage.clear()
-            router.push({
-              path: '/login',
-            })
+            const resData = await res.clone().json()
+            if (resData.code === 401) {
+              abortCtrl.abort('error')
+              errMsg = '登录已过期，请重新登录'
+              localStorage.clear()
+              router.push({
+                path: '/login',
+              })
+            }
+            else {
+              errMsg = '网络被妖怪抓走啦'
+            }
+            console.log('请求错误', resData.msg)
             return failedFinish()
           }
 
@@ -209,6 +216,7 @@ export const streamFetch = ({
       })
     }
     catch (err: any) {
+      debugger
       clearTimeout(timeoutId)
 
       if (abortCtrl.signal.aborted) {

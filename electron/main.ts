@@ -1,5 +1,5 @@
 import path from 'path'
-import { BrowserWindow, app, ipcMain } from 'electron'
+import { BrowserWindow, app, globalShortcut, ipcMain, ipcRenderer } from 'electron'
 import { handleFileOpen, handleSetTitle, isMac, onOpenURL } from './utils/help'
 import { checkUpdate } from './utils/appVersion'
 import { setMenu } from './utils/menu'
@@ -51,6 +51,14 @@ app.whenReady().then(() => {
     console.log('app activate')
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
+    }
+  })
+
+  // 打开控制台
+  globalShortcut.register('Ctrl+F12', () => {
+    const focusedWindow = BrowserWindow.getFocusedWindow()
+    if (focusedWindow) {
+      focusedWindow.webContents.toggleDevTools()
     }
   })
 })

@@ -80,10 +80,11 @@ function copyChat(content, dataId, type) {
   const res = copy(content.replace(/<[^>]+>|&[^>]+;/g, '').trim())
   res && ElMessage.success('复制成功，感觉自己像个魔术师')
 
-  type === 'AI' && PostFrontChatstepStep({
-    type: 3,
-    chatDetailId: dataId,
-  })
+  type === 'AI'
+        && PostFrontChatstepStep({
+          type: 3,
+          chatDetailId: dataId,
+        })
   updatePoint(dataId)
 }
 
@@ -395,7 +396,8 @@ async function caiChat(dataId, isCancel) {
     chatHistory.value.map((item) => {
       return {
         ...item,
-        stepType: dataId === item.dataId ? (isCancel ? 0 : 2) : item.stepType,
+        stepType:
+                    dataId === item.dataId ? (isCancel ? 0 : 2) : item.stepType,
       }
     }),
   )
@@ -439,6 +441,10 @@ onMounted(() => {
 onUnmounted(() => {
   clearInterval(timer)
 })
+
+onActivated(() => {
+  scrollToBottom()
+})
 </script>
 
 <template>
@@ -464,9 +470,10 @@ onUnmounted(() => {
           :key="item.dataId"
           class="chat-box relative"
           :class="
-            item.obj === 'Human'
-              ? 'chat-user self-end'
-              : 'chat-bot self-start '
+            (item.obj === 'Human'
+              ? ' chat-user self-end '
+              : ' chat-bot self-start ')
+              + (isWaitting && index === chatHistory.length - 1 ? ' pending' : '')
           "
         >
           <div
@@ -545,7 +552,13 @@ onUnmounted(() => {
                   class="opr-icon"
                   @mouseover="showCopyActive = true"
                   @mouseout="showCopyActive = false"
-                  @click="copyChat(item.value, item.dataId, item.obj)"
+                  @click="
+                    copyChat(
+                      item.value,
+                      item.dataId,
+                      item.obj,
+                    )
+                  "
                 >
                 <img
                   v-if="
@@ -647,7 +660,7 @@ onUnmounted(() => {
           class="absolute cursor-not-allowed z-3 right-10px bottom-15px w-24px h-24px"
           alt=""
         >
-        <div class="absolute color-#666 right-6px bottom-1px text-12px">
+        <div class="absolute color-#a8abb2 right-6px bottom-1px text-12px">
           {{ messageContent.length }}/1000
         </div>
       </div>
@@ -710,7 +723,10 @@ onUnmounted(() => {
           >
             <div class="title flex">
               <div class="inline-block mr-6px">
-                {{ item.value.slice(0, 15) + (item.value.length > 15 ? '...' : '') }}
+                {{
+                  item.value.slice(0, 15)
+                    + (item.value.length > 15 ? "..." : "")
+                }}
               </div>
               <div
                 v-if="item.chatId === route.query.chatId"
@@ -723,7 +739,13 @@ onUnmounted(() => {
               </div>
             </div>
             <div class="content flex">
-              <div>{{ `${item.askValue.slice(0, 20)}${item.askValue.length > 20 ? '...' : ''}` }}</div>
+              <div>
+                {{
+                  `${item.askValue.slice(0, 20)}${
+                    item.askValue.length > 20 ? "..." : ""
+                  }`
+                }}
+              </div>
               <div
                 class="ml-auto"
                 @click.stop="deleteChatList(item.chatId)"
@@ -778,18 +800,23 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss">
-@import '../chat.scss';
+@import "../chat.scss";
 .history-box {
     background: #f8f8f8;
     border-radius: 10px 10px 10px 10px;
     cursor: pointer;
 
+    .content {
+        font-size: 12px;
+        color: #666666;
+    }
+
     .title {
-        font-weight: 500;
+        font-weight: 600;
         font-size: 14px;
         color: #222222;
         line-height: 14px;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .time {
@@ -959,6 +986,19 @@ onUnmounted(() => {
             background: #ffffff;
         }
 
+        &.pending {
+            border: 1px solid transparent !important;
+            background: #fff;
+            background-image: linear-gradient(white, white),
+            linear-gradient(
+              to right,
+              rgba(131, 226, 255, 1),
+              rgba(191, 128, 255, 1)
+            );
+            background-origin: border-box; /* 渐变背景仅在边框区域 */
+            background-clip: padding-box, border-box; /* 上层背景裁剪        到内容区，下层背景裁剪到边框区 */
+        }
+
         .text {
             font-size: 14px;
             color: #222222;
@@ -969,7 +1009,7 @@ onUnmounted(() => {
 
     .tip {
         font-size: 10px;
-        color: #909090;
+        color: #a8abb2;
         line-height: 10px;
         margin-bottom: 16px;
         text-align: center;
