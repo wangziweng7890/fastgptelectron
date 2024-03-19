@@ -50,7 +50,7 @@ app.whenReady().then(() => {
   }
   myGlobalShortcut()
   // 设置托盘
-  setTray(mainWindow)
+  !isMac && setTray(mainWindow)
   app.on('activate', () => {
     console.log('app activate')
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -59,9 +59,10 @@ app.whenReady().then(() => {
   })
 
   mainWindow.on('close', (e) => {
-    console.log('close')
-    e.preventDefault()
-    mainWindow.minimize()
+    if (!isMac) {
+      e.preventDefault()
+      mainWindow.minimize()
+    }
   })
 })
 
@@ -87,9 +88,8 @@ app.on('before-quit', () => {
 
 app.on('window-all-closed', () => {
   console.log('window-all-closed')
-  if (process.platform !== 'darwin') {
+  if (!isMac) {
     app.quit()
   }
 })
-
 

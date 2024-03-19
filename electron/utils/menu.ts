@@ -44,15 +44,15 @@ export const setMenu = (mainWindow: BrowserWindow) => {
       ],
     },
     {
-      label: `窗口`,
+      label: '窗口',
       submenu: [
         {
           click: () => mainWindow.setAlwaysOnTop(!mainWindow.isAlwaysOnTop()),
-          label: `固定窗口`,
+          label: '固定窗口',
           type: 'checkbox',
           checked: mainWindow.isAlwaysOnTop(),
         },
-      ]
+      ],
     },
     {
       label: '快捷键',
