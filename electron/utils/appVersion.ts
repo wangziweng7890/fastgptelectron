@@ -17,7 +17,7 @@ let isShowedUpdateDialog = false
 let isShowedNewVersionDialog = false
 
 /** 检测更新 */
-export const checkUpdate = (win: BrowserWindow, updateInterval) => {
+export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
   console.log('开始检测版本')
 
   // 设置更新检测的资源路径，会检测对应路径下的 last.yaml文件中的版本信息 上线后确保该文件能正常访问
@@ -68,7 +68,7 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
 
   // 监听'update-downloaded'事件，新版本下载完成时触发
   autoUpdater.on('update-downloaded', () => {
-    clearInterval(updateInterval)
+    updateInterval && clearInterval(updateInterval)
     !isShowedUpdateDialog && dialog
       .showMessageBox({
         type: 'info',
@@ -83,7 +83,7 @@ export const checkUpdate = (win: BrowserWindow, updateInterval) => {
           autoUpdater.quitAndInstall()
           // autoUpdater.quitAndInstall(true, true)
           win?.destroy?.()
-          app?.quit?.()
+          app?.exit?.()
         }
         else {
           isShowedUpdateDialog = false

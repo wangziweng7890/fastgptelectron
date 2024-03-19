@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, app } from 'electron'
+import { BrowserWindow, Menu, app, globalShortcut } from 'electron'
 import { checkUpdate, showVersion } from './appVersion'
 import { isMac } from './help'
 
@@ -6,6 +6,15 @@ const copyKey = isMac ? 'Cmd+C' : 'Ctrl+C'
 const pasteKey = isMac ? 'Cmd+V' : 'Ctrl+V'
 const cutKey = isMac ? 'Cmd+X' : 'Ctrl+X'
 const allKey = isMac ? 'Cmd+A' : 'Ctrl+A'
+const devKey = isMac ? 'Cmd+Shift+D' : 'Ctrl+Shift+D'
+
+export const myGlobalShortcut = (mainWindow: BrowserWindow) => {
+  // 开发者工具
+  globalShortcut.register(devKey, () => {
+    const isOpened = mainWindow.webContents.isDevToolsOpened()
+    isOpened ? mainWindow.webContents.closeDevTools() : mainWindow.webContents.openDevTools()
+  })
+}
 
 export const setMenu = (mainWindow: BrowserWindow) => {
   const menu = Menu.buildFromTemplate([
@@ -21,11 +30,21 @@ export const setMenu = (mainWindow: BrowserWindow) => {
           label: '检查版本更新',
         },
         {
-          click: () => mainWindow.webContents.openDevTools(),
-          label: '开发者',
+          click: () => { app.exit() },
+          label: '退出',
         },
-        isMac ? { role: 'close' } : { role: 'quit' },
       ],
+    },
+    {
+      label: `窗口`,
+      submenu: [
+        {
+          click: () => mainWindow.setAlwaysOnTop(!mainWindow.isAlwaysOnTop()),
+          label: `固定窗口`,
+          type: 'checkbox',
+          checked: mainWindow.isAlwaysOnTop(),
+        },
+      ]
     },
     {
       label: '快捷键',

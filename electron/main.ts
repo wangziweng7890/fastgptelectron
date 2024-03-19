@@ -1,8 +1,9 @@
 import path from 'path'
-import { BrowserWindow, app, ipcMain } from 'electron'
+import { BrowserWindow, app, globalShortcut, ipcMain } from 'electron'
 import { handleFileOpen, handleSetTitle, isMac, onOpenURL } from './utils/help'
 import { checkUpdate } from './utils/appVersion'
-import { setMenu } from './utils/menu'
+import { myGlobalShortcut, setMenu } from './utils/menu'
+import { setTray } from './utils/tray'
 
 let mainWindow: BrowserWindow
 let updateInterval
@@ -43,15 +44,24 @@ app.whenReady().then(() => {
   ipcMain.handle('dialog:openFile', handleFileOpen)
   ipcMain.on('open-url', onOpenURL)
   console.log('whenReady')
+
   if (!mainWindow) {
     createWindow()
   }
-
+  myGlobalShortcut(mainWindow)
+  // 设置托盘
+  setTray(mainWindow)
   app.on('activate', () => {
     console.log('app activate')
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
     }
+  })
+
+  mainWindow.on('close', (e) => {
+    console.log('close')
+    e.preventDefault()
+    mainWindow.minimize()
   })
 })
 
@@ -81,3 +91,5 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+
