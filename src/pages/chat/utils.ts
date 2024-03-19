@@ -62,6 +62,18 @@ export const md = new MarkdownIt({
   },
 })
 
+md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+  // 获取链接的 token
+  const aIndex = tokens[idx].attrIndex('href')
+  if (aIndex >= 0) {
+    const href = tokens[idx].attrs[aIndex][1]
+    tokens[idx].attrPush(['onclick', `window.electronAPI.openURL('${href}')`])
+    tokens[idx].attrs[aIndex][1] = 'javascript:void(0);'
+  }
+
+  // 使用默认的渲染规则渲染链接
+  return self.renderToken(tokens, idx, options)
+}
 export enum ChatRoleEnum {
     System = 'System',
     Human = 'Human',
