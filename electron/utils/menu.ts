@@ -24,7 +24,14 @@ export const setMenu = (mainWindow: BrowserWindow) => {
           click: () => mainWindow.webContents.openDevTools(),
           label: '开发者',
         },
-        isMac ? { role: 'close' } : { role: 'quit' },
+        {
+          click: () => {
+              mainWindow.webContents.executeJavaScript('localStorage.removeItem("access_token");');
+              mainWindow.reload();
+          },
+          label: '切换账号',
+        },
+        isMac ? { label: '关闭', role: 'close' } : { label: '退出', role: 'quit' },
       ],
     },
     {
