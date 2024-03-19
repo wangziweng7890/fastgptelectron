@@ -83,7 +83,9 @@ else {
 }
 
 app.on('before-quit', () => {
+  console.log('before-quit')
   clearInterval(updateInterval)
+  app.exit()
 })
 
 app.on('window-all-closed', () => {

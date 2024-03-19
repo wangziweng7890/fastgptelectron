@@ -3,6 +3,8 @@ import { checkUpdate, showVersion } from './appVersion'
 import { isMac } from './help'
 
 const devKey = isMac ? 'Cmd+F12' : 'Ctrl+F12'
+const copyKey = isMac ? 'Cmd+C' : 'Ctrl+C'
+const pasteKey = isMac ? 'Cmd+V' : 'Ctrl+V'
 
 export const myGlobalShortcut = () => {
   // 开发者工具
@@ -10,6 +12,18 @@ export const myGlobalShortcut = () => {
     const focusedWindow = BrowserWindow.getFocusedWindow()
     if (focusedWindow) {
       focusedWindow.webContents.toggleDevTools()
+    }
+  })
+  globalShortcut.register(copyKey, () => {
+    const focusedWindow = BrowserWindow.getFocusedWindow()
+    if (focusedWindow) {
+      focusedWindow.webContents.copy()
+    }
+  })
+  globalShortcut.register(pasteKey, () => {
+    const focusedWindow = BrowserWindow.getFocusedWindow()
+    if (focusedWindow) {
+      focusedWindow.webContents.paste()
     }
   })
 }
