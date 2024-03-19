@@ -16,7 +16,7 @@ const props = defineProps({
       v-if="props.src"
       class="inline-block w-16px h-16px mr-2px"
       :src="props.src"
-    ><slot />
+    ><span class="v-middle"><slot /></span>
   </div>
 </template>
 
@@ -35,7 +35,7 @@ const props = defineProps({
     color: #606060;
     line-height: 12px;
 
-    line-height: 24px;
+    line-height: 22px;
     text-align: left;
 
     &.a {

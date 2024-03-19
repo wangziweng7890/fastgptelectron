@@ -49,15 +49,12 @@ const process = computed(() => {
       {{ props.chatName }}
     </div>
     <div class="flex">
-      <el-tooltip
+      <Tooltip
         :content="tips"
         placement="bottom"
-        effect="light"
-        :show-arrow="false"
-        popper-class="propress-popper-class"
       >
         <Progress class="mb-4px mr-6px" :percentage="process" />
-      </el-tooltip>
+      </Tooltip>
       <div class="level">
         {{ props.levelName || 'V1' }}
       </div>
@@ -76,7 +73,7 @@ const process = computed(() => {
     .level {
         padding-left: 4px;
         padding-right: 4px;
-        height: 13px;
+        height: 14px;
         background: linear-gradient(90deg, #86dfff 0%, #bc86ff 100%);
         border-radius: 6px 6px 6px 6px;
 
@@ -103,18 +100,5 @@ const process = computed(() => {
         line-height: 20px;
         text-align: center;
     }
-}
-.propress-popper-class.el-popper {
-    border: 1px solid transparent !important;
-    background: #fff;
-    background-image: linear-gradient(white, white),
-        linear-gradient(
-            to right,
-            rgba(131, 226, 255, 1),
-            rgba(191, 128, 255, 1)
-        );
-    background-origin: border-box; /* 渐变背景仅在边框区域 */
-    background-clip: padding-box, border-box; /* 上层背景裁剪到内容区，下层背景裁剪到边框区 */
-    border-radius: 6px 6px 6px 6px !important;
 }
 </style>

@@ -51,8 +51,9 @@ const props = defineProps({
     transform: rotate(-45deg);
 }
 .gradient-progress-bar {
+    box-sizing: content-box;
     width: 120px;
-    height: 13px;
+    height: 12px;
     background: #f5fdff;
     border: 1px solid transparent;
     border-radius: 5px 5px 5px 5px;
@@ -79,6 +80,6 @@ const props = defineProps({
         rgba(131, 226, 255, 1),
         rgba(191, 128, 255, 1)
     );
-    height: 11px;
+    height: 12px;
 }
 </style>

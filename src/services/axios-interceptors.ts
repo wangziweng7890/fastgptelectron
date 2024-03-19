@@ -14,8 +14,7 @@ function login() {
 
 // 如果不想通过拦截器统一弹出axios的error message, 在axios的config中加入key是 HideAxiosErrorToastKey ，value：true的选项
 // config = {[HideAxiosErrorToastKey]:true}
-export const HideAxiosErrorToastKey = Symbol('_hide_axios_error_toast_key_')
-
+export const HideAxiosErrorToastKey = '_hide_axios_error_toast_key_'
 export const resCodeInterceptor = async (res) => {
   const resData = res.data ?? {}
   const code = resData.code
@@ -39,7 +38,6 @@ export const resCodeInterceptor = async (res) => {
     return resData.data
 
   const hideAxiosErrorToast = res.config?.[HideAxiosErrorToastKey]
-
   let errorMessage = resData.message || resData.msg
 
   if (NeedLoginCode.includes(code)) {

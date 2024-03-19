@@ -1,5 +1,5 @@
 import path from 'path'
-import { BrowserWindow, app, globalShortcut, ipcMain } from 'electron'
+import { BrowserWindow, app, ipcMain } from 'electron'
 import { handleFileOpen, handleSetTitle, isMac, onOpenURL } from './utils/help'
 import { checkUpdate } from './utils/appVersion'
 import { myGlobalShortcut, setMenu } from './utils/menu'
@@ -48,7 +48,7 @@ app.whenReady().then(() => {
   if (!mainWindow) {
     createWindow()
   }
-  myGlobalShortcut(mainWindow)
+  myGlobalShortcut()
   // 设置托盘
   setTray(mainWindow)
   app.on('activate', () => {

@@ -6,13 +6,15 @@ const copyKey = isMac ? 'Cmd+C' : 'Ctrl+C'
 const pasteKey = isMac ? 'Cmd+V' : 'Ctrl+V'
 const cutKey = isMac ? 'Cmd+X' : 'Ctrl+X'
 const allKey = isMac ? 'Cmd+A' : 'Ctrl+A'
-const devKey = isMac ? 'Cmd+Shift+D' : 'Ctrl+Shift+D'
+const devKey = isMac ? 'Cmd+F12' : 'Ctrl+F12'
 
-export const myGlobalShortcut = (mainWindow: BrowserWindow) => {
+export const myGlobalShortcut = () => {
   // 开发者工具
   globalShortcut.register(devKey, () => {
-    const isOpened = mainWindow.webContents.isDevToolsOpened()
-    isOpened ? mainWindow.webContents.closeDevTools() : mainWindow.webContents.openDevTools()
+    const focusedWindow = BrowserWindow.getFocusedWindow()
+    if (focusedWindow) {
+      focusedWindow.webContents.toggleDevTools()
+    }
   })
 }
 
@@ -28,6 +30,12 @@ export const setMenu = (mainWindow: BrowserWindow) => {
         {
           click: () => checkUpdate(mainWindow),
           label: '检查版本更新',
+        },
+        {
+          click: () => {
+            mainWindow.webContents.send('logout', 'Hello, Renderer Process!')
+          },
+          label: '切换账号',
         },
         {
           click: () => { app.exit() },

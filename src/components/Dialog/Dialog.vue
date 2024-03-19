@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="over-dialog" :close-on-click-modal="false">
+  <el-dialog class="over-dialog" :close-on-click-modal="false" append-to-body top="6vh">
     <template #header>
       <slot name="header" />
     </template>
@@ -13,9 +13,15 @@
 </template>
 
 <style lang="scss">
+.el-overlay-dialog {
+    overflow: auto;
+    display: flex;
+    align-items: center;
+}
 .over-dialog {
     border-radius: 8px;
     overflow: hidden;
+    height: fit-content;
     .el-dialog__title {
         color: #222;
     }
@@ -37,9 +43,13 @@
     }
 
     .el-dialog__body {
-        padding: 20px;
+        padding: 20px 20px 24px 20px;
         font-size: 16px;
         color: #141222;
+    }
+
+    .el-dialog__footer {
+        padding: 0;
     }
 }
 </style>
