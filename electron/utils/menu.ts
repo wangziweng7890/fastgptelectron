@@ -17,7 +17,7 @@ export const myGlobalShortcut = () => {
     }
   })
 }
-
+app
 export const setMenu = (mainWindow: BrowserWindow) => {
   const menu = Menu.buildFromTemplate([
     {
@@ -52,15 +52,6 @@ export const setMenu = (mainWindow: BrowserWindow) => {
           type: 'checkbox',
           checked: mainWindow.isAlwaysOnTop(),
         },
-      ],
-    },
-    {
-      label: '快捷键',
-      submenu: [
-        { label: '复制', accelerator: copyKey, role: 'copy' },
-        { label: '粘贴', accelerator: pasteKey, role: 'paste' },
-        { label: '剪切', accelerator: cutKey, role: 'cut' },
-        { label: '全选', accelerator: allKey, role: 'selectAll' },
       ],
     },
   ])
