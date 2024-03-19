@@ -2,10 +2,6 @@ import { BrowserWindow, Menu, app, globalShortcut } from 'electron'
 import { checkUpdate, showVersion } from './appVersion'
 import { isMac } from './help'
 
-const copyKey = isMac ? 'Cmd+C' : 'Ctrl+C'
-const pasteKey = isMac ? 'Cmd+V' : 'Ctrl+V'
-const cutKey = isMac ? 'Cmd+X' : 'Ctrl+X'
-const allKey = isMac ? 'Cmd+A' : 'Ctrl+A'
 const devKey = isMac ? 'Cmd+F12' : 'Ctrl+F12'
 
 export const myGlobalShortcut = () => {
@@ -17,7 +13,6 @@ export const myGlobalShortcut = () => {
     }
   })
 }
-app
 export const setMenu = (mainWindow: BrowserWindow) => {
   const menu = Menu.buildFromTemplate([
     {
