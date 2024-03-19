@@ -88,6 +88,11 @@ app.on('before-quit', () => {
   app.exit()
 })
 
+app.on('quit', () => {
+  console.log('quit')
+  app.exit()
+})
+
 app.on('window-all-closed', () => {
   console.log('window-all-closed')
   if (!isMac) {
