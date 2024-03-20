@@ -68,7 +68,7 @@ app.whenReady().then(() => {
 
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
-  app.quit()
+  app.exit()
 }
 else {
   app.on('second-instance', () => {
