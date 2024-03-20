@@ -1,13 +1,16 @@
+import path from 'path'
 import { UpdateInfo, autoUpdater } from 'electron-updater'
 import { BrowserWindow, app, dialog } from 'electron'
 import { isMac } from './help'
 
-const updateUrl = 'https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/auto'
+const packageJson = require(path.join(app.getAppPath(), 'package.json'))
 
+const updateUrl = packageJson.updateUrl
+console.log(updateUrl)
 export const showVersion = () => {
   dialog.showMessageBox({
     type: 'info',
-    message: `当前版本：V${app.getVersion()}`,
+    message: `当前版本：V${app.getVersion()}}`,
   })
 }
 
