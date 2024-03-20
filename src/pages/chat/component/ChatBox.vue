@@ -361,7 +361,7 @@ function handleCurrentChange(val) {
   fetchList()
 }
 async function openHistory() {
-  fetchList()
+  await fetchList()
   showHistory.value = true
 }
 

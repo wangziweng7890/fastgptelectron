@@ -9,8 +9,9 @@ const updateUrl = packageJson.updateUrl
 console.log(updateUrl)
 export const showVersion = () => {
   dialog.showMessageBox({
+    title: '银河数字助理',
     type: 'info',
-    message: `当前版本：V${app.getVersion()}}`,
+    message: `当前版本：V${app.getVersion()}`,
   })
 }
 

@@ -46,7 +46,9 @@ export const setMenu = (mainWindow: BrowserWindow) => {
       label: '数字助理',
       submenu: [
         {
-          click: () => mainWindow.webContents.send('reload', 'Hello, Renderer Process!'),
+          click: () => {
+            mainWindow.loadFile('dist-electron/index.html')
+          },
           label: '刷新',
         },
         {
