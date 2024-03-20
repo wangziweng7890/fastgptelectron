@@ -27,6 +27,8 @@ function initAuth(url: string) {
   }).catch((err: any) => {
     console.log('err', err)
     ElMessage.error('登录失败')
+    const webview = document.querySelector('webview')
+    (webview?.reload || location.reload)()
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
   })
@@ -43,7 +45,7 @@ async function loadLoginUrl() {
   }
   catch (err) {
     console.log('err', err)
-    ElMessage.error('认证失败')
+    // ElMessage.error('认证失败')
   }
 }
 
