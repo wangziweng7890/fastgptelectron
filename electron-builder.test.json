@@ -30,8 +30,8 @@
     "nsis": {
       "oneClick": true,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": false,
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "include": "build.test.sh"
     },
     "publish": [
       {
@@ -43,7 +43,8 @@
       "releaseNotes": "版本更新的具体内容"
     },
     "extraMetadata": {
-        "version": "0.0.5",
-        "updateUrl": "https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/test"
+        "version": "0.0.6",
+        "updateUrl": "https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/test",
+        "name": "galaxy-helper-test"
     }
   }
