@@ -13,7 +13,7 @@ import { debounce } from 'lodash-es'
 import { Search } from '@element-plus/icons-vue'
 import { GetWikiRestApiSearch, PostDoLogin } from '@/services/wiki/apifox'
 import { GetFrontConfluenceAccount, PostFrontConfluenceAccountAdd } from '@/services/apifox/zhiNengKeFu/confluence/apifox'
-
+import backPng from '@/assets/images/back.png'
 const router = useRouter()
 
 // 登录弹窗
@@ -222,51 +222,60 @@ init()
 
 <template>
   <div class="content-container">
-    <div class="back-button" @click="handleClick">
-      <img src="~@/assets/images/back.png" alt="" class="back-icon">
-      返回会话
+    <div class="ml-16px mt-12px">
+      <YhButton
+        class="mr-10px w-96px"
+        type="c"
+        :src="backPng"
+        @click="handleClick"
+      >
+        返回会话
+      </YhButton>
     </div>
-    <div v-if="!isSearch" class="sousou-logo-img">
-      <img src="~@/assets/images/search-logo.png" alt="">
-    </div>
-    <div v-if="!isSearch" class="sousou-title-img">
-      <img src="~@/assets/images/search-title.png" alt="">
-    </div>
-    <div class="search-box">
-      <el-input
-        v-model="keyword"
-        size="large"
-        placeholder="我想知道..."
-        class="search-input gray-input"
-        :prefix-icon="Search"
-        @input="handleKeydown"
-      />
-    </div>
-    <div class="sousou-desc" :class="[{ 'is-search': isSearch }]">
-      数据来源:业务知识库
-    </div>
-    <div v-if="isSearch" class="search-result">
-      <div v-for="(item, index) in list" :key="item.title" :index="index" class="result-item" @click="handleItem(item)">
-        <div class="item-title" v-html="item.title" />
-        <div class="item-content" v-html="item.content" />
-        <div class="item-from">
-          摘自：
-          <span>{{ item.from }}</span>
-        </div>
+    <div class="flex flex-col h-100% justify-center overflow-hidden">
+      <div v-if="!isSearch" class="sousou-logo-img mt--35vh">
+        <img src="~@/assets/images/search-logo.png" alt="">
       </div>
-      <el-empty v-if="!list.length" :image-size="200" />
+      <div v-if="!isSearch" class="sousou-title-img">
+        <img src="~@/assets/images/search-title.png" alt="">
+      </div>
+      <div class="search-box">
+        <el-input
+          v-model="keyword"
+          size="large"
+          placeholder="我想知道..."
+          class="search-input gray-input"
+          :prefix-icon="Search"
+          @input="handleKeydown"
+        />
+      </div>
+      <div class="sousou-desc" :class="[{ 'is-search': isSearch }]">
+        数据来源:业务知识库
+      </div>
+      <div v-if="isSearch" class="search-result">
+        <div v-for="(item, index) in list" :key="item.title" :index="index" class="result-item" @click="handleItem(item)">
+          <div class="item-title" v-html="item.title" />
+          <div class="item-content" v-html="item.content" />
+          <div class="item-from">
+            摘自：
+            <span>{{ item.from }}</span>
+          </div>
+        </div>
+        <el-empty v-if="!list.length" :image-size="200" />
+      </div>
+      <div class="pagination-container">
+        <el-pagination
+          v-if="isSearch"
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          layout="prev, pager, next, jumper, total"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
-    <div class="pagination-container">
-      <el-pagination
-        v-if="isSearch"
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        layout="prev, pager, next, jumper, total"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </div>
+
     <!--   使用element-plus实现登录弹窗     -->
     <Dialog v-model="visible" width="300px" @close="handleClose">
       <template #header>
@@ -320,27 +329,23 @@ init()
   font-size: 14px;
 }
 
-.back-button {
-  display: inline-flex;
-  align-items: center;
-  margin: 12px 0 0 16px;
-  padding: 6px 8px;
-  width: 90px;
-  background: #ecfcff;
-  color: #606060;
-  border-radius: 4px;
-  cursor: pointer;
-}
+// .back-button {
+//   display: inline-flex;
+//   align-items: center;
+//   margin: 12px 0 0 16px;
+//   padding: 6px 8px;
+//   width: 90px;
+//   background: #ecfcff;
+//   color: #606060;
+//   border-radius: 4px;
+//   cursor: pointer;
+// }
 
 .back-icon {
   margin-right: 4px;
   width: 13px;
   height: 11px;
   border-radius: 0;
-}
-
-.sousou-logo-img {
-  margin-top: 35vh;
 }
 
 .sousou-logo-img img {
@@ -355,8 +360,6 @@ init()
 
 .sousou-title-img img {
   margin: 0 auto;
-  width: 240px;
-  height: 34px;
 }
 
 .search-box {

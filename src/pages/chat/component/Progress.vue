@@ -34,21 +34,21 @@ const props = defineProps({
     position: absolute;
     width: 12px;
     height: 11px;
-    font-size: 15px;
+    font-size: 19px;
     color: #bf80ff;
-    top: -5px;
-    left: -4px;
+    top: -7px;
+    left: -5px;
     z-index: 99;
 }
 .xin2 {
     width: 16px;
     height: 16px;
-    font-size: 24px;
+    font-size: 30px;
     color: #c2f1ff;
     position: absolute;
-    left: -16px;
-    top: -9px;
-    transform: rotate(-45deg);
+    left: -19px;
+    top: -13px;
+    transform: rotate(-33deg);
 }
 .gradient-progress-bar {
     box-sizing: content-box;

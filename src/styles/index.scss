@@ -306,3 +306,11 @@ input:-webkit-autofill:active {
     background-color: #fff !important;
   }
 }
+
+.el-button {
+    font-weight: 400;
+}
+
+.el-pager li.is-active {
+    color: #00C4FF;
+}

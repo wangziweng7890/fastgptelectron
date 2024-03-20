@@ -20,7 +20,6 @@ import caiActiveIcon from '../img/cai-active.png'
 import caiSelectIcon from '../img/cai-select.png'
 import stopIcon from '../img/stop.png'
 import { appId } from '../config'
-import YhButton from './YhButton.vue'
 import { copy } from '~/utils'
 import router from '~/router'
 import {
@@ -660,7 +659,7 @@ onActivated(() => {
           class="absolute cursor-not-allowed z-3 right-10px bottom-15px w-24px h-24px"
           alt=""
         >
-        <div class="absolute color-#a8abb2 right-6px bottom-1px text-12px">
+        <div class="absolute color-#a8abb2 right-6px bottom-1px text-10px">
           {{ messageContent.length }}/1000
         </div>
       </div>
@@ -711,7 +710,7 @@ onActivated(() => {
       </template>
       <div>
         <el-empty v-if="!historyList.length" :image-size="200" />
-        <ElScrollbar max-height="500px" class="mb-16px">
+        <ElScrollbar max-height="467px" class="mb-16px">
           <div
             v-for="item in historyList"
             :key="item.chatId"
@@ -750,7 +749,16 @@ onActivated(() => {
                 class="ml-auto"
                 @click.stop="deleteChatList(item.chatId)"
               >
-                <img :src="deleteIcon" class="opr-icon">
+                <img
+                  :src="
+                    !item.showDeleteActive
+                      ? deleteIcon
+                      : deleteActiveIcon
+                  "
+                  class="opr-icon"
+                  @mouseover="item.showDeleteActive = true"
+                  @mouseout="item.showDeleteActive = false"
+                >
               </div>
             </div>
           </div>
@@ -766,35 +774,33 @@ onActivated(() => {
       </div>
     </Dialog>
 
-    <Dialog v-model="showDelete" width="350px">
+    <Dialog v-model="showDelete" width="300px">
       <template #header>
         删除确认
       </template>
-      <p class="text p-24px pb-0">
+      <p class="text p-24px pt-16px pb-36px text-center text-size-14px">
         这次删除，真的不是手抖了吗？
       </p>
-      <template #footer>
-        <div class="flex justify-between p-l-24px p-r-24px">
-          <el-button
-            :loading="isLoading"
-            color="#EDEDED"
-            class="w-88px color-#666"
-            size="large"
-            @click="deleteConfirm"
-          >
-            确认删除
-          </el-button>
-          <el-button
-            :loading="isLoading"
-            color="#00BBFF"
-            class="w-88px color-#fff"
-            size="large"
-            @click="showDelete = false"
-          >
-            反悔了～
-          </el-button>
-        </div>
-      </template>
+      <div class="flex justify-between p-l-30px p-r-30px">
+        <el-button
+          :loading="isLoading"
+          color="#EDEDED"
+          class="w-80px color-#666"
+          size="large"
+          @click="deleteConfirm"
+        >
+          确认删除
+        </el-button>
+        <el-button
+          :loading="isLoading"
+          color="#00BBFF"
+          class="w-80px color-#fff"
+          size="large"
+          @click="showDelete = false"
+        >
+          反悔了～
+        </el-button>
+      </div>
     </Dialog>
   </div>
 </template>
@@ -809,6 +815,8 @@ onActivated(() => {
     .content {
         font-size: 12px;
         color: #666666;
+        line-height: 12px;
+        height: 12px;
     }
 
     .title {
@@ -816,7 +824,7 @@ onActivated(() => {
         font-size: 14px;
         color: #222222;
         line-height: 14px;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
     }
 
     .time {

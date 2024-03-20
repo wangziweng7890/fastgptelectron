@@ -1,7 +1,6 @@
 <script setup lang="ts" name="chat">
 import { customAlphabet } from 'nanoid'
 import searchIcon from './img/search.png'
-import YhButton from './component/YhButton.vue'
 import UserInfo from './component/Userinfo.vue'
 import ChatBox from './component/ChatBox.vue'
 import { streamFetch } from './fetch'

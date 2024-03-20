@@ -29,8 +29,8 @@
         font-weight: 500;
         margin-right: 0;
         font-weight: 500;
-        font-size: 18px;
-        line-height: 60px;
+        font-size: 14px;
+        line-height: 40px;
         padding: 0 20px;
         text-align: center;
         border-bottom: 1px solid #F6F6F6;
@@ -39,6 +39,7 @@
 
         .el-dialog__headerbtn {
             top: 2px;
+            height: 44px;
         }
     }
 

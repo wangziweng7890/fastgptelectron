@@ -48,17 +48,17 @@ const process = computed(() => {
     <div class="user-name mt-40px mb-14px">
       {{ props.chatName }}
     </div>
-    <div class="flex">
-      <Tooltip
-        :content="tips"
-        placement="bottom"
-      >
+    <Tooltip
+      :content="tips"
+      placement="bottom"
+    >
+      <div class="flex">
         <Progress class="mb-4px mr-6px" :percentage="process" />
-      </Tooltip>
-      <div class="level">
-        {{ props.levelName || 'V1' }}
+        <div class="level">
+          {{ props.levelName || 'V1' }}
+        </div>
       </div>
-    </div>
+    </Tooltip>
   </section>
 </template>
 
