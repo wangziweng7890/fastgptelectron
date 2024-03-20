@@ -15,21 +15,23 @@ export const myLocalShortcut = (win: BrowserWindow) => {
   electronLocalshortcut.register(win, devKey, () => {
     win?.webContents.toggleDevTools()
   })
-  electronLocalshortcut.register(win, copyKey, () => {
-    win?.webContents?.copy()
-  })
-  electronLocalshortcut.register(win, pasteKey, () => {
-    win?.webContents?.paste()
-  })
-  electronLocalshortcut.register(win, cutKey, () => {
-    win?.webContents?.cut()
-  })
-  electronLocalshortcut.register(win, allKey, () => {
-    win?.webContents?.selectAll()
-  })
-  electronLocalshortcut.register(win, undoKey, () => {
-    win?.webContents?.undo()
-  })
+  if (isMac) {
+    electronLocalshortcut.register(win, copyKey, () => {
+      win?.webContents?.copy()
+    })
+    electronLocalshortcut.register(win, pasteKey, () => {
+      win?.webContents?.paste()
+    })
+    electronLocalshortcut.register(win, cutKey, () => {
+      win?.webContents?.cut()
+    })
+    electronLocalshortcut.register(win, allKey, () => {
+      win?.webContents?.selectAll()
+    })
+    electronLocalshortcut.register(win, undoKey, () => {
+      win?.webContents?.undo()
+    })
+  }
   // focusedWindow?.on('blur', () => {
   //   globalShortcut.unregisterAll()
   // })
