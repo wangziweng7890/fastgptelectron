@@ -9,8 +9,8 @@ let mainWindow: BrowserWindow
 let updateInterval
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 900,
+    width: 600,
+    height: 800,
     icon: path.join(__dirname, isMac ? 'favicon.icns' : 'favicon.ico'),
     webPreferences: {
       contextIsolation: true, // 是否开启隔离上下文
