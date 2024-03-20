@@ -42,6 +42,10 @@ export const setMenu = (mainWindow: BrowserWindow) => {
       label: '数字助理',
       submenu: [
         {
+          click: () => mainWindow.webContents.send('reload', 'Hello, Renderer Process!'),
+          label: '刷新',
+        },
+        {
           click: () => showVersion(),
           label: `当前版本：V${app.getVersion()}`,
         },

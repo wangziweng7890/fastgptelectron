@@ -45,5 +45,8 @@ setTimeout(() => {
       path: '/login',
     })
   })
+  window.electronAPI.reload(() => {
+    location.reload()
+  })
 }, 0)
 
