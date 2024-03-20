@@ -44,7 +44,7 @@
       "releaseNotes": "版本更新的具体内容"
     },
     "extraMetadata": {
-        "version": "0.1.9",
+        "version": "0.2.0",
         "updateUrl": "https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/auto",
         "name": "galaxy-helper-prod"
     }
