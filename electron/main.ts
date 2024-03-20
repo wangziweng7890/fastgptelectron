@@ -2,7 +2,7 @@ import path from 'path'
 import { BrowserWindow, app, ipcMain } from 'electron'
 import { handleFileOpen, handleSetTitle, isMac, onOpenURL } from './utils/help'
 import { checkUpdate } from './utils/appVersion'
-import { myGlobalShortcut, setMenu } from './utils/menu'
+import { myLocalShortcut, setMenu } from './utils/menu'
 import { setTray } from './utils/tray'
 
 let mainWindow: BrowserWindow
@@ -48,13 +48,15 @@ app.whenReady().then(() => {
   if (!mainWindow) {
     createWindow()
   }
-  myGlobalShortcut()
+  myLocalShortcut(mainWindow)
   // 设置托盘
   !isMac && setTray(mainWindow)
   app.on('activate', () => {
     console.log('app activate')
     if (BrowserWindow.getAllWindows().length === 0) {
+      console.log('0 createWindow')
       createWindow()
+      myLocalShortcut(mainWindow)
     }
   })
 

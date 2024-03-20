@@ -1,30 +1,39 @@
-import { BrowserWindow, Menu, app, globalShortcut } from 'electron'
+import { BrowserWindow, Menu, app } from 'electron'
+import electronLocalshortcut from 'electron-localshortcut'
 import { checkUpdate, showVersion } from './appVersion'
 import { isMac } from './help'
 
 const devKey = isMac ? 'Cmd+F12' : 'Ctrl+F12'
-// const copyKey = isMac ? 'Cmd+C' : 'Ctrl+C'
-// const pasteKey = isMac ? 'Cmd+V' : 'Ctrl+V'
+const copyKey = isMac ? 'Cmd+C' : 'Ctrl+C'
+const pasteKey = isMac ? 'Cmd+V' : 'Ctrl+V'
+const allKey = isMac ? 'Cmd+A' : 'Ctrl+A'
+const cutKey = isMac ? 'Cmd+X' : 'Ctrl+X'
+const undoKey = isMac ? 'Cmd+Z' : 'Ctrl+Z'
 
-export const myGlobalShortcut = () => {
-  // 开发者工具
-  globalShortcut.register(devKey, () => {
-    const focusedWindow = BrowserWindow.getFocusedWindow()
-    if (focusedWindow) {
-      focusedWindow.webContents.toggleDevTools()
-    }
+export const myLocalShortcut = (win: BrowserWindow) => {
+  // const focusedWindow = BrowserWindow.getFocusedWindow()
+  electronLocalshortcut.register(win, devKey, () => {
+    win?.webContents.toggleDevTools()
   })
-  // globalShortcut.register(copyKey, () => {
-  //   const focusedWindow = BrowserWindow.getFocusedWindow()
-  //   if (focusedWindow) {
-  //     focusedWindow.webContents.copy()
-  //   }
-  // })
-  // globalShortcut.register(pasteKey, () => {
-  //   const focusedWindow = BrowserWindow.getFocusedWindow()
-  //   if (focusedWindow) {
-  //     focusedWindow.webContents.paste()
-  //   }
+  if (isMac) {
+    electronLocalshortcut.register(win, copyKey, () => {
+      win?.webContents?.copy()
+    })
+    electronLocalshortcut.register(win, pasteKey, () => {
+      win?.webContents?.paste()
+    })
+    electronLocalshortcut.register(win, cutKey, () => {
+      win?.webContents?.cut()
+    })
+    electronLocalshortcut.register(win, allKey, () => {
+      win?.webContents?.selectAll()
+    })
+    electronLocalshortcut.register(win, undoKey, () => {
+      win?.webContents?.undo()
+    })
+  }
+  // focusedWindow?.on('blur', () => {
+  //   globalShortcut.unregisterAll()
   // })
 }
 export const setMenu = (mainWindow: BrowserWindow) => {
