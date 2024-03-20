@@ -1,6 +1,6 @@
 {
   "name": "galaxy-helper",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "packageManager": "pnpm@7.4.0",
   "main": "dist-electron/main.js",
@@ -43,6 +43,7 @@
     "axios": "^0.27.2",
     "crypto-js": "4",
     "dayjs": "^1.11.7",
+    "electron-localshortcut": "^3.2.1",
     "electron-updater": "^6.1.8",
     "element-plus": "^2.3.4",
     "highlight.js": "^11.7.0",
