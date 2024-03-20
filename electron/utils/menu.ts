@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, app } from 'electron'
+import { BrowserWindow, Menu, app, globalShortcut } from 'electron'
 import electronLocalshortcut from 'electron-localshortcut'
 import { checkUpdate, showVersion } from './appVersion'
 import { isMac } from './help'
@@ -12,8 +12,12 @@ const undoKey = isMac ? 'Cmd+Z' : 'Ctrl+Z'
 
 export const myLocalShortcut = (win: BrowserWindow) => {
   // const focusedWindow = BrowserWindow.getFocusedWindow()
-  electronLocalshortcut.register(win, devKey, () => {
-    win?.webContents.toggleDevTools()
+  // 打开控制台
+  globalShortcut.register(devKey, () => {
+    const focusedWindow = BrowserWindow.getFocusedWindow()
+    if (focusedWindow) {
+      focusedWindow.webContents.toggleDevTools()
+    }
   })
   if (isMac) {
     electronLocalshortcut.register(win, copyKey, () => {
