@@ -97,15 +97,16 @@ export const resErrorInterceptor = (error: AxiosError<ResponseError>) => {
   // else if (error.message.includes('Network')) {
   //   message = '网络错误'
   // }
-  error.message = '网络被妖怪抓走啦'
+  const errMsg = '网络被妖怪抓走啦'
+  error.message = errMsg
 
   if (error.message && !hideAxiosErrorToast && !Axios.isCancel(error)) {
-    ElMessage.error(error.message)
+    ElMessage.error(errMsg)
   }
 
   if (error.response?.data)
     return Promise.reject(error.response.data)
-  return Promise.reject(error.message)
+  return Promise.reject(errMsg)
 }
 
 /**

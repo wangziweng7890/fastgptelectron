@@ -26,9 +26,10 @@ function initAuth(url: string) {
     router.push('/chat') // 成功跳转到聊天页面
   }).catch((err: any) => {
     console.log('err', err)
-    ElMessage.error('登录失败')
-    const webview = document.querySelector('webview')
-    (webview?.reload || location.reload)()
+    // ElMessage.error('登录失败')
+    router.push({
+      path: '/login',
+    })
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
   })
