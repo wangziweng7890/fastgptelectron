@@ -16,9 +16,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
       func()
     })
   },
-  reload: (func) => {
-    ipcRenderer.on('reload', () => {
-      func()
-    })
+  reload: () => {
+    ipcRenderer.send('reloadWin')
   },
 })

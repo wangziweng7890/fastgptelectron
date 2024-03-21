@@ -41,6 +41,7 @@ const createWindow = () => {
 app.whenReady().then(() => {
   ipcMain.handle('ping', () => 'pong2222')
   ipcMain.on('set-title', handleSetTitle)
+  ipcMain.on('reloadWin', () => mainWindow.loadFile('dist-electron/index.html'))
   ipcMain.handle('dialog:openFile', handleFileOpen)
   ipcMain.on('open-url', onOpenURL)
   console.log('whenReady')
