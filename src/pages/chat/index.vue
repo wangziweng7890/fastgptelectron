@@ -78,7 +78,7 @@ function jumpToSousou() {
 </script>
 
 <template>
-  <div class="min-w-600px flex justify-center items-center h-100%">
+  <div class="flex justify-center items-center h-100%">
     <div class="flex flex-col w-100% justify-center items-center bg-white pt-12px h-100% overflow-hidden">
       <section class="relative w-100%">
         <YhButton
