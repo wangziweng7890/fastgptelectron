@@ -1,50 +1,50 @@
 {
-    "appId": "com.galaxy.desktoptest",
-    "productName": "银河数字助理测试",
-    "asar": true,
-    "copyright": "Copyright © 2024 银河集团",
-    "directories": {
-      "output": "release/${version}"
-    },
-    "files": [
-      "./dist",
-      "./package.json",
-      "./dist-electron"
+  "appId": "com.galaxy.desktoptest",
+  "productName": "银河数字助理测试",
+  "asar": true,
+  "copyright": "Copyright © 2024 银河集团",
+  "directories": {
+    "output": "release/${version}"
+  },
+  "files": [
+    "./dist",
+    "./package.json",
+    "./dist-electron"
+  ],
+  "mac": {
+    "icon": "public/icon.png",
+    "artifactName": "${productName}_${version}.${ext}",
+    "target": [
+      "dmg",
+      "zip"
     ],
-    "mac": {
-      "icon": "public/icon.png",
-      "artifactName": "${productName}_${version}.${ext}",
-      "target": [
-        "dmg",
-        "zip"
-      ],
-      "identity": "CSC_LINK"
-    },
-    "win": {
-      "icon": "public/icon.png",
-      "target": [
-        "nsis"
-      ],
-      "artifactName": "${productName}_${version}.${ext}"
-    },
-    "nsis": {
-      "oneClick": true,
-      "perMachine": false,
-      "deleteAppDataOnUninstall": false,
-      "include": "build.test.sh"
-    },
-    "publish": [
-      {
-        "provider": "generic",
-        "url": "https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/test"
-      }
+    "identity": "CSC_LINK"
+  },
+  "win": {
+    "icon": "public/icon.png",
+    "target": [
+      "nsis"
     ],
-    "releaseInfo": {
-      "releaseNotes": "版本更新的具体内容"
-    },
-    "extraMetadata": {
-        "version": "0.0.7",
-        "updateUrl": "https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/test",
-        "name": "galaxy-helper-test"
+    "artifactName": "${productName}_${version}.${ext}"
+  },
+  "nsis": {
+    "oneClick": true,
+    "perMachine": false,
+    "deleteAppDataOnUninstall": false,
+    "include": "build.test.sh"
+  },
+  "publish": [
+    {
+      "provider": "generic",
+      "url": "https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/test"
     }
+  ],
+  "releaseInfo": {
+    "releaseNotes": "版本更新的具体内容"
+  },
+  "extraMetadata": {
+    "version": "0.0.7",
+    "updateUrl": "https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/test",
+    "name": "galaxy-helper-test"
   }
+}
