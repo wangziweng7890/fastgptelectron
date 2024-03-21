@@ -19,6 +19,7 @@ export const showVersion = () => {
 // const isShowedError = false
 let isShowedUpdateDialog = false
 let isShowedNewVersionDialog = false
+let isUpdating = false // 是否正在更新
 
 /** 检测更新 */
 export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
@@ -33,7 +34,8 @@ export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
   }
   console.log('autoUpdater')
   // 检测更新
-  autoUpdater.checkForUpdates()
+  !isUpdating && autoUpdater.checkForUpdates()
+  isUpdating = true
 
   // 监听'error'事件
   autoUpdater.on('error', (err) => {
@@ -91,6 +93,7 @@ export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
         }
         else {
           isShowedUpdateDialog = false
+          isUpdating = false
         }
       })
     isShowedUpdateDialog = true
