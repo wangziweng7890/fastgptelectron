@@ -1,5 +1,5 @@
 import path from 'path'
-import { BrowserWindow, Menu, app } from 'electron'
+import { BrowserWindow, app } from 'electron'
 import { isMac } from './utils/help'
 import { checkUpdate } from './utils/appVersion'
 import { myLocalShortcut, setMenu } from './utils/menu'
@@ -10,7 +10,7 @@ let mainWindow: BrowserWindow
 let updateInterval
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 1000,
+    width: process.env.VITE_DEV_SERVER_URL ? 1000 : 600,
     height: 800,
     icon: path.join(__dirname, isMac ? 'favicon.icns' : 'favicon.ico'),
     webPreferences: {
