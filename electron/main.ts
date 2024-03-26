@@ -68,7 +68,7 @@ app.whenReady().then(() => {
     }
   })
   // ipc通信
-  mainOnRender()
+  mainOnRender(mainWindow)
 })
 
 const gotTheLock = app.requestSingleInstanceLock()

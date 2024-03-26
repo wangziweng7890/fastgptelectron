@@ -9,18 +9,18 @@ const menus = computed(() => {
     {
       label: '数字助理',
       submenu: [
-        // {
-        //   click: () => {
-        //     console.log('刷新')
-        //     if (import.meta.env.VITE_APP_ENV === 'dev') {
-        //       window.location.reload()
-        //     }
-        //     else {
-        //       window.electronAPI.refresh()
-        //     }
-        //   },
-        //   label: '刷新',
-        // },
+        {
+          click: () => {
+            console.log('刷新')
+            if (import.meta.env.VITE_APP_ENV === 'dev') {
+              window.location.reload()
+            }
+            else {
+              window.electronAPI.refresh()
+            }
+          },
+          label: '刷新',
+        },
         {
           label: `当前版本：V${appVersion.value}`,
           disabled: true,
