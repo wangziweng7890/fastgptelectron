@@ -63,6 +63,7 @@ export const setMenu = (mainWindow: BrowserWindow) => {
         },
         {
           click: () => {
+            mainWindow.webContents.send('logout', 'Hello, Renderer Process!')
           },
           label: '切换账号',
         },
@@ -72,17 +73,17 @@ export const setMenu = (mainWindow: BrowserWindow) => {
         },
       ],
     },
-    {
-      label: '窗口',
-      submenu: [
-        {
-          click: () => mainWindow.setAlwaysOnTop(!mainWindow.isAlwaysOnTop()),
-          label: '固定窗口',
-          type: 'checkbox',
-          checked: mainWindow.isAlwaysOnTop(),
-        },
-      ],
-    },
+    // {
+    //   label: '窗口',
+    //   submenu: [
+    //     {
+    //       click: () => mainWindow.setAlwaysOnTop(!mainWindow.isAlwaysOnTop()),
+    //       label: '固定窗口',
+    //       type: 'checkbox',
+    //       checked: mainWindow.isAlwaysOnTop(),
+    //     },
+    //   ],
+    // },
   ])
 
   Menu.setApplicationMenu(menu)
