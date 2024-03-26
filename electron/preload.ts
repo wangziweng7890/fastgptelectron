@@ -16,9 +16,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
       func()
     })
   },
-  reload: () => {
-    ipcRenderer.send('reloadWin')
-  },
   minimize: () => ipcRenderer.send('minimize'),
   close: () => ipcRenderer.send('close'),
   affixWindow: (flag: boolean) => ipcRenderer.invoke('affix-window', flag),
