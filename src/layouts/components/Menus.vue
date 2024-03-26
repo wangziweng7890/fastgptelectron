@@ -1,55 +1,55 @@
 <script setup lang="ts" name="menus">
 import { ProgressInfo } from 'electron-updater'
 // import { isMac } from '@/utils/help'
+import prodBuildInfo from '../../../electron-builder.prod.json'
+import testBuildInfo from '../../../electron-builder.test.json'
 import router from '~/router'
 
 const appVersion = ref('')
-const menus = computed(() => {
-  return [
-    {
-      label: '数字助理',
-      submenu: [
-        {
-          click: () => {
-            console.log('刷新')
-            if (import.meta.env.VITE_APP_ENV === 'dev') {
-              window.location.reload()
-            }
-            else {
-              window.electronAPI.refresh()
-            }
-          },
-          label: '刷新',
+const menus = ref([
+  {
+    label: '数字助理',
+    submenu: [
+      {
+        click: () => {
+          console.log('刷新')
+          if (import.meta.env.VITE_APP_ENV === 'dev') {
+            window.location.reload()
+          }
+          else {
+            window.electronAPI.refresh()
+          }
         },
-        {
-          label: `当前版本：V${appVersion.value}`,
-          disabled: true,
+        label: '刷新',
+      },
+      {
+        label: `当前版本：V${import.meta.env.VITE_APP_ENV === 'production' ? prodBuildInfo?.extraMetadata?.version : testBuildInfo?.extraMetadata?.version}`,
+        disabled: true,
+      },
+      {
+        click: () => {
+          console.log('点击了检查版本更新')
+          window.electronAPI.checkUpdate()
         },
-        {
-          click: () => {
-            console.log('点击了检查版本更新')
-            window.electronAPI.checkUpdate()
-          },
-          label: '检查版本更新',
-          // disabled: isMac,
+        label: '检查版本更新',
+        // disabled: isMac,
+      },
+      {
+        click: () => {
+          localStorage.clear()
+          router.push({
+            path: '/login',
+          })
         },
-        {
-          click: () => {
-            localStorage.clear()
-            router.push({
-              path: '/login',
-            })
-          },
-          label: '切换账号',
-        },
-        {
-          click: () => { window.electronAPI.exit() },
-          label: '退出',
-        },
-      ],
-    },
-  ]
-})
+        label: '切换账号',
+      },
+      {
+        click: () => { window.electronAPI.exit() },
+        label: '退出',
+      },
+    ],
+  },
+])
 
 const progressDialogVisible = ref(false)
 const progressPercentage = ref(0)
