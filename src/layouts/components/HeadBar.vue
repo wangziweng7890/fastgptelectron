@@ -1,12 +1,10 @@
 <script setup lang="ts" name="headbar">
-import { Close, Lock, Minus, Unlock } from '@element-plus/icons-vue'
+import { Close, Minus } from '@element-plus/icons-vue'
 interface IProps {
   title?: string
 }
 const props = defineProps<IProps>()
-// const emit = defineEmits<{
-//   change: [e:any]
-// }>()
+
 const onMini = () => {
   console.log('点击了最小化')
   window.electronAPI.minimize()
@@ -38,10 +36,10 @@ const onAffixWindow = async () => {
           <Minus />
         </el-icon>
         <el-icon v-if="isAffixedWindow" @click="onAffixWindow">
-          <Lock />
+          <img class="png-icon" src="~@/assets/images/affix.png" alt="">
         </el-icon>
         <el-icon v-else @click="onAffixWindow">
-          <Unlock />
+          <img class="png-icon" src="~@/assets/images/unAffix.png" alt="">
         </el-icon>
         <el-icon @click="onClose">
           <Close />
@@ -79,7 +77,12 @@ const onAffixWindow = async () => {
       & .el-icon {
         height: 34px;
         width: 34px;
+        color: #999;
       }
+    }
+    & .png-icon {
+      height: 20px;
+      width: 20px;
     }
   }
 }
