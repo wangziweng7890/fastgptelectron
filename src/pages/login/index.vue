@@ -59,8 +59,8 @@ const init = async () => {
     const targetUrl = e.url || ''
     // 包含redirect_uri的url，表示还是跳转登录页
     if (targetUrl.includes('redirect_uri')) {
-        (webview.reload || location.reload)()
-        return
+      (webview.reload || location.reload)()
+      return
     }
     loginUrl.value = ''
     initAuth(targetUrl)

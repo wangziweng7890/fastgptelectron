@@ -1,10 +1,11 @@
+<script lang="ts" setup>
+import Page from './components/Page.vue'
+</script>
+
 <template>
-  <div class="h-100%">
-    <UpdateTips />
+  <Page>
     <router-view v-slot="{ Component }">
-      <keep-alive include="chat">
-        <component :is="Component" />
-      </keep-alive>
+      <component :is="Component" />
     </router-view>
-  </div>
+  </Page>
 </template>

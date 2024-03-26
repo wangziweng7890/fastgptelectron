@@ -40,6 +40,8 @@ export const myLocalShortcut = (win: BrowserWindow) => {
   //   globalShortcut.unregisterAll()
   // })
 }
+
+// 改用web自定义菜单UI
 export const setMenu = (mainWindow: BrowserWindow) => {
   const menu = Menu.buildFromTemplate([
     {
@@ -61,7 +63,6 @@ export const setMenu = (mainWindow: BrowserWindow) => {
         },
         {
           click: () => {
-            mainWindow.webContents.send('logout', 'Hello, Renderer Process!')
           },
           label: '切换账号',
         },

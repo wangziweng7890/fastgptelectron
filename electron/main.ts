@@ -1,15 +1,16 @@
 import path from 'path'
-import { BrowserWindow, app, ipcMain } from 'electron'
-import { handleFileOpen, handleSetTitle, isMac, onOpenURL } from './utils/help'
+import { BrowserWindow, Menu, app } from 'electron'
+import { isMac } from './utils/help'
 import { checkUpdate } from './utils/appVersion'
 import { myLocalShortcut, setMenu } from './utils/menu'
 import { setTray } from './utils/tray'
+import { mainOnRender } from './utils/ipc'
 
 let mainWindow: BrowserWindow
 let updateInterval
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 600,
+    width: 1000,
     height: 800,
     icon: path.join(__dirname, isMac ? 'favicon.icns' : 'favicon.ico'),
     webPreferences: {
@@ -19,9 +20,10 @@ const createWindow = () => {
       webviewTag: true,
     },
     title: '银河数字助理',
+    frame: false,
   })
 
-  setMenu(mainWindow)
+  Menu.setApplicationMenu(null)
 
   // You can use `process.env.VITE_DEV_SERVER_URL` when the vite command is called `serve`1111
   if (process.env.VITE_DEV_SERVER_URL) {
@@ -36,13 +38,11 @@ const createWindow = () => {
   updateInterval = setInterval(() => {
     !isMac && checkUpdate(mainWindow, updateInterval)
   }, 1000 * 60 * 60 * 2)
+
+  return mainWindow
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('ping', () => 'pong2222')
-  ipcMain.on('set-title', handleSetTitle)
-  ipcMain.handle('dialog:openFile', handleFileOpen)
-  ipcMain.on('open-url', onOpenURL)
   console.log('whenReady')
 
   if (!mainWindow) {
@@ -66,6 +66,8 @@ app.whenReady().then(() => {
       mainWindow.hide()
     }
   })
+  // ipc通信
+  mainOnRender()
 })
 
 const gotTheLock = app.requestSingleInstanceLock()
@@ -100,5 +102,11 @@ app.on('window-all-closed', () => {
   if (!isMac) {
     app.quit()
   }
+})
+
+app.on('web-contents-created', () => {
+  console.log('web-contents-created')
+  const win = BrowserWindow.getFocusedWindow()
+  win?.webContents?.send('app-version', app.getVersion())
 })
 
