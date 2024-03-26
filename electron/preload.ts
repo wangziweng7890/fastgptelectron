@@ -19,4 +19,22 @@ contextBridge.exposeInMainWorld('electronAPI', {
   reload: () => {
     ipcRenderer.send('reloadWin')
   },
+  minimize: () => ipcRenderer.send('minimize'),
+  close: () => ipcRenderer.send('close'),
+  affixWindow: (flag: boolean) => ipcRenderer.invoke('affix-window', flag),
+  exit: () => ipcRenderer.send('exit'),
+  checkUpdate: () => ipcRenderer.send('check-update'),
+  onUpdateAvailable: func => ipcRenderer.on('update-available', () => {
+    func()
+  }),
+  onDownloadProgress: func => ipcRenderer.on('download-progress', (_event, progress) => {
+    func(progress)
+  }),
+  onUpdateDownloaded: func => ipcRenderer.on('update-downloaded', () => {
+    func()
+  }),
+  onAppVersion: func => ipcRenderer.on('app-version', (_event, version) => {
+    func(version)
+  }),
+  refresh: () => ipcRenderer.send('refresh'),
 })

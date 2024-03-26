@@ -5,6 +5,7 @@ import UserInfo from './component/Userinfo.vue'
 import ChatBox from './component/ChatBox.vue'
 import { streamFetch } from './fetch'
 import { appId } from './config'
+import Page from '@/layouts/components/Page.vue'
 import { GetFrontAppGet, GetFrontAppIntimacy } from '@/services/apifox/zhiNengKeFu/cHAT/apifox'
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 12)
 
@@ -78,29 +79,31 @@ function jumpToSousou() {
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-100%">
-    <div class="flex flex-col w-100% justify-center items-center bg-white pt-12px h-100% overflow-hidden">
-      <section class="relative w-100%">
-        <YhButton
-          class="absolute top-12px right-20px"
-          type="c"
-          :src="searchIcon"
-          @click="jumpToSousou"
-        >
-          银河搜搜
-        </YhButton>
-      </section>
-      <UserInfo class="mt-50px pl-16px pr-16px mb-12px" :avator="avatar" :level-name="levelName" :percentage="percentage" :chat-name="chatName" />
-      <ChatBox
-        ref="chatBox"
-        class="flex-1 w-100%"
-        :on-start-chat="onSend"
-        :is-new-chat="forbidRefresh"
-        :intro="intro"
-        @refresh="getUserInfo"
-      />
+  <Page>
+    <div class="flex justify-center items-center h-100%">
+      <div class="flex flex-col w-100% justify-center items-center bg-white pt-12px h-100% overflow-hidden">
+        <section class="relative w-100%">
+          <YhButton
+            class="absolute top-12px right-20px"
+            type="c"
+            :src="searchIcon"
+            @click="jumpToSousou"
+          >
+            银河搜搜
+          </YhButton>
+        </section>
+        <UserInfo class="mt-50px pl-16px pr-16px mb-12px" :avator="avatar" :level-name="levelName" :percentage="percentage" :chat-name="chatName" />
+        <ChatBox
+          ref="chatBox"
+          class="flex-1 w-100%"
+          :on-start-chat="onSend"
+          :is-new-chat="forbidRefresh"
+          :intro="intro"
+          @refresh="getUserInfo"
+        />
+      </div>
     </div>
-  </div>
+  </Page>
 </template>
 
 <style lang="scss" scoped>
@@ -111,7 +114,8 @@ function jumpToSousou() {
     {
       meta: {
         title: "银河数字助理",
-        layout: 'blank'
+        layout: 'blank',
+        disabled: true
       }
     }
   </route>

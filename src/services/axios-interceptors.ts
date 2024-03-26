@@ -38,7 +38,7 @@ export const resCodeInterceptor = async (res) => {
     return resData.data
 
   const hideAxiosErrorToast = res.config?.[HideAxiosErrorToastKey]
-  let errorMessage = resData.message || resData.msg
+  let errorMessage = resData.message || resData.msg || ''
 
   if (NeedLoginCode.includes(code)) {
     login()
