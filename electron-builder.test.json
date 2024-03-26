@@ -43,7 +43,7 @@
     "releaseNotes": "版本更新的具体内容"
   },
   "extraMetadata": {
-    "version": "0.0.12",
+    "version": "0.0.13",
     "updateUrl": "https://public-resuorces.oss-cn-shenzhen.aliyuncs.com/galaxy-digital-helper/test",
     "name": "galaxy-helper-test"
   }
