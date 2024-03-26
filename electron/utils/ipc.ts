@@ -22,8 +22,8 @@ export const mainOnRender = () => {
   })
   ipcMain.on('refresh', () => {
     const win = BrowserWindow.getFocusedWindow()
-    // win?.loadFile('dist-electron/index.html')
-    win?.reload()
+    win?.loadFile('dist-electron/index.html')
+    // win?.reload()
   })
   // 固定窗口
   ipcMain.handle('affix-window', (event, flag: boolean) => {

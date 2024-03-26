@@ -23,7 +23,8 @@ const createWindow = () => {
     frame: false,
   })
 
-  Menu.setApplicationMenu(null)
+  setMenu(mainWindow)
+  // Menu.setApplicationMenu(null)
 
   // You can use `process.env.VITE_DEV_SERVER_URL` when the vite command is called `serve`1111
   if (process.env.VITE_DEV_SERVER_URL) {

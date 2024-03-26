@@ -25,6 +25,7 @@ export interface IElectronAPI {
   onUpdateDownloaded: (callback: () => void) => void,
   onAppVersion: (callback: (version:string) => void) => void,
   refresh: () => void
+  logout:  (callback: () => void) => void,
 }
 
 declare global {

@@ -11,11 +11,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setTitle: title => ipcRenderer.send('set-title', title),
   openFile: () => ipcRenderer.invoke('dialog:openFile'),
   openURL: url => ipcRenderer.send('open-url', url),
-  reload: (func) => {
-    ipcRenderer.on('reload', () => {
-      func()
-    })
-  },
+  logout: func => ipcRenderer.on('logout', () => {
+    func()
+  }),
   minimize: () => ipcRenderer.send('minimize'),
   close: () => ipcRenderer.send('close'),
   affixWindow: (flag: boolean) => ipcRenderer.invoke('affix-window', flag),
