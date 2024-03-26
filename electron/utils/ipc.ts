@@ -32,6 +32,11 @@ export const mainOnRender = () => {
     return win?.isAlwaysOnTop()
   })
 
+  ipcMain.on('reloadWin', () => {
+    const win = BrowserWindow.getFocusedWindow()
+    win?.loadFile('dist-electron/index.html')
+  })
+
   ipcMain.handle('ping', () => 'pong2222')
   ipcMain.handle('dialog:openFile', handleFileOpen)
 }
