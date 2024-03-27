@@ -40,6 +40,7 @@ export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
   // 监听'error'事件
   autoUpdater.on('error', (err) => {
     console.log(`出错拉${err}`)
+    isUpdating = false
     // !isShowedError && dialog.showErrorBox('更新出错拉！', err.message)
     // isShowedError = true
     // clearInterval(updateInterval)
@@ -50,6 +51,7 @@ export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
     if (!isShowedNewVersionDialog) {
       dialog.showMessageBox({
         message: `发现新版本(v${info.version})，正在下载安装包`,
+        signal: AbortSignal.timeout(5000),
       })
       win.webContents.send('update-available')
     }
