@@ -4,6 +4,8 @@
 -->
 <script setup lang="ts">
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import HeadBar from '@/layouts/components/HeadBar.vue'
+import Menus from '@/layouts/components/Menus.vue'
 const router = useRouter()
 if (!localStorage.getItem('access_token')) {
   router.push({
@@ -18,7 +20,11 @@ window.addEventListener('unhandledrejection', (error) => {
 <template>
   <el-config-provider :locale="zhCn">
     <main class="h-100%">
-      <router-view />
+      <HeadBar />
+      <Menus />
+      <div class="container-all">
+        <router-view />
+      </div>
     </main>
   </el-config-provider>
 </template>
@@ -28,15 +34,19 @@ window.addEventListener('unhandledrejection', (error) => {
   min-width: 96px;
   min-height: 48px;
 }
+.container-all {
+  padding-top: 58px;
+  height: 100vh;
+}
 html {
+  height: 100%;
+
+  body {
     height: 100%;
 
-    body {
-        height: 100%;
-
-        #app-main {
-            height: 100%;
-        }
+    #app-main {
+      height: 100%;
     }
+  }
 }
 </style>
