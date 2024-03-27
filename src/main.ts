@@ -17,6 +17,7 @@ import './styles/index.scss'
 // import 'uno.css'
 // import 'virtual:iconfont'
 import directive from '@/directives/index'
+import { PostAuthLogout } from '@/services/apifox/tongYong/renZheng/apifox'
 
 const instance = createApp(App)
 
@@ -39,7 +40,8 @@ if (import.meta.env.VITE_APP_ENV === 'production') {
 instance.mount('#app-main')
 
 setTimeout(() => {
-  window.electronAPI.logout(() => {
+  window.electronAPI.logout(async () => {
+    await PostAuthLogout()
     localStorage.clear()
     router.push({
       path: '/login',

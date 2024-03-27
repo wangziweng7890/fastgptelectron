@@ -1,9 +1,8 @@
 import path from 'path'
-import { BrowserWindow, app } from 'electron'
+import { BrowserWindow, Menu, Tray, app } from 'electron'
 import { isMac } from './utils/help'
 import { checkUpdate } from './utils/appVersion'
 import { myLocalShortcut, setMenu } from './utils/menu'
-import { setTray } from './utils/tray'
 import { mainOnRender } from './utils/ipc'
 
 let mainWindow: BrowserWindow
@@ -62,6 +61,7 @@ app.whenReady().then(() => {
   })
 
   mainWindow.on('close', (e) => {
+    console.log('close')
     if (!isMac) {
       e.preventDefault()
       mainWindow.hide()
@@ -87,7 +87,7 @@ else {
   })
 }
 
-app.on('before-quit', () => {
+app.on('before-quit', async () => {
   console.log('before-quit')
   clearInterval(updateInterval)
   app.exit()
@@ -100,6 +100,7 @@ app.on('quit', () => {
 
 app.on('window-all-closed', () => {
   console.log('window-all-closed')
+
   if (!isMac) {
     app.quit()
   }
@@ -111,3 +112,26 @@ app.on('web-contents-created', () => {
   win?.webContents?.send('app-version', app.getVersion())
 })
 
+function setTray() {
+  const tray = new Tray(path.join(__dirname, isMac ? 'favicon.icns' : 'favicon.ico'))
+  tray.on('click', () => {
+    mainWindow.show()
+  })
+
+  const trayContextMenu = Menu.buildFromTemplate([
+    {
+      label: '退出',
+      click: async () => {
+        console.log('退出')
+        mainWindow.webContents.send('logout')
+        setTimeout(() => {
+          app.exit()
+        }, 1000)
+      },
+    },
+  ])
+
+  tray.on('right-click', () => {
+    tray.popUpContextMenu(trayContextMenu)
+  })
+}

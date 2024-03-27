@@ -4,7 +4,7 @@ import { ProgressInfo } from 'electron-updater'
 import prodBuildInfo from '../../../electron-builder.prod.json'
 import testBuildInfo from '../../../electron-builder.test.json'
 import router from '~/router'
-
+import { PostAuthLogout } from '@/services/apifox/tongYong/renZheng/apifox'
 const appVersion = ref('')
 const menus = ref([
   {
@@ -35,7 +35,8 @@ const menus = ref([
         // disabled: isMac,
       },
       {
-        click: () => {
+        click: async () => {
+          await PostAuthLogout()
           localStorage.clear()
           router.push({
             path: '/login',
@@ -44,7 +45,11 @@ const menus = ref([
         label: '切换账号',
       },
       {
-        click: () => { window.electronAPI.exit() },
+        click: async () => {
+          await PostAuthLogout()
+          localStorage.clear()
+          window.electronAPI.exit()
+        },
         label: '退出',
       },
     ],
