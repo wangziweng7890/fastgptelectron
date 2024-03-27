@@ -20,7 +20,7 @@ const props = defineProps({
 })
 
 const tips = computed(() => {
-  const pasrsint = props.percentage === 0 ? 0 : Number.parseInt((props.percentage - 1) / 100)
+  const pasrsint = props.percentage === 0 ? 0 : Number.parseInt((props.percentage) / 100)
   return {
     0: '快和我说句话，我要憋不住了！',
     1: '我觉得你是个非常有趣的人，可以多聊聊吗？',
@@ -33,10 +33,10 @@ const tips = computed(() => {
 const process = computed(() => {
   if (props.percentage === 0)
     return 0
-  if (props.percentage > 500)
+  if (props.percentage >= 500)
     return 100
   const rest = (props.percentage || 0) % 100
-  return rest || 100
+  return rest
 })
 </script>
 
