@@ -211,7 +211,7 @@ const handleItem = async (item: any) => {
 }
 
 const handleClick = () => {
-  router.push('/chat')
+  router.back()
 }
 
 const init = async () => {
