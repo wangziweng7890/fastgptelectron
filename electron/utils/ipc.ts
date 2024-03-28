@@ -2,7 +2,7 @@ import { BrowserWindow, app, ipcMain } from 'electron'
 import { handleFileOpen, handleSetTitle, onOpenURL } from './help'
 import { checkUpdate } from './appVersion'
 
-export const mainOnRender = (mainWin: BrowserWindow) => {
+export const mainOnRender = () => {
   ipcMain.on('set-title', handleSetTitle)
   ipcMain.on('open-url', onOpenURL)
   ipcMain.on('minimize', () => {
@@ -21,8 +21,8 @@ export const mainOnRender = (mainWin: BrowserWindow) => {
     win && checkUpdate(win)
   })
   ipcMain.on('refresh', () => {
-    mainWin?.loadFile('dist-electron/index.html')
-    // win?.reload()
+    const win = BrowserWindow.getFocusedWindow()
+    win?.loadFile('dist-electron/index.html')
   })
   // 固定窗口
   ipcMain.handle('affix-window', (event, flag: boolean) => {

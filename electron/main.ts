@@ -50,7 +50,7 @@ app.whenReady().then(() => {
   }
   myLocalShortcut(mainWindow)
   // 设置托盘
-  !isMac && setTray(mainWindow)
+  !isMac && setTray()
   app.on('activate', () => {
     console.log('app activate')
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -68,7 +68,7 @@ app.whenReady().then(() => {
     }
   })
   // ipc通信
-  mainOnRender(mainWindow)
+  mainOnRender()
 })
 
 const gotTheLock = app.requestSingleInstanceLock()
