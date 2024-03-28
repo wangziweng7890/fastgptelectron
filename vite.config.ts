@@ -230,9 +230,7 @@ export default ({ mode, command }: ConfigEnv) => {
 
       // https://github.com/antfu/unocss
       // see unocss.config.ts for config
-      Unocss({
-        mode: 'vue-scoped',
-      }),
+      Unocss(),
       autoOptimizeDeps(),
       viteCompression({
         verbose: true,
