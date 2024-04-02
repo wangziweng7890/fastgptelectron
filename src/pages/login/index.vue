@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { AuthBinding, AuthLogin } from '~/services/auth/apifox'
 const router = useRouter()
+const route = useRoute()
 const loginUrl = ref('')
 
+function jump() {
+  router.push({
+    path: route.path === '/login2' ? '/login' : '/login2',
+  })
+}
 // 登录,获取access_token
 function initAuth(url: string) {
   const urlParams = new URLSearchParams(url.split('?')[1])
@@ -26,10 +32,8 @@ function initAuth(url: string) {
     router.push('/chat') // 成功跳转到聊天页面
   }).catch((err: any) => {
     console.log('err', err)
-    // ElMessage.error('登录失败')
-    router.push({
-      path: '/login',
-    })
+    loginUrl.value = ''
+    jump()
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
   })
@@ -49,26 +53,32 @@ async function loadLoginUrl() {
     // ElMessage.error('认证失败')
   }
 }
-
-// 登录的方法：获取webview的event事件，并打印
-const init = async () => {
-  await loadLoginUrl()
-  const webview = document.querySelector('webview')
-  webview?.addEventListener('will-navigate', (e: any) => {
-    console.log('will-navigate', e)
-    const targetUrl = e.url || ''
-    // 包含redirect_uri的url，表示还是跳转登录页
-    if (targetUrl.includes('redirect_uri')) {
-        (webview.reload || location.reload)()
-        return
-    }
-    loginUrl.value = ''
-    initAuth(targetUrl)
-  })
+function event(e) {
+  console.log('will-navigate', e)
+  const targetUrl = e.url || ''
+  // 包含redirect_uri的url，表示还是跳转登录页
+  if (targetUrl.includes('redirect_uri')) {
+    jump()
+    return
+  }
+  loginUrl.value = ''
+  initAuth(targetUrl)
 }
 
-onMounted(() => {
-  init()
+// 登录的方法：获取webview的event事件，并打印
+async function init() {
+  await loadLoginUrl()
+}
+let webviewRef
+
+onMounted(async () => {
+  await init()
+  webviewRef = document.querySelector('webview')
+  webviewRef?.addEventListener('will-navigate', event)
+})
+
+onUnmounted(() => {
+  webviewRef.removeEventListener('will-navigate', event)
 })
 </script>
 

@@ -74,7 +74,6 @@ const props = defineProps({
 }
 
 .progress-bar {
-    width: 118px;
     background-image: linear-gradient(
         to right,
         rgba(131, 226, 255, 1),

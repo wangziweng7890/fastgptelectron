@@ -5,6 +5,7 @@ import UserInfo from './component/Userinfo.vue'
 import ChatBox from './component/ChatBox.vue'
 import { streamFetch } from './fetch'
 import { appId } from './config'
+import Page from '@/layouts/components/Page.vue'
 import { GetFrontAppGet, GetFrontAppIntimacy } from '@/services/apifox/zhiNengKeFu/cHAT/apifox'
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 12)
 
@@ -111,7 +112,7 @@ function jumpToSousou() {
     {
       meta: {
         title: "银河数字助理",
-        layout: 'blank'
+        layout: 'blank',
       }
     }
   </route>

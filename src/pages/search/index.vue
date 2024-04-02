@@ -306,10 +306,10 @@ init()
 
 <style lang="scss" scoped>
 .tips {
-    font-size: 10px;
-    color: #909090;
-    line-height: 12px;
-    text-decoration-line: underline;
+  font-size: 10px;
+  color: #909090;
+  line-height: 12px;
+  text-decoration-line: underline;
 }
 .login-container {
   display: flex;
