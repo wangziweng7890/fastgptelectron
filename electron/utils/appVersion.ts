@@ -1,5 +1,5 @@
 import path from 'path'
-import { UpdateInfo, autoUpdater } from 'electron-updater'
+import { ProgressInfo, UpdateInfo, autoUpdater } from 'electron-updater'
 import { BrowserWindow, app, dialog } from 'electron'
 import { isMac } from './help'
 
@@ -40,6 +40,7 @@ export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
   // 监听'error'事件
   autoUpdater.on('error', (err) => {
     console.log(`出错拉${err}`)
+    isUpdating = false
     // !isShowedError && dialog.showErrorBox('更新出错拉！', err.message)
     // isShowedError = true
     // clearInterval(updateInterval)
@@ -47,9 +48,13 @@ export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
 
   // 监听'update-available'事件，发现有新版本时触发
   autoUpdater.on('update-available', (info: UpdateInfo) => {
-    !isShowedNewVersionDialog && dialog.showMessageBox({
-      message: `发现新版本(v${info.version})，正在下载安装包`,
-    })
+    if (!isShowedNewVersionDialog) {
+      dialog.showMessageBox({
+        message: `发现新版本(v${info.version})，正在下载安装包`,
+        signal: AbortSignal.timeout(5000),
+      })
+      win.webContents.send('update-available')
+    }
     isShowedNewVersionDialog = true
     // 考虑断网时, 资源没有下载好，还需要定时去检查，所以这里不能clearInterval
     // clearInterval(updateInterval)
@@ -62,10 +67,10 @@ export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
   // })
 
   // 更新包下载百分比回调
-  autoUpdater.on('download-progress', (progressObj) => {
+  autoUpdater.on('download-progress', (progressObj: ProgressInfo) => {
     if (win) {
       win.setProgressBar(progressObj.transferred / progressObj.total)
-      // win.webContents.send('download-progress', progressObj)
+      win.webContents.send('download-progress', progressObj)
     }
   })
 
@@ -75,27 +80,30 @@ export const checkUpdate = (win: BrowserWindow, updateInterval = null) => {
   // 监听'update-downloaded'事件，新版本下载完成时触发
   autoUpdater.on('update-downloaded', () => {
     updateInterval && clearInterval(updateInterval)
-    !isShowedUpdateDialog && dialog
-      .showMessageBox({
-        type: 'info',
-        title: '应用更新',
-        message: '需要退出程序才能安装新版本，是否安装？',
-        buttons: ['是', '否'],
-      })
-      .then((buttonIndex) => {
-        if (buttonIndex.response === 0) {
+    if (!isShowedUpdateDialog) {
+      win.webContents.send('update-downloaded')
+      dialog
+        .showMessageBox({
+          type: 'info',
+          title: '应用更新',
+          message: '需要退出程序才能安装新版本，是否安装？',
+          buttons: ['是', '否'],
+        })
+        .then((buttonIndex) => {
+          if (buttonIndex.response === 0) {
           // 选择是，则退出程序，安装新版本
-          win.webContents.send('quit')
-          autoUpdater.quitAndInstall()
-          // autoUpdater.quitAndInstall(true, true)
-          win?.destroy?.()
-          app?.exit?.()
-        }
-        else {
-          isShowedUpdateDialog = false
-          isUpdating = false
-        }
-      })
+            win.webContents.send('quit')
+            autoUpdater.quitAndInstall()
+            // autoUpdater.quitAndInstall(true, true)
+            win?.destroy?.()
+            app?.exit?.()
+          }
+          else {
+            isShowedUpdateDialog = false
+            isUpdating = false
+          }
+        })
+    }
     isShowedUpdateDialog = true
   })
 }

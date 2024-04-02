@@ -40,6 +40,8 @@ export const myLocalShortcut = (win: BrowserWindow) => {
   //   globalShortcut.unregisterAll()
   // })
 }
+
+// 改用web自定义菜单UI
 export const setMenu = (mainWindow: BrowserWindow) => {
   const menu = Menu.buildFromTemplate([
     {
@@ -71,17 +73,17 @@ export const setMenu = (mainWindow: BrowserWindow) => {
         },
       ],
     },
-    {
-      label: '窗口',
-      submenu: [
-        {
-          click: () => mainWindow.setAlwaysOnTop(!mainWindow.isAlwaysOnTop()),
-          label: '固定窗口',
-          type: 'checkbox',
-          checked: mainWindow.isAlwaysOnTop(),
-        },
-      ],
-    },
+    // {
+    //   label: '窗口',
+    //   submenu: [
+    //     {
+    //       click: () => mainWindow.setAlwaysOnTop(!mainWindow.isAlwaysOnTop()),
+    //       label: '固定窗口',
+    //       type: 'checkbox',
+    //       checked: mainWindow.isAlwaysOnTop(),
+    //     },
+    //   ],
+    // },
   ])
 
   Menu.setApplicationMenu(menu)

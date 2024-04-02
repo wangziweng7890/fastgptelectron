@@ -15,6 +15,11 @@ const systemRoutes: any = [
       title: '首页',
     },
     redirect: '/chat',
+    component: () => import('/src/layouts/blank.vue'),
+  },
+  {
+    path: '/login2',
+    component: () => import('@/pages/login/index.vue'),
   },
   {
     path: '/:all(.*)*',

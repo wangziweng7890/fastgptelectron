@@ -124,6 +124,10 @@ export const streamFetch = ({
                 path: '/login',
               })
             }
+            else if (resData.code === 503)
+              (
+                errMsg = resData.msg || '你进小黑屋啦，快找管理员哦'
+              )
             else {
               errMsg = '网络被妖怪抓走啦'
             }
@@ -216,7 +220,6 @@ export const streamFetch = ({
       })
     }
     catch (err: any) {
-      debugger
       clearTimeout(timeoutId)
 
       if (abortCtrl.signal.aborted) {
