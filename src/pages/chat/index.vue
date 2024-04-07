@@ -98,6 +98,7 @@ function jumpToSousou() {
         :on-start-chat="onSend"
         :is-new-chat="forbidRefresh"
         :intro="intro"
+        :avatar="avatar"
         @refresh="getUserInfo"
       />
     </div>
