@@ -23,9 +23,10 @@ import { appId } from '../config'
 import HistoryDialog from './HistoryDialog/index.vue'
 import { copy } from '~/utils'
 import router from '~/router'
+import { useDialog } from '@/hooks/dialog'
+import { useMessage } from '@/hooks/message'
 import {
   GetFrontChatCompletionsDelete,
-  GetFrontChatCompletionsDeleteByChatId,
   GetFrontChatCompletionsList,
   GetFrontChatstepStepcancel,
   PostFrontChatstepStep,
@@ -90,43 +91,24 @@ function copyChat(content, dataId, type) {
         })
   updatePoint(dataId)
 }
-
-const showDelete = ref(false)
-let tempId = ''
-let deleteType = ''
-function deleteChat(dataId) {
-  tempId = dataId
-  showDelete.value = true
-  deleteType = 'dataId'
-}
-
-const isLoading = ref(false)
-async function deleteConfirm() {
-  if (isLoading.value)
-    return
-  try {
-    if (deleteType === 'dataId') {
+const { deleteDialog } = useDialog()
+const { deleteMsg } = useMessage()
+function deleteChat(tempId) {
+  deleteDialog({
+    async onOk() {
       await GetFrontChatCompletionsDelete({
         id: tempId,
       })
+      deleteMsg()
       setChatHistory(
         chatHistory.value.filter(item => item.dataId !== tempId),
       )
-    }
-    else {
-      await GetFrontChatCompletionsDeleteByChatId({
-        chatId: tempId,
-      })
-      pageNumber.value = 1
-      fetchList()
-    }
-    ElMessage.success('删得干净，心情美丽')
-    showDelete.value = false
-  }
-  finally {
-    isLoading.value = false
-  }
+    },
+  })
 }
+let tempId = ''
+
+const isLoading = ref(false)
 
 function updatePoint(dataId) {
   emit('refresh', {
@@ -638,7 +620,7 @@ onActivated(() => {
         银河AI生成，内容仅供参考
       </div>
     </section>
-    <HistoryDialog v-model="showHistory" :app-id="appId" :avatar="avatar" :chat-id="route.query.chatId" @changeChatId="changeChatId" />
+    <HistoryDialog v-model="showHistory" :app-id="appId" :avatar="avatar" :chat-id="route.query.chatId as string" @changeChatId="changeChatId" />
 
     <Dialog v-model="showFeedBack" width="400px" @close="caiConfirm(1)">
       <template #header>
