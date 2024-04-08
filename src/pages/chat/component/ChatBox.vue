@@ -20,12 +20,12 @@ import caiActiveIcon from '../img/cai-active.png'
 import caiSelectIcon from '../img/cai-select.png'
 import stopIcon from '../img/stop.png'
 import { appId } from '../config'
+import HistoryDialog from './HistoryDialog/index.vue'
 import { copy } from '~/utils'
 import router from '~/router'
 import {
   GetFrontChatCompletionsDelete,
   GetFrontChatCompletionsDeleteByChatId,
-  GetFrontChatCompletionsHistory,
   GetFrontChatCompletionsList,
   GetFrontChatstepStepcancel,
   PostFrontChatstepStep,
@@ -39,6 +39,10 @@ const props = defineProps({
   },
   intro: {
     type: String,
+  },
+  avatar: {
+    type: String,
+    required: true,
   },
 })
 
@@ -340,28 +344,8 @@ function newChat() {
   })
 }
 
-const pageNumber = ref(1)
-const pageSize = 10
-const count = ref(0)
-const historyList = ref<any[]>([])
 const showHistory = ref(false)
-
-async function fetchList() {
-  const { data, totalCount } = await GetFrontChatCompletionsHistory({
-    appId,
-    pageNumber: pageNumber.value,
-    pageSize,
-  })
-  count.value = totalCount
-  historyList.value = data
-}
-
-function handleCurrentChange(val) {
-  pageNumber.value = val
-  fetchList()
-}
-async function openHistory() {
-  await fetchList()
+function openHistory() {
   showHistory.value = true
 }
 
@@ -406,18 +390,6 @@ async function caiChat(dataId, isCancel) {
   feedContent.value = ''
   showFeedBack.value = true
 }
-
-function formateTime(time) {
-  const arr = time.split(' ')
-  return dayjs().isSame(arr[0], 'day') ? `今天${arr[1]}` : time
-}
-
-async function deleteChatList(chatId) {
-  tempId = chatId
-  showDelete.value = true
-  deleteType = 'chatId'
-}
-
 function changeChatId(chatId) {
   chatController.value?.abort('leave')
   //   chatHistory.value = []
@@ -427,7 +399,6 @@ function changeChatId(chatId) {
   })
   showHistory.value = false
 }
-
 let timer
 onMounted(() => {
   timer = setInterval(() => {
@@ -667,6 +638,8 @@ onActivated(() => {
         银河AI生成，内容仅供参考
       </div>
     </section>
+    <HistoryDialog v-model="showHistory" :app-id="appId" :avatar="avatar" :chat-id="route.query.chatId" @changeChatId="changeChatId" />
+
     <Dialog v-model="showFeedBack" width="400px" @close="caiConfirm(1)">
       <template #header>
         会话反馈
@@ -702,104 +675,6 @@ onActivated(() => {
             提交
           </el-button>
         </div>
-      </div>
-    </Dialog>
-    <Dialog v-model="showHistory" width="450px">
-      <template #header>
-        历史会话
-      </template>
-      <div>
-        <el-empty v-if="!historyList.length" :image-size="200" />
-        <ElScrollbar max-height="467px" class="mb-16px">
-          <div
-            v-for="item in historyList"
-            :key="item.chatId"
-            class="history-box mb-16px pt-14px pb-14px pl-8px pr-8px"
-            :class="
-              item.chatId === route.query.chatId ? 'active' : ''
-            "
-            @click="changeChatId(item.chatId)"
-          >
-            <div class="title flex">
-              <div class="inline-block mr-6px">
-                {{
-                  item.value.slice(0, 15)
-                    + (item.value.length > 15 ? "..." : "")
-                }}
-              </div>
-              <div
-                v-if="item.chatId === route.query.chatId"
-                class="current inline-block h-14px l"
-              >
-                当前会话
-              </div>
-              <div class="time inline-block ml-auto">
-                {{ formateTime(item.createTime) }}
-              </div>
-            </div>
-            <div class="content flex">
-              <div>
-                {{
-                  `${item.askValue.slice(0, 20)}${
-                    item.askValue.length > 20 ? "..." : ""
-                  }`
-                }}
-              </div>
-              <div
-                class="ml-auto"
-                @click.stop="deleteChatList(item.chatId)"
-              >
-                <img
-                  :src="
-                    !item.showDeleteActive
-                      ? deleteIcon
-                      : deleteActiveIcon
-                  "
-                  class="opr-icon"
-                  @mouseover="item.showDeleteActive = true"
-                  @mouseout="item.showDeleteActive = false"
-                >
-              </div>
-            </div>
-          </div>
-        </ElScrollbar>
-        <el-pagination
-          v-model:current-page="pageNumber"
-          :pager-count="3"
-          :page-size="10"
-          layout="total, prev, pager, next, jumper"
-          :total="count"
-          @current-change="handleCurrentChange"
-        />
-      </div>
-    </Dialog>
-
-    <Dialog v-model="showDelete" width="300px">
-      <template #header>
-        删除确认
-      </template>
-      <p class="text p-24px pt-16px pb-36px text-center text-size-14px">
-        这次删除，真的不是手抖了吗？
-      </p>
-      <div class="flex justify-between p-l-30px p-r-30px">
-        <el-button
-          :loading="isLoading"
-          color="#EDEDED"
-          class="w-80px color-#666"
-          size="large"
-          @click="deleteConfirm"
-        >
-          确认删除
-        </el-button>
-        <el-button
-          :loading="isLoading"
-          color="#00BBFF"
-          class="w-80px color-#fff"
-          size="large"
-          @click="showDelete = false"
-        >
-          反悔了～
-        </el-button>
       </div>
     </Dialog>
   </div>

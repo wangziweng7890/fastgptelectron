@@ -3,6 +3,8 @@ import { chunk, groupBy } from 'lodash-es'
 import dayjs from 'dayjs'
 import { Delete, Loading } from '@element-plus/icons-vue'
 import type { ChatItem } from './interface'
+import { useMessage } from '@/hooks/message'
+import { useDialog } from '@/hooks/dialog'
 import {
   GetFrontChatCompletionsDeleteByChatId,
   GetFrontChatCompletionsHistory,
@@ -20,6 +22,8 @@ const emit = defineEmits<{
 const visible = defineModel<boolean>({
   required: true,
 })
+const { deleteMsg } = useMessage()
+const { confirmDialog } = useDialog()
 
 const changeChatId = (charId: string) => {
   emit('changeChatId', charId)
@@ -29,15 +33,24 @@ const changeChatId = (charId: string) => {
 const pageNumber = ref(1)
 const pageSize = 10
 
-const historyList = shallowRef<Array<{
-  timestamp: string
-  rowNum: number
-  list: ChatItem[]
-}>>([])
+const historyListRes = shallowRef<Array<ChatItem>>([])
+
+const historyList = computed(() => {
+  return Object.entries(groupBy<ChatItem>(historyListRes.value, item => dayjs(item.createTime).format('YYYY/MM/DD')))
+    .map(([timestamp, list]) => {
+      const rowNum = chunk(list, 2).length
+      return {
+        timestamp,
+        list,
+        rowNum,
+      }
+    })
+})
 
 const disabledMore = ref(true)
 const loading = ref(false)
 const formatDate = (date: string) => dayjs(date).format('HH:mm:ss')
+
 async function fetchList() {
   if (loading.value)
     return
@@ -50,7 +63,7 @@ async function fetchList() {
     })
 
     if (pageNumber.value === 1) {
-      historyList.value = []
+      historyListRes.value = []
     }
 
     Object.values(historyList.value).forEach((item) => {
@@ -58,22 +71,11 @@ async function fetchList() {
     })
     data.sort((a, b) => dayjs(b.createTime).valueOf() - dayjs(a.createTime).valueOf())
 
-    const res = Object.entries(groupBy<ChatItem>(data, item => dayjs(item.createTime).format('YYYY/MM/DD HH')))
-      .map(([timestamp, list]) => {
-        const rowNum = chunk(list, 2).length
-        return {
-          timestamp,
-          list,
-          rowNum,
-        }
-      })
-
-    historyList.value = res
+    historyListRes.value = data
     disabledMore.value = data.length >= totalCount
     if (!disabledMore.value) {
       pageNumber.value++
     }
-    console.log(historyList.value, disabledMore.value)
   }
   finally {
     loading.value = false
@@ -85,30 +87,20 @@ const closedDialog = () => {
   disabledMore.value = true
 }
 
-const showDelete = ref(false)
-let tempId = ''
-
-async function deleteChatList(chatId) {
-  tempId = chatId
-  showDelete.value = true
-}
-
-const isLoading = ref(false)
-async function deleteConfirm() {
-  if (isLoading.value)
-    return
-  try {
-    await GetFrontChatCompletionsDeleteByChatId({
-      chatId: tempId,
-    })
-    pageNumber.value = 1
-    fetchList()
-    ElMessage.success('删得干净，心情美丽')
-    showDelete.value = false
-  }
-  finally {
-    isLoading.value = false
-  }
+async function deleteChatList(item: ChatItem) {
+  confirmDialog({
+    title: '删除确认',
+    message: '这次删除，真的不是手抖了吗？',
+    confirmButtonText: '确认删除',
+    cancelButtonText: '反悔了~',
+    onOk: async () => {
+      await GetFrontChatCompletionsDeleteByChatId({
+        chatId: item.chatId,
+      })
+      historyListRes.value = historyListRes.value.filter(temp => temp.chatId !== item.chatId)
+      deleteMsg()
+    },
+  })
 }
 </script>
 
@@ -134,7 +126,7 @@ async function deleteConfirm() {
                   <i v-if="item.chatId === chatId" class="active-icon" />
                   {{ formatDate(item.createTime) }}
                 </span>
-                <el-button link title="删除" @click.stop="deleteChatList(item.chatId)">
+                <el-button link title="删除" @click.stop="deleteChatList(item)">
                   <el-icon :size="12" color="#999">
                     <Delete />
                   </el-icon>
@@ -170,35 +162,6 @@ async function deleteConfirm() {
         <span v-else>已全部加载完成</span>
       </div>
     </div>
-
-    <Dialog v-model="showDelete" width="300px">
-      <template #header>
-        删除确认
-      </template>
-      <p class="text p-24px pt-16px pb-36px text-center text-size-14px">
-        这次删除，真的不是手抖了吗？
-      </p>
-      <div class="flex justify-between p-l-30px p-r-30px">
-        <el-button
-          :loading="isLoading"
-          color="#EDEDED"
-          class="w-80px color-#666"
-          size="large"
-          @click="deleteConfirm"
-        >
-          确认删除
-        </el-button>
-        <el-button
-          :loading="isLoading"
-          color="#00BBFF"
-          class="w-80px color-#fff"
-          size="large"
-          @click="showDelete = false"
-        >
-          反悔了～
-        </el-button>
-      </div>
-    </Dialog>
   </Dialog>
 </template>
 
