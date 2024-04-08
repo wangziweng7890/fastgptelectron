@@ -319,3 +319,34 @@ input:-webkit-autofill:active {
 .menu-item-text {
     outline: none;
 }
+
+
+.custom-ui-message-box{
+  border-color: #4C9AFF;
+  border-width: 2px;
+  background-color: #fff;
+  .el-message__content{
+    color: #222;
+    font-weight: 400;
+  }
+}
+
+.custom-ui-dialog{
+  .cancelButton{
+    background-color: #4c9aff;
+    color: #fff;
+    opacity: 0.5;
+    &:hover{
+      opacity: 1;
+    }
+  }
+  .confirmButton{
+    background-color: #f8f8f8;
+    color: #666;
+    &:hover{
+      background-color: #fff;
+      border-color: #4c9aff;
+      color: #4c9aff;
+    }
+  }
+}
