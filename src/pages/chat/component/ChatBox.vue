@@ -54,6 +54,7 @@ const route = useRoute()
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 24)
 const messageContent = ref('')
 const chatHistory = ref<any>([])
+const { deleteMsg, likeMsg, copyMsg } = useMessage()
 
 async function zanChat(dataId, isCancel) {
   if (isCancel) {
@@ -77,12 +78,12 @@ async function zanChat(dataId, isCancel) {
       }
     }),
   )
-  !isCancel && ElMessage.success('点赞完成，你成功引起了我的注意')
+  !isCancel && likeMsg()
 }
 
 function copyChat(content, dataId, type) {
   const res = copy(content.replace(/<[^>]+>|&[^>]+;/g, '').trim())
-  res && ElMessage.success('复制成功，感觉自己像个魔术师')
+  res && copyMsg()
 
   type === 'AI'
         && PostFrontChatstepStep({
@@ -92,7 +93,6 @@ function copyChat(content, dataId, type) {
   updatePoint(dataId)
 }
 const { deleteDialog } = useDialog()
-const { deleteMsg } = useMessage()
 function deleteChat(tempId) {
   deleteDialog({
     async onOk() {
