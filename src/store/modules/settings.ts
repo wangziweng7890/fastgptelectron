@@ -13,21 +13,33 @@ const useSettingStore = defineStore(
      */
     const app = ref({
       routeBaseOn: 'fileSystem',
-      title: '',
+      title: '银河数字助理',
     })
 
-    /**
-     * 设置网页标题
-     * @param { string} title 标题
-    */
-    function setTitle(title: string) {
-      app.value.title = title
-      document.title = title
+    function setTitle(str) {
+      app.value.title = str
+      document.title = str
+    }
+
+    // 头像
+    const avatar = ref('')
+    function setAvatar(str) {
+      avatar.value = str
+    }
+
+    // 窗口是否置顶
+    const isAffixedWindow = ref(false)
+    function setIsAffixedWindow(flag) {
+      isAffixedWindow.value = flag
     }
 
     return {
       app,
       setTitle,
+      avatar,
+      setAvatar,
+      isAffixedWindow,
+      setIsAffixedWindow,
     }
   })
 

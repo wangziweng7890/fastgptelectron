@@ -20,48 +20,26 @@ const props = defineProps({
         <div class="progress-bar" />
       </div>
     </div>
-    <div class="xin1">
-      ♥
-    </div>
-    <div class="xin2">
-      ♥
-    </div>
+  </div>
+  <div class="process-text">
+    {{ percentage }}/100
   </div>
 </template>
 
 <style scoped lang="scss">
-.xin1 {
-    position: absolute;
-    width: 12px;
-    height: 11px;
-    font-size: 19px;
-    color: #bf80ff;
-    top: -7px;
-    left: -5px;
-    z-index: 99;
-}
-.xin2 {
-    width: 16px;
-    height: 16px;
-    font-size: 30px;
-    color: #c2f1ff;
-    position: absolute;
-    left: -19px;
-    top: -13px;
-    transform: rotate(-33deg);
-}
 .gradient-progress-bar {
     box-sizing: content-box;
-    width: 120px;
-    height: 12px;
+    width: 123px;
+    height: 8px;
     background: #f5fdff;
+    border-radius: 5px 5px 5px 5px;
     border: 1px solid transparent;
     border-radius: 5px 5px 5px 5px;
     background-image: linear-gradient(white, white),
         linear-gradient(
             to right,
-            rgba(131, 226, 255, 1),
-            rgba(191, 128, 255, 1)
+            rgba(144, 228, 255, 1),
+            rgba(64, 147, 255, 1)
         );
     background-origin: border-box; /* 渐变背景仅在边框区域 */
     background-clip: content-box, border-box; /* 上层背景裁剪到内容区，下层背景裁剪到边框区 */
@@ -74,11 +52,14 @@ const props = defineProps({
 }
 
 .progress-bar {
-    background-image: linear-gradient(
-        to right,
-        rgba(131, 226, 255, 1),
-        rgba(191, 128, 255, 1)
-    );
-    height: 12px;
+    background: linear-gradient(90deg, #8fe2ff 0%, #7ccfff 100%);
+    height: 8px;
+}
+
+.process-text {
+    font-size: 10px;
+    color: #1f497b;
+    line-height: 12px;
+    margin-left: 4px;
 }
 </style>

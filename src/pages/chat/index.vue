@@ -5,9 +5,11 @@ import UserInfo from './component/Userinfo.vue'
 import ChatBox from './component/ChatBox.vue'
 import { streamFetch } from './fetch'
 import { appId } from './config'
-import Page from '@/layouts/components/Page.vue'
+import useUserSetting from '@/store/modules/settings'
+
 import { GetFrontAppGet, GetFrontAppIntimacy } from '@/services/apifox/zhiNengKeFu/cHAT/apifox'
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 12)
+const userSettingStore = useUserSetting()
 
 const router = useRouter()
 const route = useRoute()
@@ -50,12 +52,11 @@ async function onSend(StartChatFnProps) {
   }
 }
 
-const avatar = ref('')
 const chatName = ref('')
 const intro = ref('')
 GetFrontAppGet({ appId }, {
 }).then((data) => {
-  avatar.value = data.avatar
+  userSettingStore.setAvatar(data.avatar)
   chatName.value = data.name
   intro.value = data.intro
 }).then(() => {
@@ -79,8 +80,11 @@ function jumpToSousou() {
 </script>
 
 <template>
+  <HeaderBar>
+    <UserInfo :level-name="levelName" :percentage="percentage" :chat-name="chatName" />
+  </HeaderBar>
   <div class="flex justify-center items-center h-100%">
-    <div class="flex flex-col w-100% justify-center items-center bg-white pt-12px h-100% overflow-hidden">
+    <div class="flex flex-col w-100% justify-center items-center bg-#F5F6F7 h-100% overflow-hidden">
       <section class="relative w-100%">
         <YhButton
           class="absolute top-12px right-20px"
@@ -91,7 +95,6 @@ function jumpToSousou() {
           银河搜搜
         </YhButton>
       </section>
-      <UserInfo class="mt-50px pl-16px pr-16px mb-12px" :avator="avatar" :level-name="levelName" :percentage="percentage" :chat-name="chatName" />
       <ChatBox
         ref="chatBox"
         class="flex-1 w-100%"
