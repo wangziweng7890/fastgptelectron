@@ -23,7 +23,7 @@ const visible = defineModel<boolean>({
   required: true,
 })
 const { deleteMsg } = useMessage()
-const { confirmDialog } = useDialog()
+const { deleteDialog } = useDialog()
 
 const changeChatId = (charId: string) => {
   emit('changeChatId', charId)
@@ -88,11 +88,7 @@ const closedDialog = () => {
 }
 
 async function deleteChatList(item: ChatItem) {
-  confirmDialog({
-    title: '删除确认',
-    message: '这次删除，真的不是手抖了吗？',
-    confirmButtonText: '确认删除',
-    cancelButtonText: '反悔了~',
+  deleteDialog({
     onOk: async () => {
       await GetFrontChatCompletionsDeleteByChatId({
         chatId: item.chatId,

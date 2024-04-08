@@ -2,15 +2,17 @@ const Dialog = defineAsyncComponent(
   () => import('@/components/Dialog/Dialog.vue'),
 )
 
+export interface ConfirmDialogProps {
+  title: string
+  message: string
+  confirmButtonText?: string
+  cancelButtonText?: string
+  onOk?: () => void | Promise<void>
+  onCancel?: () => void
+}
+
 export function useDialog() {
-  const confirmDialog = (props: {
-    title: string
-    message: string
-    confirmButtonText?: string
-    cancelButtonText?: string
-    onOk?: () => void | Promise<void>
-    onCancel?: () => void
-  }) => {
+  const confirmDialog = (props: ConfirmDialogProps) => {
     const container = document.createElement('div')
 
     const app = createApp(
@@ -79,12 +81,22 @@ export function useDialog() {
     document.body.appendChild(container)
 
     function destroyViewer() {
-      console.log('destroyViewer')
       app.unmount()
       document.body.removeChild(container)
     }
   }
+
+  const deleteDialog = (props: {
+    onOk: ConfirmDialogProps['onOk']
+  }) => confirmDialog({
+    ...props,
+    title: '删除确认',
+    message: '这次删除，真的不是手抖了吗？',
+    confirmButtonText: '确认删除',
+    cancelButtonText: '反悔了~',
+  })
   return {
+    deleteDialog,
     confirmDialog,
   }
 }
