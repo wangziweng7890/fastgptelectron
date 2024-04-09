@@ -359,6 +359,11 @@ function openHistory() {
 
 const showFeedBack = ref(false)
 const feedContent = ref('')
+const treadType = ref(null)
+
+function changeTreadType(val) {
+  treadType.value = treadType.value === val ? undefined : val
+}
 async function caiConfirm(flag) {
   showFeedBack.value = false
   try {
@@ -367,6 +372,7 @@ async function caiConfirm(flag) {
     isLoading.value = true
     await PostFrontChatstepStep({
       type: 2,
+      treadType: treadType.value,
       chatDetailId: tempId,
       reason: flag === 0 ? feedContent.value : '',
     })
@@ -396,6 +402,7 @@ async function caiChat(dataId, isCancel) {
     return
   tempId = dataId
   feedContent.value = ''
+  treadType.value = ''
   showFeedBack.value = true
 }
 function changeChatId(chatId) {
@@ -785,7 +792,7 @@ function jumpToSousou() {
     </section>
     <HistoryDialog v-model="showHistory" :app-id="appId" :avatar="avatar" :chat-id="route.query.chatId as string" @changeChatId="changeChatId" />
 
-    <Dialog v-model="showFeedBack" width="400px" @close="caiConfirm(1)">
+    <Dialog v-model="showFeedBack" width="400px" class="my-dialogxxx" @close="caiConfirm(1)">
       <template #header>
         会话反馈
       </template>
@@ -793,6 +800,14 @@ function jumpToSousou() {
         <p class="color-[#222] mb-12px">
           如果给您带来了困扰，先跟您道个歉(鞠躬)
         </p>
+        <div class="mb-12px flex">
+          <div class="mr-16px select-btn" :class="treadType === 1 ? 'active' : ''" @click="changeTreadType(1)">
+            答非所问
+          </div>
+          <div class="select-btn" :class="treadType === 2 ? 'active' : ''" @click="changeTreadType(2)">
+            内容错误
+          </div>
+        </div>
         <el-input
           v-model="feedContent"
           class="mb-12px"
@@ -827,6 +842,35 @@ function jumpToSousou() {
 
 <style lang="scss">
 @import "../chat.scss";
+.my-dialog {
+    background: linear-gradient( 90deg, #75C8FF 0%, #4396FF 100%), linear-gradient( 184deg, rgba(255,255,255,0) 0%, #FFFFFF 69%);
+        border-radius: 8px 8px 8px 8px;
+    .el-dialog__header {
+        border-bottom: none;
+    }
+}
+
+.select-btn {
+    cursor: pointer;
+    text-align: center;
+    width: 82px;
+    height: 24px;
+    line-height: 24px;
+    background: #EEF5FF;
+    font-size: 14px;
+    color: #1F497B;
+    border-radius: 2px 2px 2px 2px;
+
+    &.active {
+        background: #4C9AFF;
+        color: #FFFFFF;
+    }
+
+    &:hover {
+        background: #4C9AFF;
+        color: #FFFFFF;
+    }
+}
 .history-box {
     background: #f8f8f8;
     border-radius: 10px 10px 10px 10px;

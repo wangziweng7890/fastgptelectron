@@ -221,17 +221,18 @@ init()
 </script>
 
 <template>
+  <HeaderBar>
+    <YhButton
+      class="mr-10px w-96px"
+      type="c"
+      :src="backPng"
+      @click="handleClick"
+    >
+      返回会话
+    </YhButton>
+  </HeaderBar>
   <div class="content-container">
-    <div class="ml-16px mt-12px">
-      <YhButton
-        class="mr-10px w-96px"
-        type="c"
-        :src="backPng"
-        @click="handleClick"
-      >
-        返回会话
-      </YhButton>
-    </div>
+    <div class="ml-16px mt-12px" />
     <div class="flex flex-col h-100% justify-center overflow-hidden">
       <div v-if="!isSearch" class="sousou-logo-img mt--35vh">
         <img src="~@/assets/images/search-logo.png" alt="">

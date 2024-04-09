@@ -74,7 +74,7 @@ const submenu = [
 
 <template>
   <div class="HeadBar">
-    <div class="w-200px pl-16px">
+    <div class="w-200px pl-16px no-region">
       <slot>测试</slot>
     </div>
     <div class="title">
@@ -126,6 +126,9 @@ const submenu = [
   justify-content: space-between;
   align-items: center;
   -webkit-app-region: drag;
+  .no-region {
+    -webkit-app-region: none;
+  }
   .title {
     font-weight: 500;
     font-size: 16px;
