@@ -83,7 +83,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <webview v-if="loginUrl" :src="loginUrl" class="flex h-100% w-100%" />
+  <div class="flex flex-col h-100% w-100%">
+    <HeaderBar />
+    <webview v-if="loginUrl" :src="loginUrl" class="flex-1 " />
+  </div>
   <!-- <iframe v-if="loginUrl" :src="loginUrl" style="display: inline-flex; width: 640px; height: 800px;" /> -->
 </template>
 

@@ -5,15 +5,21 @@
 <script setup lang="ts">
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import Menus from '@/layouts/components/Menus.vue'
+import useUserSetting from '@/store/modules/settings'
+const userSettingStore = useUserSetting()
+
 const router = useRouter()
 if (!localStorage.getItem('access_token')) {
   router.push({
     path: '/login',
   })
 }
-window.addEventListener('unhandledrejection', (error) => {
-  console.log('unhandledrejection:', error)
-})
+
+import.meta.env.VITE_APP_ENV !== 'dev' && setInterval(async () => {
+  const flag = await window.electronAPI.getIsFullScreen()
+  //   console.log('窗口变化', flag)
+  userSettingStore.setIsFullScreen(flag)
+}, 300)
 </script>
 
 <template>

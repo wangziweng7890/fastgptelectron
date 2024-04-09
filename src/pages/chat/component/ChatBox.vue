@@ -364,7 +364,7 @@ const treadType = ref(null)
 function changeTreadType(val) {
   treadType.value = treadType.value === val ? undefined : val
 }
-async function caiConfirm(flag) {
+async function caiConfirm(flag, dataId) {
   showFeedBack.value = false
   try {
     if (isLoading.value)
@@ -372,13 +372,14 @@ async function caiConfirm(flag) {
     isLoading.value = true
     await PostFrontChatstepStep({
       type: 2,
-      treadType: treadType.value,
+      treadType: flag === 0 ? treadType.value : undefined,
       chatDetailId: tempId,
       reason: flag === 0 ? feedContent.value : '',
     })
     ElMessage.success('反馈成功')
   }
   finally {
+    visible.value[dataId] = false
     isLoading.value = false
   }
   updatePoint(tempId)
@@ -403,7 +404,8 @@ async function caiChat(dataId, isCancel) {
   tempId = dataId
   feedContent.value = ''
   treadType.value = ''
-  showFeedBack.value = true
+  visible.value[dataId] = true
+//   showFeedBack.value = true
 }
 function changeChatId(chatId) {
   chatController.value?.abort('leave')
@@ -469,6 +471,8 @@ function jumpToSousou() {
     path: '/search',
   })
 }
+
+const visible = ref({})
 </script>
 
 <template>
@@ -665,28 +669,70 @@ function jumpToSousou() {
                               )
                             "
                           >
-                          <img
-                            v-if="
-                              item.obj !== 'Human'
-                                && item.stepType !== 1
-                            "
-                            :src="
-                              showCaiActive
-                                ? caiActiveIcon
-                                : item.stepType === 2
-                                  ? caiSelectIcon
-                                  : caiIcon
-                            "
-                            class="opr-icon ml-2px"
-                            @mouseover="showCaiActive = true"
-                            @mouseout="showCaiActive = false"
-                            @click="
-                              caiChat(
-                                item.dataId,
-                                item.stepType === 2,
-                              )
-                            "
-                          >
+                          <el-tooltip :visible="visible[item.dataId]" effect="light" trigger="click" :show-arrow="false" popper-class="self-tips" :disabled="item.stepType !== 2">
+                            <template #content>
+                              <div class="x" @click="caiConfirm(1, item.dataId)">
+                                X
+                              </div>
+                              <div class="header">
+                                您的反馈将
+                                <p />
+                                帮助伊娃更好地进步!
+                              </div>
+                              <div class="box">
+                                <div class="mb-12px flex">
+                                  <div class="mr-16px select-btn" :class="treadType === 1 ? 'active' : ''" @click="changeTreadType(1)">
+                                    答非所问
+                                  </div>
+                                  <div class="select-btn" :class="treadType === 2 ? 'active' : ''" @click="changeTreadType(2)">
+                                    内容错误
+                                  </div>
+                                </div>
+                                <el-input
+                                  v-model="feedContent"
+                                  class="mb-12px"
+                                  resize="none"
+                                  type="textarea"
+                                  show-word-limit
+                                  :maxlength="1000"
+                                  :autosize="{ minRows: 3, maxRows: 20 }"
+                                  placeholder="请输入您的建议..."
+                                />
+                                <div class="text-center">
+                                  <el-button
+                                    color="#4C9AFF"
+                                    class="w-80px color-#fff!"
+                                    :loading="isLoading"
+                                    @click="caiConfirm(0, item.dataId)"
+                                  >
+                                    提交
+                                  </el-button>
+                                </div>
+                              </div>
+                            </template>
+                            <img
+                              v-if="
+                                item.obj !== 'Human'
+                                  && item.stepType !== 1
+                              "
+                              :src="
+                                showCaiActive
+                                  ? caiActiveIcon
+                                  : item.stepType === 2
+                                    ? caiSelectIcon
+                                    : caiIcon
+                              "
+                              class="opr-icon ml-2px"
+                              @mouseover="showCaiActive = true"
+                              @mouseout="showCaiActive = false"
+                              @click="
+                                caiChat(
+                                  item.dataId,
+                                  item.stepType === 2,
+                                )
+                              "
+                            >
+                          </el-tooltip>
                         </div>
                       </div>
                     </div>
@@ -791,62 +837,40 @@ function jumpToSousou() {
       </div>
     </section>
     <HistoryDialog v-model="showHistory" :app-id="appId" :avatar="avatar" :chat-id="route.query.chatId as string" @changeChatId="changeChatId" />
-
-    <Dialog v-model="showFeedBack" width="400px" class="my-dialogxxx" @close="caiConfirm(1)">
-      <template #header>
-        会话反馈
-      </template>
-      <div>
-        <p class="color-[#222] mb-12px">
-          如果给您带来了困扰，先跟您道个歉(鞠躬)
-        </p>
-        <div class="mb-12px flex">
-          <div class="mr-16px select-btn" :class="treadType === 1 ? 'active' : ''" @click="changeTreadType(1)">
-            答非所问
-          </div>
-          <div class="select-btn" :class="treadType === 2 ? 'active' : ''" @click="changeTreadType(2)">
-            内容错误
-          </div>
-        </div>
-        <el-input
-          v-model="feedContent"
-          class="mb-12px"
-          resize="none"
-          type="textarea"
-          show-word-limit
-          :maxlength="1000"
-          :autosize="{ minRows: 8, maxRows: 20 }"
-          placeholder="可以展开说说，您觉得不满意的地方"
-        />
-        <p class="color-[#222]">
-          谢谢你！
-        </p>
-        <p class="color-[#222] mb-12px">
-          伊娃会继续努力，不断改进的(っ╥╯﹏╰╥c)
-        </p>
-        <div class="text-center">
-          <el-button
-            color="#87DFFF"
-            class="w-88px"
-            size="large"
-            :loading="isLoading"
-            @click="caiConfirm(0)"
-          >
-            提交
-          </el-button>
-        </div>
-      </div>
-    </Dialog>
   </div>
 </template>
 
 <style lang="scss">
 @import "../chat.scss";
-.my-dialog {
-    background: linear-gradient( 90deg, #75C8FF 0%, #4396FF 100%), linear-gradient( 184deg, rgba(255,255,255,0) 0%, #FFFFFF 69%);
-        border-radius: 8px 8px 8px 8px;
-    .el-dialog__header {
-        border-bottom: none;
+.self-tips.el-popper.is-light {
+    width: 204px;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 10px 0px #CCCCCC;
+    border-radius: 8px 8px 8px 8px;
+    border: none;
+    padding: 0;
+    overflow: hidden;
+    .header {
+        padding: 12px;
+        height: 58px;
+        background: linear-gradient(90.64deg, rgba(117, 200, 255, 0.2) 0.86%, rgba(67, 150, 255, 0.2) 98.93%), linear-gradient(184.08deg, rgba(255, 255, 255, 0) 3.39%, #FFFFFF 68.06%);
+        background-blend-mode: screen;
+        font-weight: 500;
+        font-size: 16px;
+        color: #002046;
+        line-height: 19px;
+        text-align: justified;
+    }
+    .box {
+        padding: 0 12px 12px 12px;
+    }
+    .x {
+        width: 8px;
+        height: 8px;
+        right: 13px;
+        top: 13px;
+        position: absolute;
+        cursor: pointer;
     }
 }
 
@@ -1103,6 +1127,11 @@ function jumpToSousou() {
             //超出省略
             overflow: hidden;
             text-overflow: ellipsis;
+
+            &:hover {
+                background: #B7D7FF;
+                color: #002046;
+            }
         }
 
         // &:hover {

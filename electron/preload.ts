@@ -19,6 +19,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   minimize: () => ipcRenderer.send('minimize'),
   close: () => ipcRenderer.send('close'),
   affixWindow: (flag: boolean) => ipcRenderer.invoke('affix-window', flag),
+  getIsFullScreen: (flag: boolean) => ipcRenderer.invoke('getIsFullScreen', flag),
+  setIsFullScreen: (flag: boolean) => ipcRenderer.invoke('setIsFullScreen', flag),
   exit: () => ipcRenderer.send('exit'),
   checkUpdate: () => ipcRenderer.send('check-update'),
   onUpdateAvailable: func => ipcRenderer.on('update-available', () => {

@@ -21,7 +21,6 @@ const createWindow = () => {
     title: '银河数字助理',
     frame: false,
   })
-
   setMenu(mainWindow)
   // Menu.setApplicationMenu(null)
 

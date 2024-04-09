@@ -30,6 +30,15 @@ export const mainOnRender = () => {
     win?.setAlwaysOnTop(flag)
     return win?.isAlwaysOnTop()
   })
+  // 大小窗口
+  ipcMain.handle('setIsFullScreen', (event, flag: boolean) => {
+    const win = BrowserWindow.getFocusedWindow()
+    win?.setSimpleFullScreen(flag)
+  })
+  ipcMain.handle('getIsFullScreen', () => {
+    const win = BrowserWindow.getFocusedWindow()
+    return win?.isFullScreen()
+  })
 
   ipcMain.handle('ping', () => 'pong2222')
   ipcMain.handle('dialog:openFile', handleFileOpen)

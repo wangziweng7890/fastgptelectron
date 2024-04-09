@@ -33,6 +33,12 @@ const useSettingStore = defineStore(
       isAffixedWindow.value = flag
     }
 
+    // 窗口大小
+    const isFullScreen = ref(false)
+    function setIsFullScreen(flag) {
+      isFullScreen.value = flag
+    }
+
     return {
       app,
       setTitle,
@@ -40,6 +46,8 @@ const useSettingStore = defineStore(
       setAvatar,
       isAffixedWindow,
       setIsAffixedWindow,
+      isFullScreen,
+      setIsFullScreen,
     }
   })
 

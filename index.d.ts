@@ -18,6 +18,8 @@ export interface IElectronAPI {
   minimize: () => void
   close: () => void
   affixWindow: (boolean) => Promise<boolean>
+  setIsFullScreen: (boolean) => Promise<boolean>
+  getIsFullScreen: () => Promise<boolean>
   exit: () => void
   checkUpdate: () => void
   onUpdateAvailable: (callback: () => void) => void,

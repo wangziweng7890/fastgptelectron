@@ -1,5 +1,5 @@
 <script setup lang="ts" name="headbar">
-import { Close, Minus } from '@element-plus/icons-vue'
+import { Aim, Close, FullScreen, Minus, Setting } from '@element-plus/icons-vue'
 import prodBuildInfo from '../../../electron-builder.prod.json'
 import testBuildInfo from '../../../electron-builder.test.json'
 import useUserSetting from '@/store/modules/settings'
@@ -17,14 +17,16 @@ const onClose = () => {
   window.electronAPI.close()
 }
 const onAffixWindow = async () => {
-  console.log('点击了锁定')
-  const resFlag = await window.electronAPI.affixWindow(!userSettingStore.isAffixedWindow)
-  userSettingStore.setIsAffixedWindow(resFlag)
+  userSettingStore.setIsAffixedWindow(!userSettingStore.isAffixedWindow)
+  console.log('点击了锁定', userSettingStore.isAffixedWindow)
+  await window.electronAPI.affixWindow(userSettingStore.isAffixedWindow)
 }
-// const onUnFixWindow = () => {
-//   console.log('点击了锁定')
-//   window.electronAPI.fixWindow(false)
-// }
+
+const onFullScreen = () => {
+  userSettingStore.setIsFullScreen(!userSettingStore.isFullScreen)
+  console.log('点击了全屏', userSettingStore.isFullScreen)
+  window.electronAPI.setIsFullScreen(userSettingStore.isFullScreen)
+}
 
 const submenu = [
   {
@@ -74,18 +76,18 @@ const submenu = [
 
 <template>
   <div class="HeadBar">
-    <div class="w-200px pl-16px no-region">
-      <slot>测试</slot>
+    <div class="w-230px pl-16px no-region">
+      <slot />
     </div>
     <div class="title">
       {{ userSettingStore.app.title }}
     </div>
-    <div class="btns w-200px v-middle">
+    <div class="btns w-230px v-middle">
       <el-space :size="0">
         <el-dropdown size="small">
           <span class="menu-item-text el-dropdown-link">
-            <el-icon class="mr-14px">
-              <Close />
+            <el-icon class="mr-14px" size="16">
+              <Setting />
             </el-icon>
           </span>
           <template #dropdown>
@@ -98,14 +100,20 @@ const submenu = [
         </el-dropdown>
       </el-space>
       <el-space :size="0">
-        <el-icon @click="onMini">
-          <Minus />
-        </el-icon>
         <el-icon v-if="userSettingStore.isAffixedWindow" @click="onAffixWindow">
           <img class="png-icon" src="~@/assets/images/affix.png" alt="">
         </el-icon>
         <el-icon v-else @click="onAffixWindow">
           <img class="png-icon" src="~@/assets/images/unAffix.png" alt="">
+        </el-icon>
+        <el-icon @click="onMini">
+          <Minus />
+        </el-icon>
+        <el-icon v-if="!userSettingStore.isFullScreen" @click="onFullScreen">
+          <FullScreen />
+        </el-icon>
+        <el-icon v-else>
+          <Aim @click="onFullScreen" />
         </el-icon>
         <el-icon @click="onClose">
           <Close />
