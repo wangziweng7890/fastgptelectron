@@ -116,7 +116,7 @@ async function deleteChatList(item: ChatItem) {
           :timestamp="historyItem.timestamp"
         >
           <div class="chat-timeline-content" :style="{ 'grid-template-rows': `repeat(${historyItem.rowNum}, 240px)` }">
-            <div v-for="item in historyItem.list" :key="item.chatId" class="chat-item" @click="changeChatId(item.chatId)">
+            <div v-for="item in historyItem.list" :key="item.chatId" class="chat-item" :class="{ 'active-item': item.chatId === chatId }" @click="changeChatId(item.chatId)">
               <div class="chat-item-header">
                 <span>
                   <i v-if="item.chatId === chatId" class="active-icon" />
@@ -195,6 +195,9 @@ async function deleteChatList(item: ChatItem) {
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  &.active-item{
+    background-color: #e4f0ff;
+  }
 }
 
 .chat-item-header {
