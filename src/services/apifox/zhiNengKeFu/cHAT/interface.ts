@@ -83,3 +83,10 @@ export interface GetFrontChatCompletionsDeleteByChatIdQuery {
 }
 
 export type GetFrontChatCompletionsDeleteByChatIdRes = any
+
+export interface GetFrontChatCompletionsGuessQuery {
+    /** 用户问题 example: undefined */
+    message: string
+}
+
+export type GetFrontChatCompletionsGuessRes = any

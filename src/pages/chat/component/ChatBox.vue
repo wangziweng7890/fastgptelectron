@@ -18,8 +18,16 @@ import zanSelectIcon from '../img/zan-Select.png'
 import caiIcon from '../img/cai.png'
 import caiActiveIcon from '../img/cai-active.png'
 import caiSelectIcon from '../img/cai-select.png'
-import stopIcon from '../img/stop.png'
+import waitIcon from '../img/wait.png'
+import waitHoverIcon from '../img/wait-hover.png'
+import searchIcon from '../img/search.png'
+
 import { appId } from '../config'
+import tip1 from '../img/tip1.png'
+import tip2 from '../img/tip2.png'
+import tip3 from '../img/tip3.png'
+import tip4 from '../img/tip4.png'
+import Avatar from './Avatar.vue'
 import HistoryDialog from './HistoryDialog/index.vue'
 import { copy } from '~/utils'
 import router from '~/router'
@@ -27,6 +35,7 @@ import { useDialog } from '@/hooks/dialog'
 import { useMessage } from '@/hooks/message'
 import {
   GetFrontChatCompletionsDelete,
+  GetFrontChatCompletionsGuess,
   GetFrontChatCompletionsList,
   GetFrontChatstepStepcancel,
   PostFrontChatstepStep,
@@ -55,7 +64,7 @@ const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 24)
 const messageContent = ref('')
 const chatHistory = ref<any>([])
 const { deleteMsg, likeMsg, copyMsg } = useMessage()
-
+const handStop = ref(false)
 async function zanChat(dataId, isCancel) {
   if (isCancel) {
     await GetFrontChatstepStepcancel({
@@ -120,6 +129,7 @@ const showCopyActive = ref(false)
 const showDeleteActive = ref(false)
 const showZanActive = ref(false)
 const showCaiActive = ref(false)
+const showWaitActive = ref(false)
 
 // 转义对话内容
 function onEscapeContent(content, type) {
@@ -173,16 +183,27 @@ function scrollToBottom(flag = 0) {
   }
 }
 
+// 猜你想问
+const guessList = ref([])
+
 const chatController = ref(new AbortController())
-async function onSend() {
+async function onSend(flag?) {
   const val = messageContent.value
-  if (val.trim() === '' || isWaitting.value || isChatting.value)
+  if (flag !== 'reload' && (val.trim() === '' || isWaitting.value || isChatting.value))
     return
 
+  guessList.value = []
+  handStop.value = false
   const dataId = nanoid()
   const newChatList = [
     ...chatHistory.value,
-    {
+  ]
+  if (flag === 'reload') {
+    newChatList[newChatList.length - 1].status = 'loading'
+    newChatList[newChatList.length - 1].value = ''
+  }
+  else {
+    newChatList.push(...[{
       dataId: nanoid(),
       obj: 'Human',
       value: val,
@@ -193,8 +214,8 @@ async function onSend() {
       obj: 'AI',
       value: '',
       status: 'loading',
-    },
-  ]
+    }])
+  }
   setChatHistory(newChatList)
   messageContent.value = ''
   isWaitting.value = true
@@ -235,6 +256,11 @@ async function onSend() {
         }
       }),
     )
+    GetFrontChatCompletionsGuess({
+      message: val,
+    }).then((data) => {
+      guessList.value = data?.split(',').filter(i => !!i) || []
+    })
   }
   catch (err) {
     isWaitting.value = false
@@ -375,6 +401,8 @@ async function caiChat(dataId, isCancel) {
 function changeChatId(chatId) {
   chatController.value?.abort('leave')
   //   chatHistory.value = []
+  guessList.value = []
+  handStop.value = false
   router.replace({
     path: '/chat',
     query: { chatId },
@@ -395,8 +423,45 @@ onUnmounted(() => {
 })
 
 onActivated(() => {
+  handStop.value = false
   scrollToBottom()
 })
+
+const introduceObj = computed(() => {
+  const arr = props.intro?.split('<br>') || []
+  return {
+    title: arr[0] || '',
+    info: arr[1] || '',
+    tips: arr[2]?.match(/\[([^\]]+)\]/g)?.map((val) => {
+      return val.replace(/[\[\]]/g, '')
+    }) || [],
+  }
+})
+
+function getTip(index) {
+  const i = index % 4
+  return [tip1, tip2, tip3, tip4][i]
+}
+
+function fastSend(row) {
+  messageContent.value = row
+  onSend()
+}
+
+function stopChat() {
+  handStop.value = true
+  chatController?.abort('stop')
+}
+
+function reSend() {
+  onSend('reload')
+}
+
+function jumpToSousou() {
+  router.push({
+    path: '/search',
+  })
+}
 </script>
 
 <template>
@@ -407,173 +472,263 @@ onActivated(() => {
         ref="ChatBoxRef"
         class="flex-1 pl-16px pr-16px flex flex-col"
       >
-        <div
-          v-if="chatHistory.length === 0"
-          class="chat-box chat-bot mt-10px flex p-8px"
-        >
-          <div class="text" />
-          {{
-            props.intro
-              || "Hi,我是Eva伊娃，你的新同事，初来乍到～作为你的私人助理，想做你的贴心小棉袄~"
-          }}
+        <div class="flex  max-w-80%">
+          <Avatar class="w-28px h-28px mt-10px mr-8px" />
+          <div class="chat-box chat-bot mt-10px p-12px">
+            <div class="title">
+              {{ introduceObj.title }}
+            </div>
+            <div v-if="introduceObj.info" class="desc">
+              {{ introduceObj.info }}>
+            </div>
+            <div v-if="introduceObj.tips.length" class="tips">
+              <p class="mb-8px">
+                你可以试着问我
+              </p>
+              <div class="tip-container">
+                <div v-for="item, index in introduceObj.tips" :key="item" class="tip-item flex" @click="fastSend(item)">
+                  <img :src="getTip(index)" class="w-18px h-18px mt-6px mr-4px ml-10px" alt=""><div class="truncate pr-10px flex-1">
+                    {{ item }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div
           v-for="(item, index) in chatHistory"
           :key="item.dataId"
-          class="chat-box relative"
+          class="relative flex max-w-80%"
           :class="
             (item.obj === 'Human'
-              ? ' chat-user self-end '
-              : ' chat-bot self-start ')
+              ? ' self-end '
+              : ' self-start ')
               + (isWaitting && index === chatHistory.length - 1 ? ' pending' : '')
           "
         >
-          <div
-            v-if="
-              isChatting
-                && !isWaitting
-                && index === chatHistory.length - 1
-            "
-            class="absolute left-0 top--33px cursor-pointer"
-          >
-            <img
-              :src="stopIcon"
-              class="tip-icon"
-              @click="() => chatController?.abort('stop')"
-            >
-          </div>
-          <el-tooltip
-            :show-arrow="false"
-            append-to="#ChatBoxRef"
-            effect="light"
-            :offset="8"
-            :placement="
-              item.obj !== 'Human' ? 'top-start' : 'top-end'
-            "
-          >
-            <div
-              class="text"
-              :class="
-                isWaitting || isChatting
-                  ? 'pointer-events-none'
-                  : ''
-              "
-            >
+          <div class="flex">
+            <Avatar v-if="item.obj !== 'Human'" class="w-28px h-28px mr-8px" />
+            <div class="flex flex-col">
               <div
-                v-if="
-                  isWaitting
-                    && index === chatHistory.length - 1
+                class="chat-box"
+                :class="
+                  (item.obj === 'Human'
+                    ? ' chat-user '
+                    : ' chat-bot ')
+                    + (isWaitting && index === chatHistory.length - 1 ? ' pending' : '')
                 "
-                class="self-start"
               >
-                奋力打字中⸂⸂⸜(രᴗര )⸝⸃⸃ …
+                <div v-if="handStop && index === chatHistory.length - 1" class="absolute left-0 top--33px cursor-pointer">
+                  <div
+                    class="more-item text-size-10px w-fit-content cursor-pointer"
+                    @mouseover="showWaitActive = true"
+                    @mouseout="showWaitActive = false"
+                    @click="reSend"
+                  >
+                    <img
+                      :src="showWaitActive ? waitHoverIcon : waitIcon"
+                      class="w-14px h-14px mr-4px"
+                    >
+                    重新生成
+                  </div>
+                </div>
+                <div
+                  v-if="
+                    isChatting
+                      && !isWaitting
+                      && index === chatHistory.length - 1
+                  "
+                  class="absolute left-0 top--33px cursor-pointer"
+                >
+                  <div
+                    class="more-item text-size-10px"
+                    @mouseover="showWaitActive = true"
+                    @mouseout="showWaitActive = false"
+                    @click="stopChat"
+                  >
+                    <img
+                      :src="showWaitActive ? waitHoverIcon : waitIcon"
+                      class="w-14px h-14px mr-4px"
+                    >
+                    停止对话
+                  </div>
+                </div>
+                <el-tooltip
+                  :show-arrow="false"
+                  append-to="#ChatBoxRef"
+                  effect="light"
+                  :offset="8"
+                  :disabled="item.obj !== 'Human'"
+                  :placement="
+                    item.obj !== 'Human' ? 'top-start' : 'top-end'
+                  "
+                >
+                  <div
+                    class="text"
+                    :class="
+                      isWaitting || isChatting
+                        ? 'pointer-events-none'
+                        : ''
+                    "
+                  >
+                    <div
+                      v-if="
+                        isWaitting
+                          && index === chatHistory.length - 1
+                      "
+                      class="self-start"
+                    >
+                      奋力打字中⸂⸂⸜(രᴗര )⸝⸃⸃ …
+                    </div>
+                    <div v-else class="flex flex-col">
+                      <div
+                        v-if="item.obj === 'Human'"
+                        class="message-content markdown"
+                        v-html="
+                          onEscapeContent(item.value, 'question')
+                        "
+                      />
+                      <div
+                        v-else
+                        class="message-content markdown"
+                        v-html="
+                          md.render(
+                            onEscapeContent(
+                              item.value,
+                              'answer',
+                            ),
+                          )
+                        "
+                      />
+                      <div v-show="index === chatHistory.length - 1 && handStop" class="text-size-10px color-#999">
+                        对话已停止
+                      </div>
+                      <div v-if="item.obj !== 'Human'" class="flex mt-10px">
+                        <div class="flex">
+                          <img
+                            :src="
+                              !showCopyActive
+                                ? copyIcon
+                                : copyActiveIcon
+                            "
+                            class="opr-icon"
+                            @mouseover="showCopyActive = true"
+                            @mouseout="showCopyActive = false"
+                            @click="
+                              copyChat(
+                                item.value,
+                                item.dataId,
+                                item.obj,
+                              )
+                            "
+                          >
+                          <img
+                            :src="
+                              !showDeleteActive
+                                ? deleteIcon
+                                : deleteActiveIcon
+                            "
+                            class="opr-icon ml-2px"
+                            @mouseover="showDeleteActive = true"
+                            @mouseout="showDeleteActive = false"
+                            @click="deleteChat(item.dataId)"
+                          >
+                        </div>
+                        <div class="flex ml-auto">
+                          <img
+                            v-if="
+                              item.obj !== 'Human'
+                                && item.stepType !== 2
+                            "
+                            :src="
+                              showZanActive
+                                ? zanActiveIcon
+                                : item.stepType === 1
+                                  ? zanSelectIcon
+                                  : zanIcon
+                            "
+                            class="opr-icon"
+                            @mouseover="showZanActive = true"
+                            @mouseout="showZanActive = false"
+                            @click="
+                              zanChat(
+                                item.dataId,
+                                item.stepType === 1,
+                              )
+                            "
+                          >
+                          <img
+                            v-if="
+                              item.obj !== 'Human'
+                                && item.stepType !== 1
+                            "
+                            :src="
+                              showCaiActive
+                                ? caiActiveIcon
+                                : item.stepType === 2
+                                  ? caiSelectIcon
+                                  : caiIcon
+                            "
+                            class="opr-icon ml-2px"
+                            @mouseover="showCaiActive = true"
+                            @mouseout="showCaiActive = false"
+                            @click="
+                              caiChat(
+                                item.dataId,
+                                item.stepType === 2,
+                              )
+                            "
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <template v-if="!isChatting && !isWaitting && item.obj === 'Human'" #content>
+                    <div class="space-x-6px flex">
+                      <img
+                        :src="
+                          !showCopyActive
+                            ? copyIcon
+                            : copyActiveIcon
+                        "
+                        class="opr-icon"
+                        @mouseover="showCopyActive = true"
+                        @mouseout="showCopyActive = false"
+                        @click="
+                          copyChat(
+                            item.value,
+                            item.dataId,
+                            item.obj,
+                          )
+                        "
+                      >
+                      <img
+                        :src="
+                          !showDeleteActive
+                            ? deleteIcon
+                            : deleteActiveIcon
+                        "
+                        class="opr-icon"
+                        @mouseover="showDeleteActive = true"
+                        @mouseout="showDeleteActive = false"
+                        @click="deleteChat(item.dataId)"
+                      >
+                    </div>
+                  </template>
+                </el-tooltip>
               </div>
-              <div v-else class="flex">
-                <div
-                  v-if="item.obj === 'Human'"
-                  class="message-content markdown"
-                  v-html="
-                    onEscapeContent(item.value, 'question')
-                  "
-                />
-                <div
-                  v-else
-                  class="message-content markdown"
-                  v-html="
-                    md.render(
-                      onEscapeContent(
-                        item.value,
-                        'answer',
-                      ),
-                    )
-                  "
-                />
+              <div v-show="index === chatHistory.length - 1 && guessList.length" class="mt--8px flex mb-18px">
+                <div v-for="item in guessList" :key="item" class="more-item mr-8px cursor-pointer" @click="fastSend(item)">
+                  {{ item }}
+                </div>
               </div>
             </div>
-            <template #content>
-              <div
-                v-if="!isChatting && !isWaitting"
-                class="space-x-6px flex"
-              >
-                <img
-                  :src="
-                    !showCopyActive
-                      ? copyIcon
-                      : copyActiveIcon
-                  "
-                  class="opr-icon"
-                  @mouseover="showCopyActive = true"
-                  @mouseout="showCopyActive = false"
-                  @click="
-                    copyChat(
-                      item.value,
-                      item.dataId,
-                      item.obj,
-                    )
-                  "
-                >
-                <img
-                  v-if="
-                    item.obj !== 'Human'
-                      && item.stepType !== 2
-                  "
-                  :src="
-                    showZanActive
-                      ? zanActiveIcon
-                      : item.stepType === 1
-                        ? zanSelectIcon
-                        : zanIcon
-                  "
-                  class="opr-icon"
-                  @mouseover="showZanActive = true"
-                  @mouseout="showZanActive = false"
-                  @click="
-                    zanChat(
-                      item.dataId,
-                      item.stepType === 1,
-                    )
-                  "
-                >
-                <img
-                  v-if="
-                    item.obj !== 'Human'
-                      && item.stepType !== 1
-                  "
-                  :src="
-                    showCaiActive
-                      ? caiActiveIcon
-                      : item.stepType === 2
-                        ? caiSelectIcon
-                        : caiIcon
-                  "
-                  class="opr-icon"
-                  @mouseover="showCaiActive = true"
-                  @mouseout="showCaiActive = false"
-                  @click="
-                    caiChat(
-                      item.dataId,
-                      item.stepType === 2,
-                    )
-                  "
-                >
-                <img
-                  :src="
-                    !showDeleteActive
-                      ? deleteIcon
-                      : deleteActiveIcon
-                  "
-                  class="opr-icon"
-                  @mouseover="showDeleteActive = true"
-                  @mouseout="showDeleteActive = false"
-                  @click="deleteChat(item.dataId)"
-                >
-              </div>
-            </template>
-          </el-tooltip>
+          </div>
         </div>
       </section>
     </ElScrollbar>
-    <section class="w-100%">
+    <section class="w-100% bg-#fff">
       <div class="line" />
       <div class="flex mt-8px mb-8px ml-16px pr-16px">
         <YhButton
@@ -586,6 +741,14 @@ onActivated(() => {
         </YhButton>
         <YhButton type="b" :src="historyIcon" @click="openHistory">
           历史会话
+        </YhButton>
+        <YhButton
+          class="ml-auto"
+          type="c"
+          :src="searchIcon"
+          @click="jumpToSousou"
+        >
+          藏经阁
         </YhButton>
       </div>
       <div class="relative input-box">
@@ -720,9 +883,27 @@ onActivated(() => {
         );
     }
 }
-// .el-button {
-//     color: #fff;
-// }
+
+.more-item {
+    display: flex;
+    align-items: center;
+    background: #F6F6F6;
+    border-radius: 4px 4px 4px 4px;
+    border: 1px solid #677587;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #677587;
+    width: fit-content;
+
+    &:hover {
+        color: #4C9AFF;
+        background: #EEF5FF;
+        border-radius: 4px 4px 4px 4px;
+        border: 1px solid #4C9AFF;
+    }
+}
 
 .hljs {
     padding: 10px;
@@ -812,15 +993,14 @@ onActivated(() => {
         }
     }
     .chat-user {
-        max-width: 80%;
         background: #52a5f2;
-        border-radius: 6px 6px 6px 6px;
+        border-radius: 8px 1px 8px 8px;
         margin-bottom: 18px;
 
-        &:hover {
-            opacity: 0.6;
-            box-shadow: 0px 0px 4px 0px #d1d1d1;
-        }
+        // &:hover {
+        //     opacity: 0.6;
+        //     box-shadow: 0px 0px 4px 0px #d1d1d1;
+        // }
 
         .pending {
             background: #ffffff;
@@ -841,15 +1021,50 @@ onActivated(() => {
         }
     }
     .chat-bot {
-        max-width: 80%;
-        background: #f8f8f8;
-        border-radius: 6px 6px 6px 6px;
+        background: #FFFFFF;
+        border-radius: 1px 8px 8px 8px;
         margin-bottom: 18px;
 
-        &:hover {
-            box-shadow: 0px 0px 4px 0px #d1d1d1;
-            background: #ffffff;
+        .title {
+            font-weight: 600;
+            font-size: 16px;
         }
+
+        .desc {
+            font-size: 14px;
+            color: #222222;
+        }
+
+        .tips {
+            margin-top: 10px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #1F497B;
+        }
+
+        .tip-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 定义两列，每列占用一半的宽度 */
+            gap: 8px; /* 可以设置行和列之间的间隙 */
+        }
+
+        .tip-item {
+            height: 32px;
+            line-height: 32px;
+            background: #EDF5FF;
+            border-radius: 6px 6px 6px 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #1F497B;
+            //超出省略
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        // &:hover {
+        //     box-shadow: 0px 0px 4px 0px #d1d1d1;
+        //     background: #ffffff;
+        // }
 
         &.pending {
             border: 1px solid transparent !important;
@@ -868,7 +1083,7 @@ onActivated(() => {
             font-size: 14px;
             color: #222222;
             line-height: 21px;
-            padding: 8px;
+            padding: 12px;
         }
     }
 

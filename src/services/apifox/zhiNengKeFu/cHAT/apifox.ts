@@ -28,6 +28,8 @@ import {
     PostFrontChatstepStepQuery,
     PostFrontChatstepStepReq,
     PostFrontChatstepStepRes,
+    GetFrontChatCompletionsGuessQuery,
+    GetFrontChatCompletionsGuessRes,
 } from './interface'
 
 /** axios 根据appId获取机器人信息 */
@@ -113,4 +115,15 @@ export function PostFrontChatstepStep(
     axiosConfig: AxiosRequestConfig = {},
 ): Promise<PostFrontChatstepStepRes> {
     return http.post('/front/chatstep/step', params, axiosConfig)
+}
+
+/** axios 根据用户消息，生成猜你想问，三条消息。 */
+export function GetFrontChatCompletionsGuess(
+    params: GetFrontChatCompletionsGuessQuery,
+    axiosConfig: AxiosRequestConfig = {},
+): Promise<GetFrontChatCompletionsGuessRes> {
+    return http.get('/front/chat/completions/guess', {
+        params,
+        ...axiosConfig,
+    })
 }

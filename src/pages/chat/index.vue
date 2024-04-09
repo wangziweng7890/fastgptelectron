@@ -1,6 +1,5 @@
 <script setup lang="ts" name="chat">
 import { customAlphabet } from 'nanoid'
-import searchIcon from './img/search.png'
 import UserInfo from './component/Userinfo.vue'
 import ChatBox from './component/ChatBox.vue'
 import { streamFetch } from './fetch'
@@ -71,12 +70,6 @@ function getUserInfo() {
     percentage.value = data.point
   })
 }
-
-function jumpToSousou() {
-  router.push({
-    path: '/search',
-  })
-}
 </script>
 
 <template>
@@ -85,16 +78,6 @@ function jumpToSousou() {
   </HeaderBar>
   <div class="flex justify-center items-center h-100%">
     <div class="flex flex-col w-100% justify-center items-center bg-#F5F6F7 h-100% overflow-hidden">
-      <section class="relative w-100%">
-        <YhButton
-          class="absolute top-12px right-20px"
-          type="c"
-          :src="searchIcon"
-          @click="jumpToSousou"
-        >
-          银河搜搜
-        </YhButton>
-      </section>
       <ChatBox
         ref="chatBox"
         class="flex-1 w-100%"
