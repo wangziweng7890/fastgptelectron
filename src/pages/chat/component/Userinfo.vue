@@ -50,7 +50,7 @@ const process = computed(() => {
   >
     <section class="user-info flex items-center relative">
       <div class="mr-4px">
-        <el-progress type="circle" :percentage="50" color="#3F92FF" :width="36" :stroke-width="4">
+        <el-progress type="circle" :percentage="process" color="#3F92FF" :width="36" :stroke-width="4">
           <div class="bg-#B8CFED">
             <Avatar class="w-28px h-28px absolute left-4px top--14px " />
           </div>
