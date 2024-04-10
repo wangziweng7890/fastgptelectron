@@ -2,6 +2,7 @@
 import { chunk, groupBy } from 'lodash-es'
 import dayjs from 'dayjs'
 import { Delete, Loading } from '@element-plus/icons-vue'
+import Avatar from '../Avatar.vue'
 import type { ChatItem } from './interface'
 import { useMessage } from '@/hooks/message'
 import { useDialog } from '@/hooks/dialog'
@@ -11,7 +12,6 @@ import {
 } from '@/services/apifox/zhiNengKeFu/cHAT/apifox'
 const props = defineProps<{
   appId: string
-  avatar: string
   chatId: string
 }>()
 
@@ -135,7 +135,7 @@ async function deleteChatList(item: ChatItem) {
                   }}
                 </div>
                 <div class="item-msg item-askValue">
-                  <img class="avator" :src="avatar">
+                  <Avatar class="avator" />
                   <span>
                     {{
                       item.askValue
