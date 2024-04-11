@@ -29,7 +29,7 @@ const historyList = ref<string[]>([]);
 
 const loadHistory = async () => {
   const res = await GetFrontConfluenceGetUserSearchHistory();
-  historyList.value = (res || []).filter(t => !!t).slice(0, 10);
+  historyList.value = (res || []).filter(t => !!t).reverse().slice(0, 10);
 };
 
 // 保存搜索记录
@@ -65,7 +65,7 @@ const handleBlur = () => {
 const handleKeydown = debounce(async () => {
   // 兼容空数据
   if (keyword.value) {
-    await handleSave(keyword.value)
+    // await handleSave(keyword.value)
   } else {
     showHistory.value = !!historyList.value.length
   }
@@ -105,6 +105,7 @@ defineExpose({
       class="search-input"
       @input="handleKeydown"
       @focus="handleFocus"
+      @blur="() => keyword && handleSave(keyword)"
     >
       <template #prefix>
         <img
