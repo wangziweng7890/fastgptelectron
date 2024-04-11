@@ -50,14 +50,10 @@ const props = defineProps({
   intro: {
     type: String,
   },
-  avatar: {
-    type: String,
-    required: true,
-  },
 })
-
 const emit = defineEmits(['refresh'])
-
+// 猜你想问
+const guessList = ref([])
 const route = useRoute()
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 24)
@@ -102,7 +98,7 @@ function copyChat(content, dataId, type) {
   updatePoint(dataId)
 }
 const { deleteDialog } = useDialog()
-function deleteChat(tempId) {
+function deleteChat(tempId, isLast = false) {
   deleteDialog({
     async onOk() {
       await GetFrontChatCompletionsDelete({
@@ -112,6 +108,7 @@ function deleteChat(tempId) {
       setChatHistory(
         chatHistory.value.filter(item => item.dataId !== tempId),
       )
+      isLast && (guessList.value = [])
     },
   })
 }
@@ -182,9 +179,6 @@ function scrollToBottom(flag = 0) {
         )
   }
 }
-
-// 猜你想问
-const guessList = ref([])
 
 const chatController = ref(new AbortController())
 async function onSend(flag?) {
@@ -260,6 +254,9 @@ async function onSend(flag?) {
       message: val,
     }).then((data) => {
       guessList.value = data?.split(',').filter(i => !!i) || []
+      nextTick(() => {
+        scrollToBottom()
+      })
     })
   }
   catch (err) {
@@ -643,7 +640,7 @@ const visible = ref({})
                             class="opr-icon ml-2px"
                             @mouseover="showDeleteActive = true"
                             @mouseout="showDeleteActive = false"
-                            @click="deleteChat(item.dataId)"
+                            @click="deleteChat(item.dataId, index === chatHistory.length - 1)"
                           >
                         </div>
                         <div class="flex ml-auto">
@@ -771,8 +768,8 @@ const visible = ref({})
                   </template>
                 </el-tooltip>
               </div>
-              <div v-show="index === chatHistory.length - 1 && guessList.length" class="mt--8px flex mb-18px">
-                <div v-for="item in guessList" :key="item" class="more-item mr-8px cursor-pointer" @click="fastSend(item)">
+              <div v-show="index === chatHistory.length - 1 && guessList.length" class="mt--8px flex mb-18px flex-wrap">
+                <div v-for="item in guessList" :key="item" class="more-item mr-8px mb-8px cursor-pointer" @click="fastSend(item)">
                   {{ item }}
                 </div>
               </div>
@@ -836,7 +833,7 @@ const visible = ref({})
         银河AI生成，内容仅供参考
       </div>
     </section>
-    <HistoryDialog v-model="showHistory" :app-id="appId" :avatar="avatar" :chat-id="route.query.chatId as string" @changeChatId="changeChatId" />
+    <HistoryDialog v-model="showHistory" :app-id="appId" :chat-id="route.query.chatId as string" @changeChatId="changeChatId" @newChat="newChat" />
   </div>
 </template>
 

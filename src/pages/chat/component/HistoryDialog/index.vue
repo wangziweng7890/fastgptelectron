@@ -2,6 +2,8 @@
 import { chunk, groupBy } from 'lodash-es'
 import dayjs from 'dayjs'
 import { Delete, Loading } from '@element-plus/icons-vue'
+import { Base64 } from 'js-base64'
+import Avatar from '../Avatar.vue'
 import type { ChatItem } from './interface'
 import { useMessage } from '@/hooks/message'
 import { useDialog } from '@/hooks/dialog'
@@ -9,19 +11,35 @@ import {
   GetFrontChatCompletionsDeleteByChatId,
   GetFrontChatCompletionsHistory,
 } from '@/services/apifox/zhiNengKeFu/cHAT/apifox'
+import { md } from '@/pages/chat/utils'
 const props = defineProps<{
   appId: string
-  avatar: string
   chatId: string
 }>()
 
 const emit = defineEmits<{
   changeChatId: [chatId: string]
+  newChat: []
 }>()
 
 const visible = defineModel<boolean>({
   required: true,
 })
+
+function onEscapeContent(content: string, type?: string) {
+  if (type === 'question') {
+    return content
+    // return content
+    //   .replace(/&/g, '&amp;')
+    //   .replace(/</g, '&lt;')
+    //   .replace(/>/g, '&gt;')
+    //   .replace(/"/g, '&quot;')
+    //   .replace(/'/g, '&#39;')
+    //   .replace(/\n/g, '<br>')
+  }
+  return Base64.decode(Base64.encode(content))
+}
+
 const { deleteMsg } = useMessage()
 const { deleteDialog } = useDialog()
 
@@ -95,6 +113,10 @@ async function deleteChatList(item: ChatItem) {
       })
       historyListRes.value = historyListRes.value.filter(temp => temp.chatId !== item.chatId)
       deleteMsg()
+      if (item.chatId === props.chatId) {
+        visible.value = false
+        emit('newChat')
+      }
     },
   })
 }
@@ -129,18 +151,20 @@ async function deleteChatList(item: ChatItem) {
                 </el-button>
               </div>
               <div class="chat-item-content">
-                <div class="item-msg item-value">
-                  {{
-                    item.value
-                  }}
-                </div>
+                <div class="item-msg item-value" v-html="onEscapeContent(item.value, 'question')" />
                 <div class="item-msg item-askValue">
-                  <img class="avator" :src="avatar">
-                  <span>
-                    {{
-                      item.askValue
-                    }}
-                  </span>
+                  <Avatar class="avator" />
+                  <div
+                    class="msg-content"
+                    v-html="
+                      md.render(
+                        onEscapeContent(
+                          item.askValue,
+                          'answer',
+                        ),
+                      )
+                    "
+                  />
                 </div>
               </div>
             </div>
@@ -195,6 +219,7 @@ async function deleteChatList(item: ChatItem) {
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  overflow: hidden;
   &.active-item{
     background-color: #e4f0ff;
   }
@@ -250,6 +275,7 @@ async function deleteChatList(item: ChatItem) {
   font-size: 14px;
   line-height: 21px;
   padding: 8px;
+  overflow: hidden;
 
 }
 
@@ -270,7 +296,7 @@ async function deleteChatList(item: ChatItem) {
 .item-askValue {
   align-self: flex-start;
   display: flex;
-  >span {
+  >.msg-content {
     background-color: #fff;
     padding: 8px;
   }
