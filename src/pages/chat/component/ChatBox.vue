@@ -38,6 +38,7 @@ import {
   GetFrontChatCompletionsDelete,
   GetFrontChatCompletionsGuess,
   GetFrontChatCompletionsList,
+  GetFrontChatCompletionsStop,
   GetFrontChatstepStepcancel,
   PostFrontChatstepStep,
 } from '@/services/apifox/zhiNengKeFu/cHAT/apifox'
@@ -463,6 +464,11 @@ function fastSend(row) {
 function stopChat() {
   handStop.value = true
   chatController?.value.abort('stop')
+  const list = chatHistory.value
+  list.at(-1).statusTemp = 2
+  GetFrontChatCompletionsStop({
+    id: list.at(-1).dataId,
+  })
 }
 
 function reSend() {
@@ -615,7 +621,7 @@ const visible = ref({})
                           )
                         "
                       />
-                      <div v-show="index === chatHistory.length - 1 && handStop" class="text-size-10px color-#999">
+                      <div v-show="index === chatHistory.length - 1 && (item.statusTemp || item.status === 2)" class="text-size-10px color-#999">
                         对话已停止
                       </div>
                       <div v-if="item.obj !== 'Human'" class="flex mt-10px">

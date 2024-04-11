@@ -30,6 +30,8 @@ import {
     PostFrontChatstepStepRes,
     GetFrontChatCompletionsGuessQuery,
     GetFrontChatCompletionsGuessRes,
+    GetFrontChatCompletionsStopQuery,
+    GetFrontChatCompletionsStopRes,
 } from './interface'
 
 /** axios 根据appId获取机器人信息 */
@@ -123,6 +125,17 @@ export function GetFrontChatCompletionsGuess(
     axiosConfig: AxiosRequestConfig = {},
 ): Promise<GetFrontChatCompletionsGuessRes> {
     return http.get('/front/chat/completions/guess', {
+        params,
+        ...axiosConfig,
+    })
+}
+
+/** axios 停止消息 */
+export function GetFrontChatCompletionsStop(
+    params: GetFrontChatCompletionsStopQuery,
+    axiosConfig: AxiosRequestConfig = {},
+): Promise<GetFrontChatCompletionsStopRes> {
+    return http.get('/front/chat/completions/stop', {
         params,
         ...axiosConfig,
     })

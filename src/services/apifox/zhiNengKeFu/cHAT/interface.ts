@@ -90,3 +90,10 @@ export interface GetFrontChatCompletionsGuessQuery {
 }
 
 export type GetFrontChatCompletionsGuessRes = any
+
+export interface GetFrontChatCompletionsStopQuery {
+    /** 消息id example: undefined */
+    id: string
+}
+
+export type GetFrontChatCompletionsStopRes = any
