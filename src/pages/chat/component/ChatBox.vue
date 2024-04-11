@@ -837,7 +837,7 @@ const visible = ref({})
         银河AI生成，内容仅供参考
       </div>
     </section>
-    <HistoryDialog v-model="showHistory" :app-id="appId" :chat-id="route.query.chatId as string" @changeChatId="changeChatId" />
+    <HistoryDialog v-model="showHistory" :app-id="appId" :chat-id="route.query.chatId as string" @changeChatId="changeChatId" @newChat="newChat" />
   </div>
 </template>
 
