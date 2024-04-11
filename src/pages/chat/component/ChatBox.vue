@@ -829,7 +829,7 @@ const visible = ref({})
           @keydown="onEnter"
         />
         <img
-          v-if="!isChatting"
+          v-if="!isChatting && messageContent.length > 0"
           :src="sendIcon"
           class="absolute cursor-pointer z-3 right-10px bottom-15px w-24px h-24px"
           alt=""
