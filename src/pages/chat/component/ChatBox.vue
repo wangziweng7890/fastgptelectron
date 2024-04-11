@@ -477,7 +477,7 @@ const visible = ref({})
 </script>
 
 <template>
-  <div class="chat-container flex flex-col overflow-hidden h-100% pt-6px">
+  <div class="chat-container flex flex-col overflow-hidden h-100% pt-6px pb-24px">
     <ElScrollbar ref="scrollbarRef" style="flex: 1" class="overflow-hidden">
       <section
         id="ChatBoxRef"
@@ -551,7 +551,7 @@ const visible = ref({})
                       && !isWaitting
                       && index === chatHistory.length - 1
                   "
-                  class="absolute left-0 top--33px cursor-pointer"
+                  class="fixed left-17px bottom-166px cursor-pointer"
                 >
                   <div
                     class="more-item text-size-10px"
@@ -1138,6 +1138,12 @@ const visible = ref({})
             background: #4c9aff;
             height: 32px;
             border: 1px solid #4c9aff;
+
+            .text {
+                padding-top: 8px;
+                padding-bottom: 8px;
+                line-height: 14px;
+            }
         }
         .text {
             font-size: 14px;
