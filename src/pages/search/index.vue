@@ -9,26 +9,25 @@
 </route>
 
 <script setup lang="ts" name="search">
-import { debounce } from "lodash-es";
-import { GetWikiRestApiSearch, PostDoLogin } from "@/services/wiki/apifox";
+import { debounce } from 'lodash-es'
+import SuggestionsInput from './SuggestionsInput.vue'
+import { GetWikiRestApiSearch, PostDoLogin } from '@/services/wiki/apifox'
 import {
   GetFrontConfluenceAccount,
   PostFrontConfluenceAccountAdd,
-} from "@/services/apifox/zhiNengKeFu/confluence/apifox";
-import { GetFrontConfluenceGetHotSearch } from "@/services/apifox/zhiNengKeFu/cONFLUENCEZhangHaoGuanLi/apifox";
-import backPng from "@/assets/images/back.png";
-import hot1 from "@/assets/images/hot-1.png";
-import hot2 from "@/assets/images/hot-2.png";
-import hot3 from "@/assets/images/hot-3.png";
-import hot4 from "@/assets/images/hot-4.png";
-import hot5 from "@/assets/images/hot-5.png";
-import hot6 from "@/assets/images/hot-6.png";
+} from '@/services/apifox/zhiNengKeFu/confluence/apifox'
+import { GetFrontConfluenceGetHotSearch } from '@/services/apifox/zhiNengKeFu/cONFLUENCEZhangHaoGuanLi/apifox'
+import backPng from '@/assets/images/back.png'
+import hot1 from '@/assets/images/hot-1.png'
+import hot2 from '@/assets/images/hot-2.png'
+import hot3 from '@/assets/images/hot-3.png'
+import hot4 from '@/assets/images/hot-4.png'
+import hot5 from '@/assets/images/hot-5.png'
+import hot6 from '@/assets/images/hot-6.png'
 
-import SuggestionsInput from "./SuggestionsInput.vue";
+const router = useRouter()
 
-const router = useRouter();
-
-const suggestionsInputRef = ref<InstanceType<typeof SuggestionsInput>>(); // ref(null)
+const suggestionsInputRef = ref<InstanceType<typeof SuggestionsInput>>() // ref(null)
 // 热搜图标
 const hotIconMap = {
   1: hot1,
@@ -37,20 +36,20 @@ const hotIconMap = {
   4: hot4,
   5: hot5,
   6: hot6,
-};
+}
 
 // 登录弹窗
-const visible = ref(false);
+const visible = ref(false)
 const handleClose = () => {
-  if (!localStorage.getItem("wiki-username")) {
-    handleClick();
+  if (!localStorage.getItem('wiki-username')) {
+    handleClick()
   }
-  visible.value = false;
-};
+  visible.value = false
+}
 // 账号密码输入框
-const usernameInput = ref(""); // ref('kennen')
-const passwordInput = ref(""); // ref('7d81MNAHo+v@b')
-let currentUsername, currentPassword; // 记录当前的账号密码
+const usernameInput = ref('') // ref('kennen')
+const passwordInput = ref('') // ref('7d81MNAHo+v@b')
+let currentUsername, currentPassword // 记录当前的账号密码
 
 // 登录confluence的dologin.action
 const doLoginConfluence = () => {
@@ -58,88 +57,91 @@ const doLoginConfluence = () => {
     PostDoLogin({
       os_usemame: currentUsername,
       os_password: window.atob(currentPassword),
-      login: "登录",
-      os_destination: "",
-    });
-  } catch (error) {
-    console.log("PostDoLogin-error", error);
+      login: '登录',
+      os_destination: '',
+    })
   }
-};
+  catch (error) {
+    console.log('PostDoLogin-error', error)
+  }
+}
 
 // 检查账号密码
 const loadConfluenceAccount = async () => {
-  const readLocalUser = localStorage.getItem("wiki-local");
+  const readLocalUser = localStorage.getItem('wiki-local')
   if (readLocalUser) {
-    currentUsername = localStorage.getItem("wiki-username");
-    currentPassword = localStorage.getItem("wiki-password");
-    return;
+    currentUsername = localStorage.getItem('wiki-username')
+    currentPassword = localStorage.getItem('wiki-password')
+    return
   }
   try {
-    const res = (await GetFrontConfluenceAccount()) || {};
+    const res = (await GetFrontConfluenceAccount()) || {}
     if (!!res.username && !!res.password) {
-      currentUsername = res.username;
-      currentPassword = res.password;
-      localStorage.setItem("wiki-username", currentUsername);
-      localStorage.setItem("wiki-password", currentPassword);
-      doLoginConfluence();
-    } else {
-      visible.value = true;
+      currentUsername = res.username
+      currentPassword = res.password
+      localStorage.setItem('wiki-username', currentUsername)
+      localStorage.setItem('wiki-password', currentPassword)
+      doLoginConfluence()
     }
-  } catch (error) {
-    console.log("error", error);
+    else {
+      visible.value = true
+    }
   }
-};
+  catch (error) {
+    console.log('error', error)
+  }
+}
 
 const getUserInfo = () => {
-  currentUsername = localStorage.getItem("wiki-username");
-  currentPassword = localStorage.getItem("wiki-password");
-};
+  currentUsername = localStorage.getItem('wiki-username')
+  currentPassword = localStorage.getItem('wiki-password')
+}
 
-const isSearch = ref(false); // 是否触发过搜搜
-const keyword = ref(""); // 搜索的关键字
-const list = ref<object[]>([]); // 搜索的内容
+const isSearch = ref(false) // 是否触发过搜搜
+const keyword = ref('') // 搜索的关键字
+const list = ref<object[]>([]) // 搜索的内容
 
 // 分页
-const total = ref(0);
-const currentPage = ref(1);
-const pageSize = ref(20);
+const total = ref(0)
+const currentPage = ref(1)
+const pageSize = ref(20)
 // 计算总页数
 const totalPages = computed(() => {
-  return Math.ceil(total.value / pageSize.value);
-});
+  return Math.ceil(total.value / pageSize.value)
+})
 
 const handleSizeChange = (val: number) => {
-  loadData(keyword.value);
-};
+  loadData(keyword.value)
+}
 const handleCurrentChange = () => {
-  loadData(keyword.value);
-};
+  loadData(keyword.value)
+}
 
 interface paramsModel {
-  cql: string;
-  start: number;
-  limit: number;
-  excerpt: string;
-  expand: string;
-  src: string;
-  includeArchivedSpaces: boolean;
+  cql: string
+  start: number
+  limit: number
+  excerpt: string
+  expand: string
+  src: string
+  includeArchivedSpaces: boolean
 }
 const paramsData = ref<paramsModel>({
-  cql: "",
+  cql: '',
   start: 0,
   limit: 20,
-  excerpt: "highlight",
-  expand: "space.icon",
-  src: "next.ui.search",
+  excerpt: 'highlight',
+  expand: 'space.icon',
+  src: 'next.ui.search',
   includeArchivedSpaces: false,
-});
+})
 
 // 登录
 const handleLogin = async () => {
   const auth = {
     username: usernameInput.value,
     password: passwordInput.value,
-  };
+  }
 
   try {
     const res = await GetWikiRestApiSearch(
@@ -152,44 +154,46 @@ const handleLogin = async () => {
         // headers: {
         //     'Authorization': 'Basic ' + btoa(`${usernameInput.value}:${passwordInput.value}`)
         // }
-      }
-    );
-    console.log("123", res);
+      },
+    )
+    console.log('123', res)
     if (res?.results) {
       // TODO保存账号密码
-      const btoaPassword = window.btoa(passwordInput.value);
+      const btoaPassword = window.btoa(passwordInput.value)
       PostFrontConfluenceAccountAdd({
         username: usernameInput.value,
         password: btoaPassword,
       })
         .then((accountRes: any) => {
-          console.log("PostFrontConfluenceAccountAdd--res", accountRes);
-          localStorage.setItem("wiki-username", usernameInput.value);
-          localStorage.setItem("wiki-password", btoaPassword);
-          getUserInfo();
-          loadData("login");
-          doLoginConfluence();
-          ElMessage.success("登录成功!");
-          handleClose();
+          console.log('PostFrontConfluenceAccountAdd--res', accountRes)
+          localStorage.setItem('wiki-username', usernameInput.value)
+          localStorage.setItem('wiki-password', btoaPassword)
+          getUserInfo()
+          loadData('login')
+          doLoginConfluence()
+          ElMessage.success('登录成功!')
+          handleClose()
         })
         .catch((err: any) => {
-          console.log("err", err);
-        });
-    } else {
-      ElMessage.error("对不起，您的用户名或密码不正确。请重试。");
+          console.log('err', err)
+        })
+    }
+    else {
+      ElMessage.error('对不起，您的用户名或密码不正确。请重试。')
       // localStorage.removeItem('wiki-username')
       // localStorage.removeItem('wiki-password')
     }
-  } catch (error) {
-    console.log("error", error);
-    ElMessage.error("对不起，您的用户名或密码不正确。请重试。");
   }
-};
+  catch (error) {
+    console.log('error', error)
+    ElMessage.error('对不起，您的用户名或密码不正确。请重试。')
+  }
+}
 
 // 自动拼接成 高亮字符串
 const highlightText = (str: string) => {
-  return str.replace(/@@@hl@@@/g, "<em>").replace(/@@@endhl@@@/g, "</em>");
-};
+  return str.replace(/@@@hl@@@/g, '<em>').replace(/@@@endhl@@@/g, '</em>')
+}
 
 /**
  * 获取列表数据
@@ -197,36 +201,36 @@ const highlightText = (str: string) => {
  * */
 async function loadData(key: string) {
   if (!key) {
-    list.value = [];
-    total.value = 0;
-    return;
+    list.value = []
+    total.value = 0
+    return
   }
-  const keywordStr = `siteSearch ~ "${key}" AND type in ("space","user","com.atlassian.confluence.extra.team-calendars:calendar-content-type","attachment","page","com.atlassian.confluence.extra.team-calendars:space-calendars-view-content-type","blogpost")`;
-  paramsData.value.cql = keywordStr; // 关键字 //encodeURIComponent(`siteSearch ~ "${keyword.value}"`)
-  paramsData.value.start = (currentPage.value - 1) * pageSize.value; // 页码
-  paramsData.value.limit = pageSize.value;
-  let auth;
+  const keywordStr = `siteSearch ~ "${key}" AND type in ("space","user","com.atlassian.confluence.extra.team-calendars:calendar-content-type","attachment","page","com.atlassian.confluence.extra.team-calendars:space-calendars-view-content-type","blogpost")`
+  paramsData.value.cql = keywordStr // 关键字 //encodeURIComponent(`siteSearch ~ "${keyword.value}"`)
+  paramsData.value.start = (currentPage.value - 1) * pageSize.value // 页码
+  paramsData.value.limit = pageSize.value
+  let auth
   if (currentUsername && currentPassword) {
     auth = {
       username: currentUsername,
       password: window.atob(currentPassword),
-    };
+    }
   }
   const res = await GetWikiRestApiSearch(paramsData.value, {
     auth,
-  });
+  })
 
-  total.value = res.totalSize || 0;
-  list.value =
-    res.results?.map((t: any) => {
+  total.value = res.totalSize || 0
+  list.value
+    = res.results?.map((t: any) => {
       return {
         id: t.content?.id,
         title: highlightText(t.title),
         content: highlightText(t.excerpt),
         from: t.resultGlobalContainer?.title,
         _links: t.content?._links,
-      };
-    }) || [];
+      }
+    }) || []
 
   // 保存搜索记录
   // isSaveSearchHistory && saveSearchKeyword(key)
@@ -235,96 +239,99 @@ async function loadData(key: string) {
 /**
  * 获取热搜列表
  * */
-const hotSearchList = ref<object[]>([]);
+const hotSearchList = ref<object[]>([])
 async function loadHotSearchList() {
-  const res = await GetFrontConfluenceGetHotSearch();
-  console.log("loadHotSearchList-res", res);
+  const res = await GetFrontConfluenceGetHotSearch()
+  console.log('loadHotSearchList-res', res)
 
   hotSearchList.value = Object.keys(res)
     .map((key) => {
-      return { label: key, value: res[key] };
+      return { label: key, value: res[key] }
     })
     .sort((a, b) => {
-      return b.value - a.value;
+      return b.value - a.value
     })
     .slice(0, 6)
     .map((t) => {
-      return t;
-    });
-  console.log("loadHotSearchList-hotSearchList.value", hotSearchList.value);
+      return t
+    })
+  console.log('loadHotSearchList-hotSearchList.value', hotSearchList.value)
 }
 
 // 是否触发过搜索
 const handleKeydown = debounce(async (val) => {
-  isSearch.value = true;
-  keyword.value = val;
-  loadData(val);
-}, 200);
+  isSearch.value = true
+  keyword.value = val
+  loadData(val)
+}, 200)
 
 // 选中历史记录
 const handleSelect = (val) => {
-  isSearch.value = true;
-  keyword.value = val;
-  loadData(val);
-};
+  isSearch.value = true
+  keyword.value = val
+  loadData(val)
+}
 
 const handleItem = async (item: any) => {
   window.electronAPI.openURL(
-    `http://kf-wiki.galaxy-immi.com/${item._links?.webui}`
-  );
-};
+    `http://kf-wiki.galaxy-immi.com/${item._links?.webui}`,
+  )
+}
 
 const handleClick = () => {
-  router.back();
-};
+  router.back()
+}
 
 // 点击热搜选项
 const handleHotItem = (item: any) => {
-  const { handleTarget } = suggestionsInputRef.value || {};
-  handleTarget?.(item.label);
-};
+  const { handleTarget } = suggestionsInputRef.value || {}
+  handleTarget?.(item.label)
+}
 
 // 点击输入框以外的区域隐藏提示
 const handleClickOutside = (event) => {
   console.log(
-    "event.target",
+    'event.target',
     event.target,
-    event.target.closest(".suggestions-input")
-  );
-  if (!event.target.closest(".suggestions-input")) {
-    const { handleBlur } = suggestionsInputRef.value || {};
-    handleBlur?.();
+    event.target.closest('.suggestions-input'),
+  )
+  if (!event.target.closest('.suggestions-input')) {
+    const { handleBlur } = suggestionsInputRef.value || {}
+    handleBlur?.()
   }
-};
+}
 
 const init = async () => {
-  await loadConfluenceAccount();
-  loadHotSearchList();
-};
-init();
+  await loadConfluenceAccount()
+  loadHotSearchList()
+}
+init()
 
 onMounted(() => {
-  console.log("onMounted-suggestionsInputRef", suggestionsInputRef.value);
-});
+  console.log('onMounted-suggestionsInputRef', suggestionsInputRef.value)
+})
 </script>
 
 <template>
   <HeaderBar>
-    <YhButton
-      class="mr-10px w-96px"
-      type="c"
-      :src="backPng"
+    <div
+      class="mr-10px w-96px yh-button3"
       @click="handleClick"
     >
-      返回会话
-    </YhButton>
+      <img
+        class="v-middle inline-block w-16px h-16px mr-2px"
+        :src="backPng"
+      ><span class="v-middle">返回会话</span>
+    </div>
   </HeaderBar>
   <div class="content-container" @click.stop.prevent="handleClickOutside">
     <div v-if="isSearch" class="flex flex-col h-100% overflow-hidden is-search">
       <div class="search-box flex items-center">
         <div class="is-search-logo">
-          <img src="~@/assets/images/search-logo.png" alt="" />
-          <div class="is-search-logo-title">藏经阁</div>
+          <img src="~@/assets/images/search-logo.png" alt="">
+          <div class="is-search-logo-title">
+            藏经阁
+          </div>
         </div>
         <SuggestionsInput
           ref="suggestionsInputRef"
@@ -333,9 +340,11 @@ onMounted(() => {
           size="mini"
           @input="handleKeydown"
           @select="handleSelect"
-        ></SuggestionsInput>
+        />
       </div>
-      <div class="search-desc pt-8px pb-8px">数据来源:业务知识库</div>
+      <div class="search-desc pt-8px pb-8px">
+        数据来源:业务知识库
+      </div>
       <div class="search-result">
         <div
           v-for="(item, index) in list"
@@ -369,30 +378,32 @@ onMounted(() => {
     </div>
     <div v-else class="flex flex-col h-100% justify-center overflow-hidden">
       <div class="search-logo-img mt--25vh">
-        <img src="~@/assets/images/search-logo.png" alt="" />
+        <img src="~@/assets/images/search-logo.png" alt="">
       </div>
-      <div class="search-title-img">藏经阁</div>
-      <div class="search-desc mt-12px">数据来源:业务知识库</div>
+      <div class="search-title-img">
+        藏经阁
+      </div>
+      <div class="search-desc mt-12px">
+        数据来源:业务知识库
+      </div>
       <div class="suggestions-box">
         <SuggestionsInput
           ref="suggestionsInputRef"
           @input="handleKeydown"
           @select="handleSelect"
-        ></SuggestionsInput>
+        />
       </div>
-      <div
-        class="grid grid-cols-2 gap-x-20px gap-y-14px mt-16px ml-16px mr-16px pl-40px pr-40px"
-      >
+      <div class="grid grid-cols-2 gap-x-20px gap-y-14px mt-16px ml-16px mr-16px pl-40px pr-40px">
         <div
           v-for="(item, index) in hotSearchList"
           :key="index"
           :class="
-            'hot-search-item flex items-center cursor-pointer' +
-            ` hot-${index + 1}`
+            'hot-search-item flex items-center cursor-pointer'
+              + ` hot-${index + 1}`
           "
           @click="handleHotItem(item)"
         >
-          <img :src="hotIconMap[index + 1]" alt="" />
+          <img :src="hotIconMap[index + 1]" alt="">
           <span class="ml-8px">{{ item.label }}</span>
         </div>
       </div>
@@ -400,7 +411,9 @@ onMounted(() => {
 
     <!--   使用element-plus实现登录弹窗     -->
     <Dialog v-model="visible" width="300px" @close="handleClose">
-      <template #header> 登录 </template>
+      <template #header>
+        登录
+      </template>
       <div>
         <div>请输入业务知识库账号密码</div>
         <el-input
@@ -426,7 +439,9 @@ onMounted(() => {
             登录
           </el-button>
           <Tooltip placement="bottom">
-            <p class="tips">没有业务知识库账号?</p>
+            <p class="tips">
+              没有业务知识库账号?
+            </p>
             <template #content>
               <P>业务知识库即Confluence</P>
               <P>注册账号请联系Jovian邓俊威</P>
@@ -691,5 +706,28 @@ onMounted(() => {
       }
     }
   }
+}
+
+.yh-button3 {
+    transition: all cubic-bezier(0.39, 0.575, 0.565, 1);
+    cursor: pointer;
+    height: 26px;
+    background: #EEF5FF;
+    border-radius: 4px 4px 4px 4px;
+    padding-left: 6px;
+    padding-right: 8px;
+
+    font-size: 14px;
+    color: #1F497B;
+    line-height: 12px;
+
+    line-height: 22px;
+    text-align: left;
+
+    // &:hover {
+    //     background: #F6F9FF;
+    //     color: #4C9AFF;
+    //     border: 1px solid #4C9AFF;
+    // }
 }
 </style>

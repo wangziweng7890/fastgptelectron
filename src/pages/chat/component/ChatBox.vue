@@ -4,8 +4,8 @@ import { Base64 } from 'js-base64'
 import { ElMessage, ElScrollbar } from 'element-plus'
 import dayjs from 'dayjs'
 import { adaptChat2GptMessages, md } from '../utils'
-import newChatIcon from '../img/new-button.png'
-import historyIcon from '../img/history-button.png'
+// import newChatIcon from '../img/new-button.png'
+// import historyIcon from '../img/history-button.png'
 import sendIcon from '../img/send.png'
 import notSendIcon from '../img/send-disabled.png'
 import copyIcon from '../img/copy.png'
@@ -21,7 +21,6 @@ import caiSelectIcon from '../img/cai-select.png'
 import waitIcon from '../img/wait.png'
 import waitHoverIcon from '../img/wait-hover.png'
 import searchIcon from '../img/search.png'
-
 import { appId } from '../config'
 import tip1 from '../img/tip1.png'
 import tip2 from '../img/tip2.png'
@@ -29,6 +28,8 @@ import tip3 from '../img/tip3.png'
 import tip4 from '../img/tip4.png'
 import Avatar from './Avatar.vue'
 import HistoryDialog from './HistoryDialog/index.vue'
+import historyIcon from '@/assets/logo/history.svg?component'
+import newChatIcon from '@/assets/logo/new.svg?component'
 import { copy } from '~/utils'
 import router from '~/router'
 import { useDialog } from '@/hooks/dialog'
@@ -182,7 +183,7 @@ function scrollToBottom(flag = 0) {
 
 const chatController = ref(new AbortController())
 async function onSend(flag?) {
-  const val = messageContent.value
+  let val = messageContent.value
   if (flag !== 'reload' && (val.trim() === '' || isWaitting.value || isChatting.value))
     return
 
@@ -193,6 +194,7 @@ async function onSend(flag?) {
     ...chatHistory.value,
   ]
   if (flag === 'reload') {
+    val = newChatList[newChatList.length - 2].value
     newChatList[newChatList.length - 1].status = 'loading'
     newChatList[newChatList.length - 1].value = ''
   }
@@ -788,22 +790,26 @@ const visible = ref({})
         <YhButton
           class="mr-10px"
           type="a"
-          :src="newChatIcon"
           @click="newChat"
         >
-          新起会话
+          <el-icon size="14" class="mr-2px v-middle">
+            <newChatIcon />
+          </el-icon><span class="v-middle">新起会话</span>
         </YhButton>
-        <YhButton type="b" :src="historyIcon" @click="openHistory">
-          历史会话
+        <YhButton type="b" @click="openHistory">
+          <el-icon size="14" class="mr-2px v-middle">
+            <historyIcon />
+          </el-icon><span class="v-middle">历史会话</span>
         </YhButton>
-        <YhButton
-          class="ml-auto"
-          type="c"
-          :src="searchIcon"
+        <div
+          class="ml-auto yh-button2"
           @click="jumpToSousou"
         >
-          藏经阁
-        </YhButton>
+          <img
+            class="inline-block w-16px h-16px mr-2px"
+            :src="searchIcon"
+          ><span class="v-middle">藏经阁</span>
+        </div>
       </div>
       <div class="relative input-box">
         <el-input
@@ -1159,6 +1165,30 @@ const visible = ref({})
         line-height: 10px;
         margin-bottom: 16px;
         text-align: center;
+    }
+}
+
+.yh-button2 {
+    transition: all cubic-bezier(0.39, 0.575, 0.565, 1);
+    cursor: pointer;
+    height: 26px;
+    background: #F6F9FF;
+    border-radius: 4px 4px 4px 4px;
+    border: 1px solid #D7D7D7;
+    padding-left: 6px;
+    padding-right: 8px;
+
+    font-size: 14px;
+    color: #666;
+    line-height: 12px;
+
+    line-height: 22px;
+    text-align: left;
+
+    &:hover {
+        background: #F6F9FF;
+        color: #4C9AFF;
+        border: 1px solid #4C9AFF;
     }
 }
 </style>
