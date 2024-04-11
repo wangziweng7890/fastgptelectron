@@ -19,6 +19,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   changeChatId: [chatId: string]
+  newChat: []
 }>()
 
 const visible = defineModel<boolean>({
@@ -112,6 +113,10 @@ async function deleteChatList(item: ChatItem) {
       })
       historyListRes.value = historyListRes.value.filter(temp => temp.chatId !== item.chatId)
       deleteMsg()
+      if (item.chatId === props.chatId) {
+        visible.value = false
+        emit('newChat')
+      }
     },
   })
 }
