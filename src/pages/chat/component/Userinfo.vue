@@ -122,7 +122,7 @@ const process = computed(() => {
 <style lang="scss" scoped>
 .label {
     height: 12px;
-    width: 36px;
+    width: 38px;
     font-size: 12px;
     color: #6f7b8b;
     line-height: 12px;

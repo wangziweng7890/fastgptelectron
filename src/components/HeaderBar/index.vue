@@ -76,18 +76,18 @@ const submenu = [
 
 <template>
   <div class="HeadBar">
-    <div class="w-230px pl-16px no-region">
+    <div class="w-190px pl-16px no-region">
       <slot />
     </div>
     <div class="title">
       {{ userSettingStore.app.title }}
     </div>
-    <div class="btns w-230px v-middle">
+    <div class="btns w-190px v-middle">
       <el-space :size="0">
         <el-dropdown size="small">
           <span class="menu-item-text el-dropdown-link">
             <el-icon class="mr-14px" size="16">
-              <Setting />
+              <img class="png-icon" src="~@/assets/images/set.png" alt="">
             </el-icon>
           </span>
           <template #dropdown>
@@ -113,10 +113,10 @@ const submenu = [
           <FullScreen />
         </el-icon>
         <el-icon v-else>
-          <Aim @click="onFullScreen" />
+          <img class="png-icon" src="~@/assets/images/zedie.png" alt="" @click="onFullScreen">
         </el-icon>
         <el-icon @click="onClose">
-          <Close />
+          <img class="png-icon" src="~@/assets/images/x.png" alt="">
         </el-icon>
       </el-space>
     </div>
@@ -128,7 +128,7 @@ const submenu = [
   width: 100%;
   position: fixed;
   top: 0;
-  height: 56px;
+  height: 54px;
   background-color: #fff;
   display: flex;
   justify-content: space-between;

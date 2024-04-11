@@ -39,7 +39,7 @@ import.meta.env.VITE_APP_ENV !== 'dev' && setInterval(async () => {
   min-height: 48px;
 }
 .container-all {
-  padding-top: 58px;
+  padding-top: 54px;
   height: 100vh;
 }
 html {

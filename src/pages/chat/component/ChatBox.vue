@@ -226,6 +226,13 @@ async function onSend(flag?) {
       reserveId: true,
     })
 
+    let temp = ''
+    GetFrontChatCompletionsGuess({
+      message: val,
+    }).then((data) => {
+      temp = data
+    })
+
     await props.onStartChat({
       chatList: newChatList.map(item => ({
         dataId: item.dataId,
@@ -250,13 +257,10 @@ async function onSend(flag?) {
         }
       }),
     )
-    GetFrontChatCompletionsGuess({
-      message: val,
-    }).then((data) => {
-      guessList.value = data?.split(',').filter(i => !!i) || []
-      nextTick(() => {
-        scrollToBottom()
-      })
+
+    guessList.value = temp?.split(',').filter(i => !!i) || []
+    nextTick(() => {
+      scrollToBottom()
     })
   }
   catch (err) {
@@ -456,7 +460,7 @@ function fastSend(row) {
 
 function stopChat() {
   handStop.value = true
-  chatController?.abort('stop')
+  chatController?.value.abort('stop')
 }
 
 function reSend() {
@@ -473,7 +477,7 @@ const visible = ref({})
 </script>
 
 <template>
-  <div class="chat-container flex flex-col overflow-hidden h-100% pt-12px">
+  <div class="chat-container flex flex-col overflow-hidden h-100% pt-6px">
     <ElScrollbar ref="scrollbarRef" style="flex: 1" class="overflow-hidden">
       <section
         id="ChatBoxRef"
@@ -482,7 +486,7 @@ const visible = ref({})
       >
         <div class="flex  max-w-80%">
           <Avatar class="w-28px h-28px mt-10px mr-8px" />
-          <div class="chat-box chat-bot mt-10px p-12px">
+          <div class="chat-box chat-bot mt-10px p-12px w-436px">
             <div class="title">
               {{ introduceObj.title }}
             </div>
@@ -1068,14 +1072,8 @@ const visible = ref({})
         // }
 
         .pending {
-            background: #ffffff;
-            border: 1px solid;
-            border-image: linear-gradient(
-                    92deg,
-                    rgba(191, 128, 255, 1),
-                    rgba(131, 226, 255, 1)
-                )
-                1 1;
+            background: #4c9aff;
+            border: 1px solid #4c9aff;
         }
 
         .text {
@@ -1137,18 +1135,10 @@ const visible = ref({})
         // }
 
         &.pending {
-            border: 1px solid transparent !important;
-            background: #fff;
-            background-image: linear-gradient(white, white),
-            linear-gradient(
-              to right,
-              rgba(131, 226, 255, 1),
-              rgba(191, 128, 255, 1)
-            );
-            background-origin: border-box; /* 渐变背景仅在边框区域 */
-            background-clip: padding-box, border-box; /* 上层背景裁剪        到内容区，下层背景裁剪到边框区 */
+            background: #4c9aff;
+            height: 32px;
+            border: 1px solid #4c9aff;
         }
-
         .text {
             font-size: 14px;
             color: #222222;
