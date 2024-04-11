@@ -43,7 +43,8 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   console.log('whenReady')
-
+  // ipc通信
+  mainOnRender()
   if (!mainWindow) {
     createWindow()
   }
@@ -66,8 +67,6 @@ app.whenReady().then(() => {
       mainWindow.hide()
     }
   })
-  // ipc通信
-  mainOnRender()
 })
 
 const gotTheLock = app.requestSingleInstanceLock()
