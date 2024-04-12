@@ -22,7 +22,7 @@
     border-radius: 8px;
     overflow: hidden;
     height: fit-content;
-    padding: 0;
+    padding: 0!important;
 
     .el-dialog__title {
         color: #222;
