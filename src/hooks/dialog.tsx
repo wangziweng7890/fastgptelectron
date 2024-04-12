@@ -1,6 +1,4 @@
-const Dialog = defineAsyncComponent(
-  () => import('@/components/Dialog/Dialog.vue'),
-)
+import Dialog from '@/components/Dialog/Dialog.vue'
 
 export interface ConfirmDialogProps {
   title: string
