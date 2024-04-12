@@ -83,15 +83,17 @@ async function zanChat(dataId, isCancel) {
   !isCancel && likeMsg()
 }
 
-function copyChat(content, dataId, type) {
+async function copyChat(content, dataId, type) {
   const res = copy(content.replace(/<[^>]+>|&[^>]+;/g, '').trim())
   res && copyMsg()
 
-  type === 'AI'
-        && PostFrontChatstepStep({
-          type: 3,
-          chatDetailId: dataId,
-        })
+  if (type === 'AI') {
+    await PostFrontChatstepStep({
+      type: 3,
+      chatDetailId: dataId,
+    })
+  }
+
   updatePoint(dataId)
 }
 const { deleteDialog } = useDialog()
@@ -189,7 +191,6 @@ async function onSend(flag?) {
     val = newChatList[newChatList.length - 2].value
     newChatList[newChatList.length - 1].status = 'loading'
     newChatList[newChatList.length - 1].statusTemp = 0
-    newChatList[newChatList.length - 1].stepType = 0
     newChatList[newChatList.length - 1].value = ''
   }
   else {
@@ -242,7 +243,9 @@ async function onSend(flag?) {
       generatingMessage,
       variables: {},
     })
-    updatePoint(dataId)
+    setTimeout(() => {
+      updatePoint(dataId)
+    }, 1000)
     setChatHistory(
       chatHistory.value.map((item, index) => {
         if (index !== chatHistory.value.length - 1)

@@ -1,42 +1,42 @@
 <script setup lang="ts">
-import { debounce } from "lodash-es";
-import { Close } from "@element-plus/icons-vue";
+import { debounce } from 'lodash-es'
+import { Close } from '@element-plus/icons-vue'
 
 import {
+  DeleteFrontConfluenceRemoveUserSearchHistory,
   GetFrontConfluenceGetUserSearchHistory,
   PostFrontConfluenceSaveUserSearchHistory,
-  DeleteFrontConfluenceRemoveUserSearchHistory,
-} from "@/services/apifox/zhiNengKeFu/cONFLUENCEZhangHaoGuanLi/apifox";
-
-const emit = defineEmits(["input", "select"]);
+} from '@/services/apifox/zhiNengKeFu/cONFLUENCEZhangHaoGuanLi/apifox'
 
 const props = defineProps({
   value: {
     type: String,
-    default: "",
+    default: '',
   },
   size: {
     type: String,
-    default: "medium",
-  }
-});
+    default: 'medium',
+  },
+})
 
-const keyword = ref(""); // 搜索关键字
+const emit = defineEmits(['input', 'select'])
+
+const keyword = ref('') // 搜索关键字
 const showHistory = ref(false) // isFocus && !keyword
 
 // 历史记录列表，字符串数组
-const historyList = ref<string[]>([]);
+const historyList = ref<string[]>([])
 
 const loadHistory = async () => {
-  const res = await GetFrontConfluenceGetUserSearchHistory();
-  historyList.value = (res || []).filter(t => !!t).reverse().slice(0, 10);
-};
+  const res = await GetFrontConfluenceGetUserSearchHistory()
+  historyList.value = (res || []).filter(t => !!t).slice(0, 10)
+}
 
 // 保存搜索记录
 const handleSave = async (val) => {
-    await PostFrontConfluenceSaveUserSearchHistory({
-        searchKey: val
-    })
+  await PostFrontConfluenceSaveUserSearchHistory({
+    searchKey: val,
+  })
 }
 
 // 删除历史记录
@@ -46,15 +46,16 @@ const handleDelete = async (item: string, index: number) => {
       searchKey: item,
     })
     historyList.value.splice(index, 1)
-  } catch (error) {
-    console.log("删除失败");
   }
-};
+  catch (error) {
+    console.log('删除失败')
+  }
+}
 
 // 输入框，聚焦事件
 const handleFocus = () => {
   showHistory.value = !!historyList.value.length && !keyword.value
-};
+}
 
 // 输入框，失焦事件
 const handleBlur = () => {
@@ -66,12 +67,13 @@ const handleKeydown = debounce(async () => {
   // 兼容空数据
   if (keyword.value) {
     // await handleSave(keyword.value)
-  } else {
+  }
+  else {
     showHistory.value = !!historyList.value.length
   }
   await loadHistory()
-  emit("input", keyword.value)
-}, 200);
+  emit('input', keyword.value)
+}, 200)
 
 // 点击历史记录
 const handleTarget = async (val) => {
@@ -81,23 +83,23 @@ const handleTarget = async (val) => {
   if (val) {
     await handleSave(val)
   }
-  emit("select", val)
-};
+  emit('select', val)
+}
 
 onMounted(async () => {
-  props.value && (keyword.value = props.value);
-  await loadHistory();
-});
+  props.value && (keyword.value = props.value)
+  await loadHistory()
+})
 
 // 可以通过ref获取的属性
 defineExpose({
   handleTarget,
-  handleBlur
+  handleBlur,
 })
 </script>
 
 <template>
-  <div :class="['suggestions-input', 'relative', size]">
+  <div class="suggestions-input relative" :class="[size]">
     <el-input
       v-model="keyword"
       size="large"
@@ -112,7 +114,7 @@ defineExpose({
           src="~@/assets/images/search-icon.png"
           alt=""
           class="search-icon"
-        />
+        >
       </template>
     </el-input>
     <div v-if="showHistory" class="history-list">
@@ -124,12 +126,15 @@ defineExpose({
         @click="handleTarget(item)"
       >
         <div class="flex items-center">
-          <img src="~@/assets/images/timer.png" alt="" class="item-icon" />
+          <img src="~@/assets/images/timer.png" alt="" class="item-icon">
           <span class="item-label">{{ item }}</span>
         </div>
-        <el-icon class="item-del" @click.stop="handleDelete(item, index)"
-          ><Close
-        /></el-icon>
+        <el-icon
+          class="item-del"
+          @click.stop="handleDelete(item, index)"
+        >
+          <Close />
+        </el-icon>
       </div>
     </div>
   </div>
