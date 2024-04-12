@@ -123,13 +123,13 @@ async function deleteChatList(item: ChatItem) {
 </script>
 
 <template>
-  <Dialog v-model="visible" :destroy-on-close="true" :width="492" modal-class="history-dialog" @open="fetchList" @closed="closedDialog">
+  <Dialog v-model="visible" :destroy-on-close="true" :width="460" modal-class="history-dialog" @open="fetchList" @closed="closedDialog">
     <template #header>
       历史会话
     </template>
     <el-empty v-if="!historyList.length" :image-size="200" />
 
-    <div v-else v-infinite-scroll="fetchList" :infinite-scroll-distance="20" :infinite-scroll-disabled="disabledMore" class="msg-container mb-16px pr-20px">
+    <div v-else v-infinite-scroll="fetchList" :infinite-scroll-distance="20" :infinite-scroll-disabled="disabledMore" class="msg-container  pr-20px">
       <el-timeline class="history-timeline">
         <el-timeline-item
           v-for="historyItem in historyList"
@@ -172,7 +172,7 @@ async function deleteChatList(item: ChatItem) {
         </el-timeline-item>
       </el-timeline>
 
-      <div class="load-more-item">
+      <div class="load-more-item pb-16px">
         <span v-if="!disabledMore">
           加载中
           <el-icon class="is-loading">
@@ -188,19 +188,37 @@ async function deleteChatList(item: ChatItem) {
 <style lang="scss">
 .history-dialog .el-dialog__body {
   padding-right: 0;
+  padding-left: 20px - 3px;
+  padding-top: 6px;
+  padding-bottom: 0;
 }
 .history-timeline{
   .el-timeline-item__node--normal{
     left: 0;
+    top: 4px;
     border-color: rgba(76, 154, 255);
     background-color: rgba(76, 154, 255);
+    width: 7px;
+    height: 7px;
   }
   .el-timeline-item__tail{
-    left: 5px;
+    left: 3px;
+    top: 4px;
     border-color: rgba(76, 154, 255, 0.4);
+    border-left-width: 1px;
+  }
+  .el-timeline-item__wrapper{
+    top: 0;
+    padding-left: 14px;
   }
   .el-timeline-item__timestamp{
     color: #666;
+    line-height: 16px;
+    padding-top: 0;
+    font-weight: normal;
+  }
+  .el-timeline-item{
+    padding-bottom: 17px;
   }
 }
 </style>
@@ -209,19 +227,20 @@ async function deleteChatList(item: ChatItem) {
 .chat-timeline-content {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-row-gap: 20px;
-  grid-column-gap: 20px;
+  grid-row-gap: 8px;
+  grid-column-gap: 8px;
 }
 
 .chat-item {
   background-color: #f5f6f7;
-  border-radius: 4px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   overflow: hidden;
+  border: 1px solid #f5f6f7;
   &.active-item{
-    background-color: #e4f0ff;
+    background-color: #EFF7FE;
   }
 }
 
@@ -233,8 +252,18 @@ async function deleteChatList(item: ChatItem) {
   height: 20px;
   font-size: 10px;
   color: #222;
-  border-bottom: 1px dotted #4C9AFF;
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  &::after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: -1px;
+    border-bottom: 1px dotted #4C9AFF;
+    transform: scaleY(0.5);
+  }
 }
 
 .active-icon {
@@ -250,8 +279,7 @@ async function deleteChatList(item: ChatItem) {
   flex-direction: column;
   overflow: hidden;
   align-items: flex-end;
-
-  padding: 0 10px;
+  padding: 8px 8px 0 8px;
   position: relative;
   flex-grow: 2;
 
@@ -269,41 +297,44 @@ async function deleteChatList(item: ChatItem) {
 }
 
 .item-msg {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  max-width: 95%;
-  font-size: 14px;
-  line-height: 21px;
-  padding: 8px;
   overflow: hidden;
-
 }
 
 .item-value {
   background: #52a5f2;
   color: #fff;
-  border-radius: 6px 6px 6px 6px;
+  border-radius: 8px 0 8px 8px;
   flex-shrink: 0;
+  margin-bottom: 14px;
+  line-height: 20px;
+  padding: 4px 8px;
+  font-size: 12px;
+  max-width: 160px;
+
 }
 
 .avator {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: 4px;
 }
 
 .item-askValue {
   align-self: flex-start;
   display: flex;
   >.msg-content {
+    border-radius:  0 8px 8px 8px;
     background-color: #fff;
-    padding: 8px;
+    line-height: 20px;
+    padding: 4px 8px;
+    font-size: 12px;
+    max-width: 160px;
   }
 }
 .msg-container{
   overflow: auto;
-  max-height: 467px;
+  max-height: 568px;
 }
 .load-more-item{
   height: 20px;

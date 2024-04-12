@@ -31,15 +31,13 @@
         font-weight: 500;
         margin-right: 0;
         font-weight: 500;
-        font-size: 14px;
-        line-height: 40px;
+        font-size: 16px;
+        line-height: 45px;
         padding: 0 20px;
         text-align: center;
         border-bottom: 1px solid #F6F6F6;
-        background: linear-gradient(90.64deg, rgba(117, 200, 255, 0.2) 0.86%, rgba(67, 150, 255, 0.2) 98.93%),
-linear-gradient(184.08deg, rgba(255, 255, 255, 0) 3.39%, #FFFFFF 68.06%);
+        background: linear-gradient(90deg, rgba(117, 200, 255, 0.8) 0%, rgba(67, 150, 255, 0.2) 100%), linear-gradient(184deg, rgba(255,255,255,0) 0%, #FFFFFF 69%);
 
-        // background-image: linear-gradient(to right, #DEF9FF 0%, #FFFFFF 50%, #FDF0FF 100%), linear-gradient(to bottom, rgba(255,255,255,0), #ffffff);
         background-blend-mode: screen;
 
         .el-dialog__headerbtn {
