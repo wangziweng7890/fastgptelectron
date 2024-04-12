@@ -6,18 +6,13 @@ import dayjs from 'dayjs'
 import { adaptChat2GptMessages, md } from '../utils'
 // import newChatIcon from '../img/new-button.png'
 // import historyIcon from '../img/history-button.png'
+import geIcon from '../img/ge.svg?component'
+import zanIcon from '../img/zan.svg?component'
+import caiIcon from '../img/cai.svg?component'
+import copyIcon from '../img/copy.svg?component'
+import deleteIcon from '../img/delete.svg?component'
 import sendIcon from '../img/send.png'
 import notSendIcon from '../img/send-disabled.png'
-import copyIcon from '../img/copy.png'
-import copyActiveIcon from '../img/copy-active.png'
-import deleteIcon from '../img/delete.png'
-import deleteActiveIcon from '../img/delete-active.png'
-import zanIcon from '../img/zan.png'
-import zanActiveIcon from '../img/zan-active.png'
-import zanSelectIcon from '../img/zan-Select.png'
-import caiIcon from '../img/cai.png'
-import caiActiveIcon from '../img/cai-active.png'
-import caiSelectIcon from '../img/cai-select.png'
 import waitIcon from '../img/wait.png'
 import waitHoverIcon from '../img/wait-hover.png'
 import searchIcon from '../img/search.png'
@@ -124,10 +119,6 @@ function updatePoint(dataId) {
   })
 }
 
-const showCopyActive = ref(false)
-const showDeleteActive = ref(false)
-const showZanActive = ref(false)
-const showCaiActive = ref(false)
 const showWaitActive = ref(false)
 
 // 转义对话内容
@@ -197,6 +188,8 @@ async function onSend(flag?) {
   if (flag === 'reload') {
     val = newChatList[newChatList.length - 2].value
     newChatList[newChatList.length - 1].status = 'loading'
+    newChatList[newChatList.length - 1].statusTemp = 0
+    newChatList[newChatList.length - 1].stepType = 0
     newChatList[newChatList.length - 1].value = ''
   }
   else {
@@ -296,6 +289,7 @@ async function getChatList() {
         ...item,
         dataId: item.id,
         obj: item.role === 'user' ? 'Human' : 'AI',
+        statusTemp: item.status,
         status: 'finish',
       }
     }),
@@ -350,7 +344,7 @@ function generatingMessage({ text = '', status, name }) {
 function newChat() {
   chatController.value?.abort('leave')
   chatHistory.value = []
-  //   isWaitting.value = false
+  isWaitting.value = false
   router.replace({
     path: '/chat',
   })
@@ -416,6 +410,7 @@ function changeChatId(chatId) {
   //   chatHistory.value = []
   guessList.value = []
   handStop.value = false
+  isWaitting.value = false
   router.replace({
     path: '/chat',
     query: { chatId },
@@ -465,7 +460,7 @@ function stopChat() {
   handStop.value = true
   chatController?.value.abort('stop')
   const list = chatHistory.value
-  list.at(-1).statusTemp = 2
+  list.at(-1).statusTemp = 3
   GetFrontChatCompletionsStop({
     id: list.at(-1).dataId,
   })
@@ -485,7 +480,7 @@ const visible = ref({})
 </script>
 
 <template>
-  <div class="chat-container flex flex-col overflow-hidden h-100% pt-6px pb-24px">
+  <div class="chat-container flex flex-col overflow-hidden h-100% pt-6px">
     <ElScrollbar ref="scrollbarRef" style="flex: 1" class="overflow-hidden">
       <section
         id="ChatBoxRef"
@@ -499,7 +494,7 @@ const visible = ref({})
               {{ introduceObj.title }}
             </div>
             <div v-if="introduceObj.info" class="desc">
-              {{ introduceObj.info }}>
+              {{ introduceObj.info }}
             </div>
             <div v-if="introduceObj.tips.length" class="tips">
               <p class="mb-8px">
@@ -546,11 +541,10 @@ const visible = ref({})
                     @mouseout="showWaitActive = false"
                     @click="reSend"
                   >
-                    <img
-                      :src="showWaitActive ? waitHoverIcon : waitIcon"
-                      class="w-14px h-14px mr-4px"
-                    >
-                    重新生成
+                    <el-icon size="12" class="mr-4px v-middle">
+                      <geIcon />
+                    </el-icon>
+                    <span>重新生成</span>
                   </div>
                 </div>
                 <div
@@ -559,7 +553,7 @@ const visible = ref({})
                       && !isWaitting
                       && index === chatHistory.length - 1
                   "
-                  class="fixed left-17px bottom-166px cursor-pointer"
+                  class="fixed left-17px bottom-166px cursor-pointer z-9999"
                 >
                   <div
                     class="more-item text-size-10px"
@@ -621,20 +615,14 @@ const visible = ref({})
                           )
                         "
                       />
-                      <div v-show="index === chatHistory.length - 1 && (item.statusTemp || item.status === 2)" class="text-size-10px color-#999">
+                      <div v-show="(item.statusTemp === 3)" class="text-size-10px color-#999">
                         对话已停止
                       </div>
                       <div v-if="item.obj !== 'Human'" class="flex mt-10px">
                         <div class="flex">
-                          <img
-                            :src="
-                              !showCopyActive
-                                ? copyIcon
-                                : copyActiveIcon
-                            "
+                          <el-icon
+                            size="20px"
                             class="opr-icon"
-                            @mouseover="showCopyActive = true"
-                            @mouseout="showCopyActive = false"
                             @click="
                               copyChat(
                                 item.value,
@@ -643,34 +631,27 @@ const visible = ref({})
                               )
                             "
                           >
-                          <img
-                            :src="
-                              !showDeleteActive
-                                ? deleteIcon
-                                : deleteActiveIcon
-                            "
+                            <copyIcon />
+                          </el-icon>
+                          <el-icon
+                            size="20px"
                             class="opr-icon ml-2px"
-                            @mouseover="showDeleteActive = true"
-                            @mouseout="showDeleteActive = false"
                             @click="deleteChat(item.dataId, index === chatHistory.length - 1)"
                           >
+                            <deleteIcon />
+                          </el-icon>
                         </div>
                         <div class="flex ml-auto">
-                          <img
+                          <el-icon
                             v-if="
                               item.obj !== 'Human'
                                 && item.stepType !== 2
                             "
-                            :src="
-                              showZanActive
-                                ? zanActiveIcon
-                                : item.stepType === 1
-                                  ? zanSelectIcon
-                                  : zanIcon
-                            "
+                            size="20px"
                             class="opr-icon"
-                            @mouseover="showZanActive = true"
-                            @mouseout="showZanActive = false"
+                            :class="item.stepType === 1
+                              ? 'color-#4C9AFF!'
+                              : ''"
                             @click="
                               zanChat(
                                 item.dataId,
@@ -678,6 +659,8 @@ const visible = ref({})
                               )
                             "
                           >
+                            <zanIcon />
+                          </el-icon>
                           <el-tooltip :visible="visible[item.dataId]" effect="light" trigger="click" :show-arrow="false" popper-class="self-tips" :disabled="item.stepType !== 2">
                             <template #content>
                               <div class="x" @click="caiConfirm(1, item.dataId)">
@@ -719,21 +702,16 @@ const visible = ref({})
                                 </div>
                               </div>
                             </template>
-                            <img
+                            <el-icon
                               v-if="
                                 item.obj !== 'Human'
                                   && item.stepType !== 1
                               "
-                              :src="
-                                showCaiActive
-                                  ? caiActiveIcon
-                                  : item.stepType === 2
-                                    ? caiSelectIcon
-                                    : caiIcon
-                              "
+                              size="20px"
+                              :class="item.stepType === 2
+                                ? 'color-#4C9AFF!'
+                                : ''"
                               class="opr-icon ml-2px"
-                              @mouseover="showCaiActive = true"
-                              @mouseout="showCaiActive = false"
                               @click="
                                 caiChat(
                                   item.dataId,
@@ -741,6 +719,8 @@ const visible = ref({})
                                 )
                               "
                             >
+                              <caiIcon />
+                            </el-icon>
                           </el-tooltip>
                         </div>
                       </div>
@@ -748,15 +728,9 @@ const visible = ref({})
                   </div>
                   <template v-if="!isChatting && !isWaitting && item.obj === 'Human'" #content>
                     <div class="space-x-6px flex">
-                      <img
-                        :src="
-                          !showCopyActive
-                            ? copyIcon
-                            : copyActiveIcon
-                        "
+                      <el-icon
+                        size="20px"
                         class="opr-icon"
-                        @mouseover="showCopyActive = true"
-                        @mouseout="showCopyActive = false"
                         @click="
                           copyChat(
                             item.value,
@@ -765,17 +739,15 @@ const visible = ref({})
                           )
                         "
                       >
-                      <img
-                        :src="
-                          !showDeleteActive
-                            ? deleteIcon
-                            : deleteActiveIcon
-                        "
+                        <copyIcon />
+                      </el-icon>
+                      <el-icon
+                        size="20px"
                         class="opr-icon"
-                        @mouseover="showDeleteActive = true"
-                        @mouseout="showDeleteActive = false"
                         @click="deleteChat(item.dataId)"
                       >
+                        <deleteIcon />
+                      </el-icon>
                     </div>
                   </template>
                 </el-tooltip>
@@ -970,12 +942,12 @@ const visible = ref({})
     align-items: center;
     background: #F6F6F6;
     border-radius: 4px 4px 4px 4px;
-    border: 1px solid #677587;
+    border: 1px solid #999;
     height: 22px;
     line-height: 22px;
     padding: 0 6px;
     font-size: 12px;
-    color: #677587;
+    color: #999;
     width: fit-content;
 
     &:hover {
@@ -1020,9 +992,13 @@ const visible = ref({})
     }
 }
 .opr-icon {
+    color: #ccc;
     width: 20px;
     height: 20px;
     cursor: pointer;
+    &:hover {
+        color: #4C9AFF
+    }
 }
 .chat-container {
     .tip-icon {

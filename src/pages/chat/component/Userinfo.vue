@@ -73,7 +73,7 @@ const process = computed(() => {
       <div class="releative">
         <section class="flex items-center mb-14px">
           <div class="avator w-48px h-48px p-1px bg-white absolute left-11px top--11px">
-            <Avatar class="w-46px h-46px" />
+            <Avatar class="w-48px h-48px" />
           </div>
           <div class="user-name mr-4px ml-46px">
             {{ props.chatName }}
@@ -88,13 +88,13 @@ const process = computed(() => {
           </div>
         </section>
         <section class="flex w-100% mb-14px items-center">
-          <div class="label mr-10px">
+          <div class="label mr-10px color-#6f7b8b">
             亲密度
           </div>
           <Progress class="flex-1" :percentage="process" />
         </section>
         <section class="flex w-100%">
-          <div class="label mr-10px">
+          <div class="label mr-10px color-#6f7b8b">
             心情
           </div>
           <p class="flex-1 text">

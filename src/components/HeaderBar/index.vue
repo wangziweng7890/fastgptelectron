@@ -28,6 +28,13 @@ const onFullScreen = () => {
   window.electronAPI.setIsFullScreen(userSettingStore.isFullScreen)
 }
 
+// const titleBarElement = ref(null)
+// onMounted(() => {
+//   titleBarElement.value.addEventListener('dblclick', () => {
+
+//   })
+// })
+
 const submenu = [
   {
     click: () => {
@@ -75,7 +82,7 @@ const submenu = [
 </script>
 
 <template>
-  <div class="HeadBar">
+  <div ref="titleBarElement" class="HeadBar">
     <div class="w-190px pl-16px no-region">
       <slot />
     </div>

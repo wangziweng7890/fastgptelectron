@@ -1,4 +1,4 @@
-import { BrowserWindow, app, ipcMain } from 'electron'
+import { BrowserWindow, app, ipcMain, screen } from 'electron'
 import { handleFileOpen, handleSetTitle, onOpenURL } from './help'
 import { checkUpdate } from './appVersion'
 export const mainOnRender = () => {
@@ -32,10 +32,27 @@ export const mainOnRender = () => {
     win?.setAlwaysOnTop(flag)
     return win?.isAlwaysOnTop()
   })
+
+  let previousBounds
+
   // 大小窗口
   ipcMain.handle('setIsFullScreen', (event, flag: boolean) => {
     const win = BrowserWindow.getFocusedWindow()
-    win?.setSimpleFullScreen(flag)
+    if (!flag) {
+      console.log('leave')
+      win.setBounds(previousBounds)
+    }
+    else {
+      console.log('full')
+      previousBounds = win.getBounds()
+      const { width, height } = screen.getPrimaryDisplay().workAreaSize
+      win.setBounds({
+        x: 0,
+        y: 0,
+        width,
+        height,
+      })
+    }
   })
   ipcMain.handle('getIsFullScreen', () => {
     const win = BrowserWindow.getFocusedWindow()

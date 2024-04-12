@@ -323,8 +323,9 @@ input:-webkit-autofill:active {
 
 .custom-ui-message-box{
   border-color: #4C9AFF;
-  border-width: 2px;
+  border-width: 1px;
   background-color: #fff;
+  border-radius: 6px;
   .el-message__content{
     color: #222;
     font-weight: 400;
