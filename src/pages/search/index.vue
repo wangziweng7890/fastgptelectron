@@ -398,12 +398,12 @@ onMounted(() => {
           v-for="(item, index) in hotSearchList"
           :key="index"
           :class="
-            'hot-search-item flex items-center cursor-pointer'
+            'hot-search-item flex cursor-pointer'
               + ` hot-${index + 1}`
           "
           @click="handleHotItem(item)"
         >
-          <img :src="hotIconMap[index + 1]" alt="">
+          <img :src="hotIconMap[index + 1]" class="w-20px h-20px" alt="">
           <span class="ml-8px">{{ item.label }}</span>
         </div>
       </div>

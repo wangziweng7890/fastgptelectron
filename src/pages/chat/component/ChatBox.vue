@@ -277,6 +277,9 @@ async function onSend(flag?) {
       }),
     )
   }
+  finally {
+    isWaitting.value = false
+  }
 }
 
 async function getChatList() {
@@ -553,7 +556,7 @@ const visible = ref({})
                       && !isWaitting
                       && index === chatHistory.length - 1
                   "
-                  class="fixed left-17px bottom-166px cursor-pointer z-9999"
+                  class="fixed left-17px bottom-144px cursor-pointer z-9999"
                 >
                   <div
                     class="more-item text-size-10px"
@@ -1060,7 +1063,6 @@ const visible = ref({})
         // }
 
         .pending {
-            background: #4c9aff;
             border: 1px solid #4c9aff;
         }
 
@@ -1123,7 +1125,6 @@ const visible = ref({})
         // }
 
         &.pending {
-            background: #4c9aff;
             height: 32px;
             border: 1px solid #4c9aff;
 

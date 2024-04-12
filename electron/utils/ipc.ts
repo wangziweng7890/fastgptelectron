@@ -56,7 +56,8 @@ export const mainOnRender = () => {
   })
   ipcMain.handle('getIsFullScreen', () => {
     const win = BrowserWindow.getFocusedWindow()
-    return win?.isFullScreen()
+    const { width, height } = screen.getPrimaryDisplay().workAreaSize
+    return win?.getBounds().width === width && win?.getBounds().height === height
   })
 
   ipcMain.handle('ping', () => 'pong2222')
