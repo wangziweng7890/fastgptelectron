@@ -354,7 +354,7 @@ onMounted(() => {
           @click="handleItem(item)"
         >
           <div class="item-title" v-html="item.title" />
-          <div class="item-content" v-html="item.content" />
+          <div v-if="item.content" class="item-content" v-html="item.content" />
           <div class="item-from">
             摘自：
             <span>{{ item.from }}</span>
@@ -521,10 +521,9 @@ onMounted(() => {
 .gray-input :deep {
   .el-input__wrapper {
     height: 46px;
-    background: #fff;
+    background: #f7f7f7;
     border-radius: 10px;
     box-shadow: none;
-    border: 1px solid #4c9aff;
   }
 }
 
@@ -571,7 +570,7 @@ onMounted(() => {
 }
 
 .result-item :deep em {
-  color: #00c4ff;
+  color: #4C9AFF;
   font-style: normal;
 }
 
@@ -587,11 +586,12 @@ onMounted(() => {
 }
 
 .item-title {
+    font-weight: 500;
   color: #333;
 }
 
 .item-content {
-  margin-top: 12px;
+  margin-top: 14px;
   color: #666;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -604,8 +604,9 @@ onMounted(() => {
 }
 
 .item-from {
-  margin-top: 12px;
-  color: #999;
+  margin-top: 10px;
+  color: #909090;
+  font-weight: 400;
 }
 
 .pagination-container {
@@ -615,7 +616,7 @@ onMounted(() => {
 }
 
 .login-btn {
-  background: #87dfff;
+  background: #4c9aff;
   border-radius: 6px;
   border: none;
   width: 93px;
@@ -623,7 +624,7 @@ onMounted(() => {
 
   &.is-disabled,
   &.is-disabled:hover {
-    background: #ededed;
+    background: #a6cdff;
   }
 }
 

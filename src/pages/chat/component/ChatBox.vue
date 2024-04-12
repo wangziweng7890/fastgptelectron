@@ -670,7 +670,9 @@ const visible = ref({})
                           <el-tooltip :visible="visible[item.dataId]" effect="light" trigger="click" :show-arrow="false" popper-class="self-tips" :disabled="item.stepType !== 2">
                             <template #content>
                               <div class="x" @click="caiConfirm(1, item.dataId)">
-                                X
+                                <el-icon size="16">
+                                  <img class="png-icon" src="~@/assets/images/x.png" alt="">
+                                </el-icon>
                               </div>
                               <div class="header">
                                 您的反馈将
